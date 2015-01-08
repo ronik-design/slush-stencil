@@ -1,0 +1,42 @@
+{# ------------------------------------------------------- #}
+{# ONE OFF VIEW homepage #}
+{# This page can use any data from http:localhost:2000/cms/#/form/homepage/ #}
+{# Webhook uses the SWIG.js (like Djagno/Twig) templating system. Their documentation is here: #}
+{# http://paularmstrong.github.io/swig/docs/tags/ #}
+{# Learn about calling data into Webhook pages here: #}
+{# http://www.webhook.com/docs/template-rules-and-filters/ #}
+{# ------------------------------------------------------- #}
+{# Confused what extends and blocks do? Watch a primer: #}
+{# http://www.webhook.com/docs/template-inheritance-blocks/ #}
+{% extends "templates/partials/base.html" %}
+{# This sets our page <title>. It will append this homepage's name to the site title defined in base.html #}
+{% block title %}{% parent %} - {{ cms.homepage.name }}{% endblock %}
+{% block content %}
+  <h1>{{ cms.homepage.name }}</h1>
+  <ul>
+      <li>
+        <strong>Name: </strong>
+        {{ cms.homepage.name }}
+      </li>
+      <li>
+        <strong>Create Date: </strong>
+        {# Format the date. You can use PHP's date function to format as needed. http://php.net/manual/en/function.date.php #}
+        {{ cms.homepage.create_date|date('F d Y') }}
+      </li>
+      <li>
+        <strong>Last Updated: </strong>
+        {# Format the date. You can use PHP's date function to format as needed. http://php.net/manual/en/function.date.php #}
+        {{ cms.homepage.last_updated|date('F d Y') }}
+      </li>
+      <li>
+        <strong>WYSIWYG text: </strong>
+        {{ cms.homepage.wysiwyg_text|safe }}
+      </li>
+      <li>
+        <strong>Image: </strong>
+        {# You can pull out a lot more information from the image property. Info here: #}
+        {# http://www.webhook.com/docs/widget-template-reference/#image #}
+        <img src="{{ cms.homepage.image|imageSize(200) }}" />
+      </li>
+  </ul>
+{% endblock %}
