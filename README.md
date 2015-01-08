@@ -22,7 +22,7 @@ $ mkdir my-slush-webhook
 Run the generator from within the new folder:
 
 ```bash
-$ cd my-slush-webhook && slush slush-webhook
+$ cd my-slush-webhook && slush webhook
 ```
 
 ## Getting To Know Slush
