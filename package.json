@@ -29,8 +29,10 @@
     "test": "echo \"No tests\""
   },
   "dependencies": {
+    "async": "^0.9.0",
     "gulp": "^3.6.2",
     "gulp-conflict": "^0.1.1",
+    "gulp-ignore": "^1.2.1",
     "gulp-install": "^0.1.4",
     "gulp-rename": "^1.2.0",
     "gulp-run-sequence": "^0.3.2",

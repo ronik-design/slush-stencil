@@ -9,10 +9,12 @@
 'use strict';
 
 var gulp = require('gulp'),
+    async = require('async'),
     install = require('gulp-install'),
     conflict = require('gulp-conflict'),
     template = require('gulp-template'),
     rename = require('gulp-rename'),
+    ignore = require('gulp-ignore'),
     _ = require('underscore.string'),
     inquirer = require('inquirer');
 
@@ -31,7 +33,8 @@ var defaults = (function () {
         user = require('iniparser').parseSync(configFile).user;
     }
     return {
-        appName: workingDirName,
+        siteName: workingDirName,
+        siteNameSlug: _.slugify(workingDirName),
         userName: format(user.name) || osUserName,
         authorEmail: user.email || ''
     };
@@ -43,6 +46,13 @@ gulp.task('default', function (done) {
         message: 'What is the name of your site?',
         default: defaults.siteName
     }, {
+        name: 'siteNameSlug',
+        message: 'What is slugified name of your site?',
+        default: defaults.siteNameSlug,
+        validate: function (siteNameSlug) {
+            return (siteNameSlug === _.slugify(siteNameSlug));
+        }
+    }, {
         name: 'appDescription',
         message: 'What is the description?'
     }, {
@@ -50,8 +60,8 @@ gulp.task('default', function (done) {
         message: 'What is the version of your project?',
         default: '0.1.0'
     }, {
-        name: 'webhookSecretKey',
-        message: 'What is your Webhook secret key?'
+        name: 'secretKey',
+        message: 'What is your Firebase/Webhook secret key?'
     }, {
         type: 'confirm',
         name: 'moveon',
@@ -63,19 +73,37 @@ gulp.task('default', function (done) {
             if (!answers.moveon) {
                 return done();
             }
-            answers.siteNameSlug = _.slugify(answers.siteName);
-            gulp.src(__dirname + '/templates/**')
-                .pipe(template(answers))
-                .pipe(rename(function (file) {
-                    if (file.basename[0] === '_') {
-                        file.basename = '.' + file.basename.slice(1);
-                    }
-                }))
-                .pipe(conflict('./'))
-                .pipe(gulp.dest('./'))
-                .pipe(install())
-                .on('end', function () {
-                    done();
-                });
+
+            var templateFiles = [
+                __dirname + '/templates/package.json',
+                __dirname + '/templates/.firebase.conf'
+            ];
+
+            function installPlainFiles(cb) {
+                gulp.src(__dirname + '/templates/**', { dot: true })
+                    .pipe(ignore(templateFiles))
+                    .pipe(conflict('./'))
+                    .pipe(gulp.dest('./'))
+                    .on('end', function () {
+                        cb();
+                    });
+
+            }
+
+            function installTemplateFiles(cb) {
+                gulp.src(templateFiles)
+                    .pipe(template(answers))
+                    .pipe(conflict('./'))
+                    .pipe(gulp.dest('./'))
+                    .pipe(install())
+                    .on('end', function () {
+                        cb();
+                    });
+            }
+
+            async.series([
+                installPlainFiles,
+                installTemplateFiles
+            ], done);
         });
 });
