@@ -6,6 +6,7 @@ var Gulp = require('gulp'),
     exec = require('child_process').exec,
     gulpIf = require('gulp-if'),
     minifyCss = require('gulp-minify-css'),
+    iconfont = require('gulp-iconfont'),
     size = require('gulp-size'),
     changed = require('gulp-changed'),
     imagemin = require('gulp-imagemin'),
@@ -81,24 +82,49 @@ Gulp.task('scripts', function(cb) {
 });
 
 Gulp.task('images', function() {
-  src.images = 'images/**/*';
-  return Gulp.src(src.images)
-    .pipe(changed(DEST + '/images'))
-    .pipe(imagemin({
-      progressive: true,
-      interlaced: true
-    }))
-    .pipe(Gulp.dest(DEST + '/images'))
-    .pipe(size({title: 'images'}));
+    src.images = 'images/**/*';
+    return Gulp.src(src.images)
+        .pipe(changed(DEST + '/images'))
+        .pipe(imagemin({
+            progressive: true,
+            interlaced: true
+        }))
+        .pipe(Gulp.dest(DEST + '/images'))
+        .pipe(size({
+            title: 'images'
+        }));
 });
 
-Gulp.task('build', ['styles', 'images', 'scripts']);
+Gulp.task('icons', function() {
+    src.icons = 'icons/*.svg';
+    Gulp.src(src.icons)
+        .pipe(iconfont({
+            fontName: 'iconfont',
+            appendCodepoints: true
+        }))
+        .on('codepoints', function(codepoints, options) {
+            var len = codepoints.length;
+            var str = 'icons = {';
+            codepoints.forEach(function (icon, idx) {
+                str += '"' + icon.name + '":' + (icon.codepoint).toString(16);
+                if (idx < len - 1) {
+                    str += ',';
+                }
+            });
+            str += '}';
+            Fs.writeFileSync('./icons/icons.styl', str);
+        })
+        .pipe(Gulp.dest(DEST + '/fonts'));
+});
+
+Gulp.task('build', ['icons', 'styles', 'images', 'scripts']);
 
 Gulp.task('watch', ['build'], function() {
     watch = true;
     Gulp.watch(src.styles, ['styles']);
     Gulp.watch(src.images, ['images']);
     Gulp.watch(src.scripts, ['scripts']);
+    Gulp.watch(src.icons, ['icons']);
 });
 
 // Starts the webhook serve process, and captures stdout
