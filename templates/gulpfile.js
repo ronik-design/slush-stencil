@@ -13,6 +13,7 @@ var Gulp = require('gulp'),
     run = require('gulp-run'),
     stylus = require('gulp-stylus'),
     nib = require('nib'),
+    jeet = require('jeet'),
     argv = require('minimist')(process.argv.slice(2));
 
 var DEST = './static';
@@ -45,7 +46,7 @@ Gulp.task('styles', function() {
     src.styles = 'styles/**/*.{css,styl}';
     Gulp.src('./styles/main.styl')
         .pipe(stylus({
-            use: [nib()]
+            use: [nib(), jeet()]
         }))
         .pipe(gulpIf(RELEASE, minifyCss()))
         .pipe(Gulp.dest(DEST + '/css/'));
