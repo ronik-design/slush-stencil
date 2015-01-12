@@ -60,9 +60,6 @@ gulp.task('default', function (done) {
         message: 'What is the version of your project?',
         default: '0.1.0'
     }, {
-        name: 'secretKey',
-        message: 'What is your Firebase/Webhook secret key?'
-    }, {
         type: 'confirm',
         name: 'moveon',
         message: 'Continue?'
@@ -75,8 +72,7 @@ gulp.task('default', function (done) {
             }
 
             var templateFiles = [
-                __dirname + '/templates/package.json',
-                __dirname + '/templates/.firebase.conf'
+                __dirname + '/templates/package.json'
             ];
 
             function installPlainFiles(cb) {
