@@ -1,22 +1,28 @@
-# slush-webhook [![Build Status](https://secure.travis-ci.org/ronik-design/slush-webhook.png?branch=master)](https://travis-ci.org/ronik-design/slush-webhook) [![NPM version](https://badge-me.herokuapp.com/api/npm/slush-webhook.png)](http://badges.enytc.com/for/npm/slush-webhook)
+# slush-webhook
 
 > Bootstrapping webhook projects.
 
 
 ## Getting Started
 
-Install `slush-webhook` globally:
+Install your global dependencies.
 
 ```bash
-$ npm install -g slush-webhook
+$ npm install -g slush slush-webhook wh grunt-cli
 ```
 
 ### Usage
 
+If this is a totally new project, you'll first need to create your webhook site.
+
+```bash
+$ wh create my-site
+```
+
 Create a new folder for your project:
 
 ```bash
-$ mkdir my-slush-webhook
+$ mkdir my-site
 ```
 
 Run the generator from within the new folder:
