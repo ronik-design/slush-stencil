@@ -18,7 +18,7 @@ var Gulp = require('gulp'),
     argv = require('minimist')(process.argv.slice(2));
 
 var BUCKET = 'qa.<%= siteDomain %>';
-var WEBHOOK_DOMAIN = '<%= siteNameSlug %>.webhook.org';
+var WEBHOOK_DOMAIN = '<%= siteNameWebhook %>.webhook.org';
 
 var DEST = './static';
 var RELEASE = !!argv.release;
@@ -48,7 +48,7 @@ require.extensions['.js'] = reactTransform;
 
 Gulp.task('styles', function() {
     src.styles = 'styles/**/*.{css,styl}';
-    Gulp.src('./styles/main.styl')
+    Gulp.src('styles/**/[!_]*.{css,styl}')
         .pipe(stylus({
             use: [nib(), jeet(), rupture()]
         }))

@@ -1,19 +1,24 @@
 // return value from hash
-get(hash, key)
-  return pair[1] if pair[0] == key for pair in hash
+get(hash, key, default)
+    for k, v in hash
+        if k == key
+            return v
+
+    if default
+        return default
 
 // return index of matched value in list
 index(list, value)
-  for item, i in list
-    if item == value
-      return i
+    for item, i in list
+        if item == value
+            return i
 
-  return null
+    return null
 
 // return matched z-index in list
 z(list, value)
-  i = index(list, value)
-  if i != null
-    return i
-  else
-    return auto
+    i = index(list, value)
+    if i != null
+        return i
+    else
+        return auto

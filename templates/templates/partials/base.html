@@ -19,6 +19,7 @@
   {# Grab the title and description from the CMS general settings. #}
   {% set site_title = getSetting('site_name')%}
   {% set site_description = getSetting('site_description')%}
+  {% set analytics_id = getSetting('analytics_id')%}
 
   <head>
     <meta charset="utf-8">
@@ -67,18 +68,20 @@
       {# Put your JS in here and we'll minify it into one file. No CDN scripts. More info: #}
       {# http://www.webhook.com/docs/minify-your-js-and-css/ #}
 
-      <!-- build:js /static/javascript/minified.js -->
+      {# We min our own, but leaving this here for example #}
       <script src="/static/javascript/main.js"></script>
+
+      <!-- build:js /static/javascript/minified.js -->
       <!-- endbuild -->
 
       {% block scripts_extra %}{% endblock %}
 
       {# Google Analytics code. Feel free to remove. #}
       <script>
-        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+        var _gaq=[['_setAccount','{{ analytics_id }}'],['_trackPageview']];
         (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
         g.src='//www.google-analytics.com/ga.js';
-        s.parentNode.insertBefore(g,s)}(document,'script'));
+        s.parentNode.insertBefore(g,s);}(document,'script'));
       </script>
     {% endblock %}
   </body>

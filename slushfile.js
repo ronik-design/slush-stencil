@@ -32,7 +32,7 @@ var defaults = (function () {
     }
     return {
         siteName: workingDirName,
-        siteNameSlug: _.slugify(workingDirName),
+        siteNameWebhook: _.slugify(workingDirName),
         userName: format(user.name) || osUserName,
         authorEmail: user.email || ''
     };
@@ -44,15 +44,19 @@ gulp.task('default', function (done) {
         message: 'What is the name of your site?',
         default: defaults.siteName
     }, {
-        name: 'siteNameSlug',
-        message: 'What is slugified name of your site? (this should match the site name for webhook)',
-        default: defaults.siteNameSlug,
-        validate: function (siteNameSlug) {
-            return (siteNameSlug === _.slugify(siteNameSlug));
+        name: 'siteNameWebhook',
+        message: 'What is your Webhook site name? (slug chars only)',
+        default: defaults.siteNameWebhook,
+        validate: function (siteNameWebhook) {
+            return (siteNameWebhook === _.slugify(siteNameWebhook));
         }
     }, {
+        name: 'secretKey',
+        message: 'What is Firebase/Webhook secretKey for your site?',
+    }, {
         name: 'siteDomain',
-        message: 'What is the domain for your site?'
+        message: 'What is the domain for your site?',
+        default: defaults.siteNameWebhook + '.com',
     }, {
         name: 'appDescription',
         message: 'What is the description?'
@@ -60,9 +64,6 @@ gulp.task('default', function (done) {
         name: 'appVersion',
         message: 'What is the version of your project?',
         default: '0.1.0'
-    }, {
-        name: 'secretKey',
-        message: 'What is Firebase secretKey for your site?',
     }, {
         type: 'confirm',
         name: 'moveon',

@@ -15,5 +15,6 @@ results
 npm-debug.log
 node_modules
 
-/.build
-/.firebase.conf
+.build
+.firebase.conf
+static

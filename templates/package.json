@@ -1,5 +1,6 @@
 {
-  "name": "<%= siteNameSlug %>",
+  "private": true,
+  "name": "<%= siteDomain %>",
   "version": "<%= appVersion %>",
   "description": "<%= appDescription %>",
   "repository": {
