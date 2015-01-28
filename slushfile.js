@@ -6,8 +6,6 @@
  * Licensed under the MIT license.
  */
 
-'use strict';
-
 var gulp = require('gulp'),
     async = require('async'),
     install = require('gulp-install'),
@@ -47,11 +45,14 @@ gulp.task('default', function (done) {
         default: defaults.siteName
     }, {
         name: 'siteNameSlug',
-        message: 'What is slugified name of your site?',
+        message: 'What is slugified name of your site? (this should match the site name for webhook)',
         default: defaults.siteNameSlug,
         validate: function (siteNameSlug) {
             return (siteNameSlug === _.slugify(siteNameSlug));
         }
+    }, {
+        name: 'siteDomain',
+        message: 'What is the domain for your site?'
     }, {
         name: 'appDescription',
         message: 'What is the description?'
@@ -59,6 +60,9 @@ gulp.task('default', function (done) {
         name: 'appVersion',
         message: 'What is the version of your project?',
         default: '0.1.0'
+    }, {
+        name: 'secretKey',
+        message: 'What is Firebase secretKey for your site?',
     }, {
         type: 'confirm',
         name: 'moveon',
@@ -72,7 +76,9 @@ gulp.task('default', function (done) {
             }
 
             var templateFiles = [
-                __dirname + '/templates/package.json'
+                __dirname + '/templates/package.json',
+                __dirname + '/templates/.firebase.conf',
+                __dirname + '/templates/gulpfile.js'
             ];
 
             function installPlainFiles(cb) {

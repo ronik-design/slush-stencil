@@ -1,5 +1,6 @@
 var Gulp = require('gulp'),
     Util = require('gulp-util'),
+    AwsPublish = require('gulp-awspublish'),
     Webpack = require('webpack'),
     ReactTools = require('react-tools'),
     Fs = require('fs'),
@@ -15,7 +16,11 @@ var Gulp = require('gulp'),
     nib = require('nib'),
     jeet = require('jeet'),
     rupture = require('rupture'),
+    s3Website = require('s3-website'),
     argv = require('minimist')(process.argv.slice(2));
+
+var BUCKET = 'qa.<%= siteDomain %>';
+var WEBHOOK_DOMAIN = '<%= siteNameSlug %>.webhook.org';
 
 var DEST = './static';
 var RELEASE = !!argv.release;
@@ -133,5 +138,49 @@ Gulp.task('watch', ['build'], function() {
 Gulp.task('serve', ['watch'], function() {
     exec('wh serve').stdout.pipe(process.stdout);
 });
+
+Gulp.task('wh-build', ['build'], function (cb) {
+    var whBuild = exec('wh build');
+    whBuild.stdout.pipe(process.stdout);
+    whBuild.on('exit', cb);
+});
+
+Gulp.task('deploy-s3', ['wh-build', 'deploy-s3-config'], function() {
+    var publisher = AwsPublish.create({ bucket: BUCKET });
+    var headers = {
+      'Cache-Control': 'max-age=315360000, no-transform, public'
+    };
+
+    return Gulp.src('.build/**/*')
+        .pipe(AwsPublish.gzip())
+        .pipe(publisher.publish(headers))
+        .pipe(publisher.sync())
+        .pipe(publisher.cache())
+        .pipe(AwsPublish.reporter());
+});
+
+Gulp.task('deploy-s3-config', function (cb) {
+    var s3Config = {
+        domain: BUCKET,
+        index: 'index.html',
+        routes: [{
+            Condition: {
+                KeyPrefixEquals: 'webhook-uploads/'
+            },
+            Redirect: {
+                HostName: WEBHOOK_DOMAIN
+            }
+        }]
+    };
+
+    s3Website(s3Config, function(err, website) {
+        if (website.modified) {
+            Util.log('[deploy-s3-config]', 'Site configuration updated %s', website.url);
+        }
+        cb(err);
+    });
+});
+
+Gulp.task('deploy', ['deploy-s3']);
 
 Gulp.task('default', ['serve']);

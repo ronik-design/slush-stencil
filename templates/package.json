@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "gulp": "^3.8.10",
+    "gulp-awspublish": "git://github.com/ronik-design/gulp-awspublish",
     "gulp-changed": "^1.1.0",
     "gulp-iconfont": "^1.0.0",
     "gulp-if": "^1.2.5",
@@ -64,6 +65,7 @@
     "nib": "^1.0.4",
     "react-tools": "^0.12.2",
     "rupture": "^0.6.1",
+    "s3-website": "git://github.com/ronik-design/s3-website",
     "webpack": "^1.4.15"
   }
 }

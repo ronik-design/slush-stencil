@@ -45,5 +45,8 @@
   },
   "keywords": [
     "slushgenerator"
-  ]
+  ],
+  "devDependencies": {
+    "s3-website": "git://github.com/ronik-design/s3-website"
+  }
 }
