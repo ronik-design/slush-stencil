@@ -5,13 +5,11 @@ var Gulp = require('gulp'),
     ReactTools = require('react-tools'),
     Fs = require('fs'),
     exec = require('child_process').exec,
-    gulpIf = require('gulp-if'),
     minifyCss = require('gulp-minify-css'),
     iconfont = require('gulp-iconfont'),
     size = require('gulp-size'),
     changed = require('gulp-changed'),
     imagemin = require('gulp-imagemin'),
-    run = require('gulp-run'),
     stylus = require('gulp-stylus'),
     nib = require('nib'),
     jeet = require('jeet'),
@@ -54,7 +52,6 @@ Gulp.task('styles', function() {
         .pipe(stylus({
             use: [nib(), jeet(), rupture()]
         }))
-        .pipe(gulpIf(RELEASE, minifyCss()))
         .pipe(Gulp.dest(DEST + '/css/'));
 });
 
