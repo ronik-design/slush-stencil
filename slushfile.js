@@ -11,9 +11,12 @@ var gulp = require('gulp'),
     install = require('gulp-install'),
     conflict = require('gulp-conflict'),
     template = require('gulp-template'),
+    extend = require('gulp-multi-extend'),
     rename = require('gulp-rename'),
     ignore = require('gulp-ignore'),
-    _ = require('underscore.string'),
+    clean = require('gulp-clean'),
+    clone = require('101/clone'),
+    slugify = require('underscore.string/slugify'),
     inquirer = require('inquirer');
 
 function format(string) {
@@ -31,8 +34,8 @@ var defaults = (function () {
         user = require('iniparser').parseSync(configFile).user;
     }
     return {
-        siteName: workingDirName,
-        siteNameWebhook: _.slugify(workingDirName),
+        name: workingDirName,
+        nameWebhook: slugify(workingDirName),
         userName: format(user.name) || osUserName,
         authorEmail: user.email || ''
     };
@@ -40,30 +43,45 @@ var defaults = (function () {
 
 gulp.task('default', function (done) {
     var prompts = [{
-        name: 'siteName',
+        name: 'name',
         message: 'What is the name of your site?',
-        default: defaults.siteName
+        default: defaults.name
     }, {
-        name: 'siteNameWebhook',
+        name: 'domain',
+        message: 'What is the domain for your site?',
+        default: defaults.nameWebhook + '.com',
+    }, {
+        name: 'nameWebhook',
         message: 'What is your Webhook site name? (slug chars only)',
-        default: defaults.siteNameWebhook,
-        validate: function (siteNameWebhook) {
-            return (siteNameWebhook === _.slugify(siteNameWebhook));
+        default: defaults.nameWebhook,
+        validate: function (nameWebhook) {
+            return (nameWebhook === slugify(nameWebhook));
         }
     }, {
-        name: 'secretKey',
-        message: 'What is Firebase/Webhook secretKey for your site?',
+        name: 'description',
+        message: 'Please describe your site?'
     }, {
-        name: 'siteDomain',
-        message: 'What is the domain for your site?',
-        default: defaults.siteNameWebhook + '.com',
-    }, {
-        name: 'appDescription',
-        message: 'What is the description?'
-    }, {
-        name: 'appVersion',
-        message: 'What is the version of your project?',
+        name: 'version',
+        message: 'What is the version of your site?',
         default: '0.1.0'
+    }, {
+        name: 'jsFramework',
+        type: 'list',
+        message: 'Which client-side framework would you like to use?',
+        choices: [
+            {
+                name: 'Simple Modules (jQuery,lodash)',
+                value: 'simple'
+            },
+            {
+                name: 'Backbone',
+                value: 'backbone'
+            },
+            {
+                name: 'React/TuxedoJS',
+                value: 'react'
+            }
+        ]
     }, {
         type: 'confirm',
         name: 'moveon',
@@ -76,27 +94,58 @@ gulp.task('default', function (done) {
                 return done();
             }
 
-            var templateFiles = [
-                __dirname + '/templates/package.json',
-                __dirname + '/templates/.firebase.conf',
-                __dirname + '/templates/gulpfile.js'
-            ];
+            var locals = clone(answers);
 
             function installPlainFiles(cb) {
-                gulp.src(__dirname + '/templates/**', { dot: true })
-                    .pipe(ignore(templateFiles))
+
+                var ignorePaths = [
+                    __dirname + '/templates/{scripts,scripts/**}',
+                    __dirname + '/templates/package.json'
+                ];
+
+                gulp.src(__dirname + '/templates/**/!(*.slush)', { dot: true })
+                    .pipe(ignore(ignorePaths))
                     .pipe(conflict('./'))
                     .pipe(gulp.dest('./'))
                     .on('end', function () {
                         cb();
                     });
+            }
 
+            function cleanScripts(cb) {
+                gulp.src('scripts')
+                    .pipe(clean({ force: true }))
+                    .on('end', function () {
+                        cb();
+                    });
+            }
+
+            function installScripts(cb) {
+                var glob = __dirname + '/templates/scripts/' + answers.jsFramework + '/**';
+                gulp.src(glob, { dot: true })
+                    .pipe(rename({ dirname: 'scripts' }))
+                    .pipe(conflict('./'))
+                    .pipe(gulp.dest('./'))
+                    .on('end', function () {
+                        cb();
+                    });
             }
 
             function installTemplateFiles(cb) {
-                gulp.src(templateFiles)
-                    .pipe(template(answers))
+                gulp.src(__dirname + '/templates/**/*.slush', { dot: true })
+                    .pipe(template(locals))
+                    .pipe(rename({ extname: '' }))
                     .pipe(conflict('./'))
+                    .pipe(gulp.dest('./'))
+                    .on('end', function () {
+                        cb();
+                    });
+            }
+
+            function extendPackageAndInstall(cb) {
+                gulp.src(__dirname + '/templates/package.json')
+                    .pipe(template(locals))
+                    .pipe(extend('package.json', null, 2))
                     .pipe(gulp.dest('./'))
                     .pipe(install())
                     .on('end', function () {
@@ -106,7 +155,10 @@ gulp.task('default', function (done) {
 
             async.series([
                 installPlainFiles,
-                installTemplateFiles
+                cleanScripts,
+                installScripts,
+                installTemplateFiles,
+                extendPackageAndInstall
             ], done);
         });
 });

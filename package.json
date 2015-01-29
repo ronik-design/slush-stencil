@@ -29,24 +29,24 @@
     "test": "echo \"No tests\""
   },
   "dependencies": {
+    "101": "^0.8.2",
     "async": "^0.9.0",
     "gulp": "^3.6.2",
+    "gulp-clean": "^0.3.1",
     "gulp-conflict": "^0.1.1",
-    "gulp-iconfont": "^1.0.0",
+    "gulp-extend": "^0.2.0",
     "gulp-ignore": "^1.2.1",
     "gulp-install": "^0.1.4",
+    "gulp-multi-extend": "0.0.1",
     "gulp-rename": "^1.2.0",
     "gulp-run-sequence": "^0.3.2",
     "gulp-template": "^0.1.1",
     "iniparser": "^1.0.5",
     "inquirer": "^0.4.1",
     "slush": ">=1.0.0",
-    "underscore.string": "^2.3.3"
+    "underscore.string": "^3.0.2"
   },
   "keywords": [
     "slushgenerator"
-  ],
-  "devDependencies": {
-    "s3-website": "git://github.com/ronik-design/s3-website"
-  }
+  ]
 }
