@@ -4,6 +4,7 @@ var Gulp = require('gulp'),
     Webpack = require('webpack'),
     ReactTools = require('react-tools'),
     Fs = require('fs'),
+    runSequence = require('run-sequence'),
     exec = require('child_process').exec,
     watch = require('gulp-watch'),
     iconfont = require('gulp-iconfont'),
@@ -25,36 +26,6 @@ var RELEASE = !!argv.release;
 var src = {};
 var watching = false;
 
-// Configure JSX Harmony transform in order to be able
-// require .js files with JSX (see 'pages' task)
-var originalJsTransform = require.extensions['.js'];
-
-var reactTransform = function(module, filename) {
-    if (filename.indexOf('node_modules') === -1) {
-        var src = Fs.readFileSync(filename, {
-            encoding: 'utf8'
-        });
-        src = ReactTools.transform(src, {
-            harmony: true,
-            stripTypes: true
-        });
-        module._compile(src, filename);
-    } else {
-        originalJsTransform(module, filename);
-    }
-};
-
-require.extensions['.js'] = reactTransform;
-
-var htmlLoader = function(module, filename) {
-    var src = Fs.readFileSync(filename, {
-        encoding: 'utf8'
-    });
-    module._compile(src, filename);
-};
-
-require.extensions['.html'] = htmlLoader;
-
 Gulp.task('assets', function () {
     src.assets = 'assets/**/*';
     return Gulp.src(src.assets)
@@ -71,7 +42,6 @@ Gulp.task('styles', function() {
 });
 
 Gulp.task('scripts', function(cb) {
-    src.scripts = 'scripts/**/*';
     var started = false;
     var config = require('./webpack.config.js')(RELEASE, DEST);
     var bundler = Webpack(config);
@@ -79,6 +49,26 @@ Gulp.task('scripts', function(cb) {
     function bundle(err, stats) {
         if (err) {
             throw new Util.PluginError('webpack', err);
+        }
+
+        if (stats.hasErrors()) {
+            var errs = stats.toJson().errors;
+
+            errs.forEach(function (err) {
+                console.error(err);
+            });
+
+            throw new Util.PluginError('webpack', 'You\'ve got lint!');
+        }
+
+        if (stats.hasWarnings()) {
+            var warnings = stats.toJson().warnings;
+
+            warnings.forEach(function (warn) {
+                console.warn(warn);
+            });
+
+            throw new Util.PluginError('webpack', 'You\'ve got lint!');
         }
 
         if (argv.verbose) {
@@ -139,14 +129,16 @@ Gulp.task('icons', function() {
 
 Gulp.task('build', ['icons', 'styles', 'images', 'scripts', 'assets']);
 
-Gulp.task('watch', ['build'], function() {
+Gulp.task('watch', function(cb) {
     watching = true;
 
-    watch(src.scripts, function() { Gulp.start('scripts'); });
-    watch(src.assets, function() { Gulp.start('assets'); });
-    watch(src.styles, function() { Gulp.start('styles'); });
-    watch(src.images, function() { Gulp.start('images'); });
-    watch(src.icons, function() { Gulp.start('icons'); });
+    runSequence('build', function () {
+        watch(src.assets, function() { Gulp.start('assets'); });
+        watch(src.styles, function() { Gulp.start('styles'); });
+        watch(src.images, function() { Gulp.start('images'); });
+        watch(src.icons, function() { Gulp.start('icons'); });
+        cb();
+    });
 });
 
 // Starts the webhook serve process, and captures stdout

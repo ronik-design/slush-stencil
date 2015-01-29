@@ -1,7 +1,7 @@
-require('./shim');
-var Example = require('./modules/example');
+import './shim';
+import Example from './modules/example';
 
 $(() => {
-    var example = new Example({ el: '#content' });
+    let example = new Example({ el: '#content' });
     example.render({ msg: 'READY' });
 });

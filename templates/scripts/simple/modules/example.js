@@ -1,4 +1,4 @@
-class Example {
+export default class Example {
 
     constructor(options) {
         this.el = options.el;
@@ -11,5 +11,3 @@ class Example {
         this.$el.html(rendered);
     }
 }
-
-module.exports = Example;

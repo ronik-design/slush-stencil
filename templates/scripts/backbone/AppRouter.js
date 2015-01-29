@@ -1,14 +1,18 @@
-var HeaderView = require('./views/HeaderView');
-var FooterView = require('./views/FooterView');
-var HomeView = require('./views/HomeView');
+import Models from './collections/Models';
+import HeaderView from './views/HeaderView';
+import FooterView from './views/FooterView';
+import HomeView from './views/HomeView';
 
-class AppRouter extends Backbone.Router {
+export default class AppRouter extends Backbone.Router {
 
     constructor() {
         this.routes = {
             '': 'home',
             '*actions': 'home'
         };
+
+        this.collection = new Models();
+        this.collection.add({ title: 'The Model' });
 
         this.headerView = new HeaderView();
         this.headerView.render();
@@ -19,9 +23,10 @@ class AppRouter extends Backbone.Router {
     }
 
     home() {
-        this.homeView = new HomeView();
+        this.homeView = new HomeView({
+            collection: this.collection
+        });
+
         this.homeView.render();
     }
 }
-
-module.exports = AppRouter;

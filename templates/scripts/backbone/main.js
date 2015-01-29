@@ -1,6 +1,5 @@
-require('./shim');
-
-var App = './App';
+import './shim';
+import App from './App';
 
 $(() => {
     new App();

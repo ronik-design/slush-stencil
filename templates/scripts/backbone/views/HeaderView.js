@@ -1,16 +1,19 @@
-var headerTpl = require('../templates/header.html');
+var headerTpl = `
+<nav class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+        <li>Nav Item</li>
+    </ul>
+</nav>`;
 
-class HeaderView extends Backbone.View {
+export default class HeaderView extends Backbone.View {
 
     constructor(options) {
         this.el = '#header';
         this.template = headerTpl;
-        super();
+        super(options);
     }
 
     render() {
         $(this.el).html(_.template(this.template));
     }
 }
-
-module.exports = HeaderView;

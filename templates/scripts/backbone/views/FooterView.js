@@ -1,16 +1,18 @@
-var footerTpl = require('../templates/footer.html');
+var footerTpl = `
+<hr />
+<footer>
+    <div>A footer.</div>
+</footer>`;
 
-class FooterView extends Backbone.View {
+export default class FooterView extends Backbone.View {
 
     constructor(options) {
         this.el = '#footer';
         this.template = footerTpl;
-        super();
+        super(options);
     }
 
     render() {
         this.$el.html(_.template(this.template));
     }
 }
-
-module.exports = FooterView;

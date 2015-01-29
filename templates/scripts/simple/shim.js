@@ -1,5 +1,5 @@
-var jQuery = require('jquery');
-var _ = require('lodash');
+import jQuery from 'jquery';
+import _ from 'lodash';
 
 window.$ = window.$ || jQuery;
 window.jQuery = window.jQuery || jQuery;

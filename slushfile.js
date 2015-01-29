@@ -14,7 +14,6 @@ var gulp = require('gulp'),
     extend = require('gulp-multi-extend'),
     rename = require('gulp-rename'),
     ignore = require('gulp-ignore'),
-    clean = require('gulp-clean'),
     clone = require('101/clone'),
     slugify = require('underscore.string/slugify'),
     inquirer = require('inquirer');
@@ -99,7 +98,7 @@ gulp.task('default', function (done) {
             function installPlainFiles(cb) {
 
                 var ignorePaths = [
-                    __dirname + '/templates/{scripts,scripts/**}',
+                    __dirname + '/templates/{scripts,scripts/**,scripts/**/.*}',
                     __dirname + '/templates/package.json'
                 ];
 
@@ -107,28 +106,15 @@ gulp.task('default', function (done) {
                     .pipe(ignore(ignorePaths))
                     .pipe(conflict('./'))
                     .pipe(gulp.dest('./'))
-                    .on('end', function () {
-                        cb();
-                    });
-            }
-
-            function cleanScripts(cb) {
-                gulp.src('scripts')
-                    .pipe(clean({ force: true }))
-                    .on('end', function () {
-                        cb();
-                    });
+                    .on('end', cb);
             }
 
             function installScripts(cb) {
-                var glob = __dirname + '/templates/scripts/' + answers.jsFramework + '/**';
+                var glob = __dirname + '/templates/scripts/' + answers.jsFramework + '/**/*';
                 gulp.src(glob, { dot: true })
-                    .pipe(rename({ dirname: 'scripts' }))
-                    .pipe(conflict('./'))
-                    .pipe(gulp.dest('./'))
-                    .on('end', function () {
-                        cb();
-                    });
+                    .pipe(conflict('./scripts'))
+                    .pipe(gulp.dest('./scripts'))
+                    .on('end', cb);
             }
 
             function installTemplateFiles(cb) {
@@ -137,9 +123,7 @@ gulp.task('default', function (done) {
                     .pipe(rename({ extname: '' }))
                     .pipe(conflict('./'))
                     .pipe(gulp.dest('./'))
-                    .on('end', function () {
-                        cb();
-                    });
+                    .on('end', cb);
             }
 
             function extendPackageAndInstall(cb) {
@@ -148,14 +132,11 @@ gulp.task('default', function (done) {
                     .pipe(extend('package.json', null, 2))
                     .pipe(gulp.dest('./'))
                     .pipe(install())
-                    .on('end', function () {
-                        cb();
-                    });
+                    .on('end', cb);
             }
 
             async.series([
                 installPlainFiles,
-                cleanScripts,
                 installScripts,
                 installTemplateFiles,
                 extendPackageAndInstall
