@@ -1,5 +1,5 @@
 import TuxActions from 'tuxx/Actions';
-import ajax from '../helpers/AjaxHelper';
+import ajax from '../helpers/Ajax';
 
 var RoomActions = TuxActions.createActionCategory({
     category: 'rooms',

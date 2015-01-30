@@ -7,6 +7,7 @@
  */
 
 var gulp = require('gulp'),
+    fs = require('fs'),
     async = require('async'),
     install = require('gulp-install'),
     conflict = require('gulp-conflict'),
@@ -14,6 +15,7 @@ var gulp = require('gulp'),
     extend = require('gulp-multi-extend'),
     rename = require('gulp-rename'),
     ignore = require('gulp-ignore'),
+    gulpif = require('gulp-if'),
     clone = require('101/clone'),
     slugify = require('underscore.string/slugify'),
     inquirer = require('inquirer');
@@ -77,7 +79,7 @@ gulp.task('default', function (done) {
                 value: 'backbone'
             },
             {
-                name: 'React/TuxedoJS',
+                name: 'React/Flux(alt)',
                 value: 'react'
             }
         ]
@@ -127,10 +129,16 @@ gulp.task('default', function (done) {
             }
 
             function extendPackageAndInstall(cb) {
-                gulp.src(__dirname + '/templates/package.json')
-                    .pipe(template(locals))
-                    .pipe(extend('package.json', null, 2))
-                    .pipe(gulp.dest('./'))
+                var exists = fs.existsSync('package.json');
+                var package = gulp.src(__dirname + '/templates/package.json');
+
+                package.pipe(template(locals));
+
+                if (exists) {
+                    package.pipe(extend('package.json', null, 2));
+                }
+
+                package.pipe(gulp.dest('./'))
                     .pipe(install())
                     .on('end', cb);
             }

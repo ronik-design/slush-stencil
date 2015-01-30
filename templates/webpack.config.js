@@ -54,11 +54,13 @@ module.exports = function(release, dest) {
                 exclude: /node_modules/,
                 loader: 'jshint-loader'
             }],
-
             loaders: [{
                 test: /\.jsx?$/,
+                loader: 'jsx'
+            }, {
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: '6to5-loader?experimental=true'
+                loader: '6to5?experimental&optional=selfContained'
             }]
         }
     };

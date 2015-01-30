@@ -1,11 +1,11 @@
-import React from 'tuxx/React';
+import React from 'react';
 
-var DefaultWelcome = React.createClass({
-  render: function () {
+class DefaultWelcome extends React.Component {
+  render() {
     return (
-      <h1>Welcome to the Tuxx Chat App</h1>
+        <h1>Welcome to the App!</h1>
     );
   }
-});
+}
 
 export default DefaultWelcome;

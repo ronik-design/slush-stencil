@@ -1,18 +1,18 @@
-import React from 'tuxx/React';
-import Link from 'tuxx/Router/Link';
-import RouteHandler from 'tuxx/Router/RouteHandler';
+import React from 'react';
+import Router from 'react-router';
+var { Link, RouteHandler } = Router;
 
-var Welcome = React.createClass({
-  render: function () {
-    return (
-      <div>
-        <Link to="rooms">View Rooms</Link>
-        <br />
-        <br />
-        <RouteHandler />
-      </div>
-    );
-  }
-});
+class Welcome extends React.Component {
+    render() {
+        return (
+          <div>
+            <Link to="rooms">View Rooms</Link>
+            <br />
+            <br />
+            <RouteHandler />
+          </div>
+        );
+    }
+}
 
 export default Welcome;

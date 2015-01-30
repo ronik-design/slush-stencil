@@ -1,10 +1,7 @@
 var Gulp = require('gulp'),
     Util = require('gulp-util'),
     AwsPublish = require('gulp-awspublish'),
-    Webpack = require('webpack'),
-    ReactTools = require('react-tools'),
     Fs = require('fs'),
-    runSequence = require('run-sequence'),
     exec = require('child_process').exec,
     watch = require('gulp-watch'),
     iconfont = require('gulp-iconfont'),
@@ -16,17 +13,25 @@ var Gulp = require('gulp'),
     jeet = require('jeet'),
     rupture = require('rupture'),
     s3Website = require('s3-website'),
-    argv = require('minimist')(process.argv.slice(2));
+    to5ify = require('6to5ify'),
+    browserify = require('browserify'),
+    watchify = require('watchify'),
+    uglify = require('gulp-uglify'),
+    Notify = require('gulp-notify'),
+    source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
+    assign = require('101/assign'),
+    jshint = require('gulp-jshint'),
+    stylish = require('jshint-stylish'),
+    react = require('gulp-react');
 
 var BUCKET = 'qa.<%= domain %>';
 var WEBHOOK_DOMAIN = '<%= nameWebhook %>.webhook.org';
-
 var DEST = './static';
-var RELEASE = !!argv.release;
-var src = {};
-var watching = false;
 
-Gulp.task('assets', function () {
+var src = {};
+
+Gulp.task('assets', function() {
     src.assets = 'assets/**/*';
     return Gulp.src(src.assets)
         .pipe(Gulp.dest(DEST + '/'));
@@ -41,59 +46,42 @@ Gulp.task('styles', function() {
         .pipe(Gulp.dest(DEST + '/css/'));
 });
 
-Gulp.task('scripts', function(cb) {
-    var started = false;
-    var config = require('./webpack.config.js')(RELEASE, DEST);
-    var bundler = Webpack(config);
+Gulp.task('watchify', ['lint'], function() {
+    var app = 'main.js';
+    var src = './scripts/' + app;
+    var dst = DEST + '/javascript';
+    var opt = assign(watchify.args, { debug: true });
 
-    var red = Util.colors.red;
-    var blue = Util.colors.blue;
-    var yellow = Util.colors.yellow;
+    var bundler = watchify(browserify(src, opt));
 
-    function bundle(err, stats) {
-        if (err) {
-            throw new Util.PluginError('webpack', err);
-        }
-
-        if (stats.hasErrors()) {
-            var errs = stats.toJson().errors;
-
-            errs.forEach(function (err) {
-                Util.log(blue('[webpack]'), '\n\n', yellow(err));
-            });
-
-            Util.log(blue('[webpack]'), red('You\'ve got lint!'));
-        }
-
-        if (stats.hasWarnings()) {
-            var warnings = stats.toJson().warnings;
-
-            warnings.forEach(function (warn) {
-                Util.log(blue('[webpack]'), '\n\n', yellow(warn));
-            });
-
-            Util.log(blue('[webpack]'), red('You\'ve got lint!'));
-        }
-
-        if (argv.verbose) {
-            Util.log(blue('[webpack]'), stats.toString({
-                colors: true
-            }));
-        }
-
-        if (!started) {
-            started = true;
-            return cb();
-        }
+    function rebundle() {
+        return bundler
+          .bundle()
+          .on('error', Notify.onError())
+          .pipe(source(app))
+          .pipe(Gulp.dest(dst));
     }
 
-    if (watching) {
-        bundler.watch(200, bundle);
-    } else {
-        bundler.run(bundle);
-    }
+    bundler
+        .transform(to5ify.configure({
+            sourceMap: 'inline',
+            sourceMapRelative: __dirname + '/scripts',
+            experimental: true
+        }))
+        .on('update', rebundle);
+
+    return rebundle();
 });
 
+Gulp.task('browserify', ['lint'], function() {
+    browserify('./scripts/main.js')
+        .transform(to5ify.configure({ experimental: true }))
+        .bundle()
+        .pipe(source('main.js'))
+        .pipe(buffer())
+        .pipe(uglify())
+        .pipe(Gulp.dest(DEST + '/javascript'));
+});
 
 Gulp.task('images', function() {
     src.images = 'images/**/*';
@@ -120,7 +108,7 @@ Gulp.task('icons', function() {
         .on('codepoints', function(codepoints, options) {
             var len = codepoints.length;
             var str = 'icons = {';
-            codepoints.forEach(function (icon, idx) {
+            codepoints.forEach(function(icon, idx) {
                 str += '"' + icon.name + '":' + (icon.codepoint).toString(16);
                 if (idx < len - 1) {
                     str += ',';
@@ -132,17 +120,31 @@ Gulp.task('icons', function() {
         .pipe(Gulp.dest(DEST + '/fonts'));
 });
 
-Gulp.task('build', ['icons', 'styles', 'images', 'scripts', 'assets']);
+Gulp.task('lint', function () {
+    return Gulp.src(['./scripts/**/*.{js,jsx}'])
+        .pipe(react())
+        .pipe(jshint())
+        .pipe(jshint.reporter(stylish))
+        .pipe(jshint.reporter('fail'))
+        .on('error', Notify.onError());
+});
 
-Gulp.task('watch', function(cb) {
-    watching = true;
+/**
+ * Develop stuff
+ */
 
-    runSequence('build', function () {
-        watch(src.assets, function() { Gulp.start('assets'); });
-        watch(src.styles, function() { Gulp.start('styles'); });
-        watch(src.images, function() { Gulp.start('images'); });
-        watch(src.icons, function() { Gulp.start('icons'); });
-        cb();
+Gulp.task('watch', ['icons', 'styles', 'images', 'assets', 'watchify'], function() {
+    watch(src.assets, function() {
+        Gulp.start('assets');
+    });
+    watch(src.styles, function() {
+        Gulp.start('styles');
+    });
+    watch(src.images, function() {
+        Gulp.start('images');
+    });
+    watch(src.icons, function() {
+        Gulp.start('icons');
     });
 });
 
@@ -151,22 +153,30 @@ Gulp.task('serve', ['watch'], function() {
     exec('wh serve').stdout.pipe(process.stdout);
 });
 
-Gulp.task('wh-build', ['build'], function (cb) {
+/**
+ * Release stuff
+ */
+
+Gulp.task('build', ['icons', 'styles', 'images', 'assets', 'browserify']);
+
+Gulp.task('wh-build', ['build'], function(cb) {
     var whBuild = exec('wh build');
     whBuild.stdout.pipe(process.stdout);
     whBuild.on('exit', cb);
 });
 
-Gulp.task('wh-deploy', ['build'], function () {
+Gulp.task('wh-deploy', ['build'], function() {
     var whDeploy = exec('wh deploy');
     whDeploy.stdout.pipe(process.stdout);
     whDeploy.on('exit', cb);
 });
 
 Gulp.task('s3-deploy', ['wh-build', 's3-deploy-config'], function() {
-    var publisher = AwsPublish.create({ bucket: BUCKET });
+    var publisher = AwsPublish.create({
+        bucket: BUCKET
+    });
     var headers = {
-      'Cache-Control': 'max-age=315360000, no-transform, public'
+        'Cache-Control': 'max-age=315360000, no-transform, public'
     };
 
     return Gulp.src('.build/**/*')
@@ -177,7 +187,7 @@ Gulp.task('s3-deploy', ['wh-build', 's3-deploy-config'], function() {
         .pipe(AwsPublish.reporter());
 });
 
-Gulp.task('s3-deploy-config', function (cb) {
+Gulp.task('s3-deploy-config', function(cb) {
     var s3Config = {
         domain: BUCKET,
         index: 'index.html',
@@ -193,7 +203,9 @@ Gulp.task('s3-deploy-config', function (cb) {
 
     s3Website(s3Config, function(err, website) {
         if (website.modified) {
-            Util.log('[deploy-s3-config]', 'Site configuration updated %s', website.url);
+            Util.log('[deploy-s3-config]',
+                'Site configuration updated %s',
+                website.url);
         }
         cb(err);
     });

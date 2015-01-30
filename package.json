@@ -34,6 +34,7 @@
     "gulp": "^3.6.2",
     "gulp-conflict": "^0.1.1",
     "gulp-extend": "^0.2.0",
+    "gulp-if": "^1.2.5",
     "gulp-ignore": "^1.2.1",
     "gulp-install": "^0.1.4",
     "gulp-multi-extend": "0.0.1",
