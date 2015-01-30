@@ -43,6 +43,7 @@
     <% } %>
     <% if (jsFramework === 'react') { %>
     , "tuxx": "^0.1.0"
+    , "superagent": "^0.21.0"
     <% } %>
   }
 }

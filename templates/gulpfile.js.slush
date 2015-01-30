@@ -46,6 +46,10 @@ Gulp.task('scripts', function(cb) {
     var config = require('./webpack.config.js')(RELEASE, DEST);
     var bundler = Webpack(config);
 
+    var red = Util.colors.red;
+    var blue = Util.colors.blue;
+    var yellow = Util.colors.yellow;
+
     function bundle(err, stats) {
         if (err) {
             throw new Util.PluginError('webpack', err);
@@ -55,24 +59,24 @@ Gulp.task('scripts', function(cb) {
             var errs = stats.toJson().errors;
 
             errs.forEach(function (err) {
-                console.error(err);
+                Util.log(blue('[webpack]'), '\n\n', yellow(err));
             });
 
-            throw new Util.PluginError('webpack', 'You\'ve got lint!');
+            Util.log(blue('[webpack]'), red('You\'ve got lint!'));
         }
 
         if (stats.hasWarnings()) {
             var warnings = stats.toJson().warnings;
 
             warnings.forEach(function (warn) {
-                console.warn(warn);
+                Util.log(blue('[webpack]'), '\n\n', yellow(warn));
             });
 
-            throw new Util.PluginError('webpack', 'You\'ve got lint!');
+            Util.log(blue('[webpack]'), red('You\'ve got lint!'));
         }
 
         if (argv.verbose) {
-            Util.log('[webpack]', stats.toString({
+            Util.log(blue('[webpack]'), stats.toString({
                 colors: true
             }));
         }
@@ -89,6 +93,7 @@ Gulp.task('scripts', function(cb) {
         bundler.run(bundle);
     }
 });
+
 
 Gulp.task('images', function() {
     src.images = 'images/**/*';
