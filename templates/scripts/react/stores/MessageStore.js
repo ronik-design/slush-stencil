@@ -1,53 +1,86 @@
-import MessageActions from '../actions/MessageActions';
-import ActionStores from 'tuxx/Stores/ActionStores';
+import Alt from '../alt';
 
-var MessageStore = ActionStores.createStore({
-    _messages: [],
+var ChatThreadActionCreators = require('../actions/ChatThreadActionCreators');
+var ChatServerActionCreators = require('../actions/ChatServerActionCreators');
+var ChatMessageActionCreators = require('../actions/ChatMessageActionCreators');
+var ThreadStore = require('../stores/ThreadStore');
+var ChatMessageDataUtils = require('../utils/ChatMessageDataUtils');
+var ChatMessageUtils = require('../utils/ChatMessageUtils');
 
-    all() {
-        return this._messages;
-    },
+class MessageStore {
+    constructor() {
+        this.bindActions(ChatThreadActionCreators);
+        this.bindActions(ChatMessageActionCreators);
+        this.bindActions(ChatServerActionCreators);
 
-    onGet(data) {
-        this._messages = data;
-        this.emitChange();
-    },
-
-    onCreate(data) {
-        this._messages.push(data);
-        this.emitChange();
-    },
-
-    onDestroy(data) {
-        for (var i = 0; i < this._messages.length; i++) {
-            if (this._messages[i].id === data.id) {
-                this._messages.splice(i, 1);
-                break;
-            }
-        }
-        this.emitChange();
-    },
-
-    onUpdate(data) {
-        for (var i = 0; i < this._messages.length; i++) {
-            if (this._messages[i].id === data.id) {
-                this._messages[i] = data;
-                break;
-            }
-        }
-        this.emitChange();
-    },
-
-    register() {
-        return {
-            message: {
-                get: this.onGet,
-                create: this.onCreate,
-                destroy: this.onDestroy,
-                update: this.onUpdate
-            }
-        };
+        this.messages = {};
     }
-});
 
-export default MessageStore;
+    onCreateMessage(text) {
+        var message = ChatMessageDataUtils.getCreatedMessageData(text);
+        this.messages[message.id] = message;
+    }
+
+    onReceiveAll(rawMessages) {
+        this._addMessages(rawMessages);
+        this.waitFor([ThreadStore.dispatchToken]);
+        this._markAllInThreadRead(ThreadStore.getCurrentID());
+    }
+
+    onClickThread() {
+        this.waitFor([ThreadStore.dispatchToken]);
+        this._markAllInThreadRead(ThreadStore.getCurrentID());
+    }
+
+    _addMessages(rawMessages) {
+        rawMessages.forEach((message) => {
+            if (!this.messages[message.id]) {
+                this.messages[message.id] = ChatMessageUtils.convertRawMessage(
+                    message,
+                    ThreadStore.getCurrentID()
+                );
+            }
+        });
+    }
+
+    _markAllInThreadRead(threadID) {
+        for (var id in this.messages) {
+            if (this.messages[id].threadID === threadID) {
+                this.messages[id].isRead = true;
+            }
+        }
+    }
+
+    static getAllForThread(threadID) {
+        var threadMessages = [];
+        var _messages = this.getState().messages;
+        for (var id in _messages) {
+            if (_messages[id].threadID === threadID) {
+                threadMessages.push(_messages[id]);
+            }
+        }
+        threadMessages.sort(function(a, b) {
+            if (a.date < b.date) {
+                return -1;
+            } else if (a.date > b.date) {
+                return 1;
+            }
+            return 0;
+        });
+        return threadMessages;
+    }
+
+    static getAllForCurrentThread() {
+        return this.getAllForThread(ThreadStore.getCurrentID());
+    }
+
+    static get(id) {
+        return this.getState().messages[id];
+    }
+
+    static getAll() {
+        return this.getState().messages;
+    }
+}
+
+module.exports = Alt.createStore(MessageStore, 'MessageStore');
