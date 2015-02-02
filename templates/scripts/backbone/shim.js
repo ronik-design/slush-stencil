@@ -1,6 +1,6 @@
-var jQuery = require('jquery');
-var _ = require('lodash');
-var Backbone = require('backbone');
+import jQuery from 'jquery';
+import _ from 'lodash';
+import Backbone from 'backbone';
 
 window.$ = window.$ || jQuery;
 window.jQuery = window.jQuery || jQuery;

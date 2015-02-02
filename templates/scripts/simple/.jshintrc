@@ -9,7 +9,7 @@
     "quotmark": "single",
     "maxlen": 80,
     "esnext": true,
-    "node": true,
     "browser": true,
-    "jquery": true
+    "jquery": true,
+    "proto": true
 }
