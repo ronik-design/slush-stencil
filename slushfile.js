@@ -50,7 +50,7 @@ gulp.task('default', function (done) {
     }, {
         name: 'domain',
         message: 'What is the domain for your site?',
-        default: defaults.nameWebhook + '.com',
+        default: defaults.nameWebhook + '.com'
     }, {
         name: 'nameWebhook',
         message: 'What is your Webhook site name? (slug chars only)',
@@ -65,6 +65,10 @@ gulp.task('default', function (done) {
         name: 'version',
         message: 'What is the version of your site?',
         default: '0.1.0'
+    }, {
+        name: 'github',
+        message: 'GitHub repo name?',
+        default: 'ronik-design/' + defaults.nameWebhook + '.com'
     }, {
         name: 'jsFramework',
         type: 'list',
