@@ -39,7 +39,6 @@
     "gulp-install": "^0.1.4",
     "gulp-multi-extend": "0.0.1",
     "gulp-rename": "^1.2.0",
-    "gulp-run-sequence": "^0.3.2",
     "gulp-template": "^0.1.1",
     "iniparser": "^1.0.5",
     "inquirer": "^0.4.1",
