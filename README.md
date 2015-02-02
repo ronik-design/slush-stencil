@@ -8,7 +8,7 @@
 Install your global dependencies.
 
 ```bash
-$ npm install -g slush slush-webhook wh grunt-cli
+$ npm install -g slush ronik-design/slush-webhook wh grunt-cli
 ```
 
 ### Usage
