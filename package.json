@@ -31,6 +31,7 @@
   "dependencies": {
     "101": "^0.8.2",
     "async": "^0.9.0",
+    "del": "^1.1.1",
     "gulp": "^3.6.2",
     "gulp-conflict": "^0.1.1",
     "gulp-extend": "^0.2.0",

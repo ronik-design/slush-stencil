@@ -8,7 +8,7 @@ import NotFound from '../components/NotFound.jsx';
 
 var routes = (
     <Route handler={App}>
-        <Route name="create" handler={PageCreateForm} />
+        <Route name="create" handler={PageCreateForm}/>
         <Route name="page" path="page/:path" handler={Page}/>
         <DefaultRoute handler={PageCreateForm}/>
         <NotFoundRoute handler={NotFound}/>
