@@ -42,7 +42,7 @@ module.exports = function(src, dest) {
             .pipe(stylus({
                 use: [nib(), jeet(), rupture()]
             }))
-            .pipe(minifyCss())
+            .pipe(gulpIf(!watching, minifyCss()))
             .pipe(size({ title: 'styles' }))
             .pipe(Gulp.dest(dest + '/css/'));
     });

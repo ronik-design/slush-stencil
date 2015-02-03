@@ -65,9 +65,7 @@ module.exports = function(dest, release) {
             loaders: [{
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loaders: [
-                    '6to5?experimental&optional=selfContained'
-                    ]
+                loader:'6to5?experimental&optional=selfContained'
             }]
         }
     };

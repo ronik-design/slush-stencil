@@ -2,6 +2,7 @@ var Gulp = require('gulp');
     Util = require('gulp-util'),
     Path = require('path'),
     Fs = require('fs'),
+    Glob = require('glob'),
     AwsPublish = require('gulp-awspublish'),
     Notify = require('gulp-notify'),
     browserSync = require('browser-sync'),
@@ -29,10 +30,27 @@ var getJsonData = function(file) {
     return jsonData;
 };
 
+var getJsonGlobals = function () {
+    var globals = {};
+    var fileGlobs = Glob.sync('./data/**/_*.json');
+    fileGlobs.forEach(function(fileGlob) {
+        var prop = Path.basename(fileGlob).replace('.json', '');
+        globals[prop] = getJsonData({ path: fileGlob });
+    });
+    return globals;
+};
+
 Gulp.task('templates', function() {
+    var opts = {
+        defaults: {
+            cache: false,
+            locals: getJsonGlobals()
+        }
+    };
+
     return Gulp.src('./templates/**/*.html')
         .pipe(data(getJsonData))
-        .pipe(swig())
+        .pipe(swig(opts))
         .on('error', Notify.onError())
         .pipe(Gulp.dest(DEST));
 });
