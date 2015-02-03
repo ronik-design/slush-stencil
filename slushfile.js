@@ -118,7 +118,7 @@ gulp.task('default', function (done) {
 
             var platform = locals.platform;
             var commonPath = __dirname + '/templates/common';
-            var platformPath = __dirname + '/templates/' + platform;
+            var platformPath = __dirname + '/templates/platforms/' + platform;
 
             function cleanUp(cb) {
                 del(['README.md'], cb);
