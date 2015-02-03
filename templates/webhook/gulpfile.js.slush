@@ -1,0 +1,33 @@
+var Gulp = require('gulp'),
+    exec = require('child_process').exec;
+
+var BUCKET = 'qa.<%= domain %>';
+var WEBHOOK_DOMAIN = '<%= nameWebhook %>.webhook.org';
+var DEST = './static';
+
+var src = {};
+
+var common = require('./tasks/gulp-tasks-common')(src, DEST);
+
+Gulp.task('watch', ['watch:commmon']);
+
+// Starts the webhook serve process, and captures stdout
+Gulp.task('serve', ['watch:common'], function(cb) {
+    var whServe = exec('wh serve');
+    whServe.stdout.pipe(process.stdout);
+    whServe.on('exit', cb);
+});
+
+Gulp.task('build', ['build:common'], function(cb) {
+    var whBuild = exec('wh build');
+    whBuild.stdout.pipe(process.stdout);
+    whBuild.on('exit', cb);
+});
+
+Gulp.task('deploy', ['build'], function() {
+    var whDeploy = exec('wh deploy');
+    whDeploy.stdout.pipe(process.stdout);
+    whDeploy.on('exit', cb);
+});
+
+Gulp.task('default', ['serve']);

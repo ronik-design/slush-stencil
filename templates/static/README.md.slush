@@ -1,0 +1,42 @@
+# <%= name %>
+
+<%= description %>
+
+## Useful commands
+
+Builds, starts watch tasks, and launches the dev server.
+
+```shell
+$ gulp
+```
+
+Builds all files, as for a release
+
+```shell
+$ gulp build
+```
+
+Lint your client-side js, also happens automatically before a build.
+
+```shell
+$ gulp lint
+```
+
+## Directory structure
+
+* `assets` place files and directories to be directly copied to the output /
+  static directory.
+
+* `icons` place `svg` files you would like automatically compiled into an icon
+  font. The filename becomes the basis for an auto-generated set of classes.
+
+* `images` static images (backgrounds, etc) that you want optimized.
+
+* `scripts` client-side JS, to be compiled with Browserify. Code style dictates
+  use of ES6 (all files are transpiled using 6to5) and the `jsx` extension
+  when appropriate.
+
+* `styles` all site styles, written in Stylus. `jeet`, `nib`, and `rupture`
+  available.
+
+* `templates` where your templates live. Uses swig.

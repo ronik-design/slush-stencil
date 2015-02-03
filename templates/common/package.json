@@ -26,7 +26,6 @@
     , "vinyl-buffer": "^1.0.0"
     , "vinyl-source-stream": "^1.0.0"
     , "watchify": "^2.3.0"
-    , "gulp-awspublish": "^1.0.0"
     , "gulp-changed": "^1.1.1"
     , "gulp-iconfont": "^1.0.0"
     , "gulp-imagemin": "^2.1.0"

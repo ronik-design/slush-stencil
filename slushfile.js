@@ -45,6 +45,20 @@ var defaults = (function () {
 
 gulp.task('default', function (done) {
     var prompts = [{
+        name: 'framework',
+        message: 'What server framework would you like to use?',
+        type: 'list',
+        choices: [
+            {
+                name: 'Static',
+                value: 'static'
+            },
+            {
+                name: 'WebHook',
+                value: 'webhook'
+            }
+        ]
+    }, {
         name: 'name',
         message: 'What is the name of your site?',
         default: defaults.name
@@ -102,34 +116,56 @@ gulp.task('default', function (done) {
 
             var locals = clone(answers);
 
+            var framework = locals.framework;
+            var commonPath = __dirname + '/templates/common';
+            var frameworkPath = __dirname + '/templates/' + framework;
+
             function cleanUp(cb) {
                 del(['README.md'], cb);
             }
 
-            function installPlainFiles(cb) {
+            function installCommonFiles(cb) {
 
                 var ignorePaths = [
-                    __dirname + '/templates/{scripts,scripts/**,scripts/**/.*}',
-                    __dirname + '/templates/package.json'
+                    commonPath + '/{scripts,scripts/**,scripts/**/.*}',
+                    commonPath + '/package.json'
                 ];
 
-                gulp.src(__dirname + '/templates/**/!(*.slush)', { dot: true })
+                gulp.src(commonPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
                     .pipe(conflict('./'))
                     .pipe(gulp.dest('./'))
                     .on('end', cb);
             }
 
-            function installScripts(cb) {
-                var glob = __dirname + '/templates/scripts/' + answers.jsFramework + '/**/*';
-                gulp.src(glob, { dot: true })
+            function installCommonScripts(cb) {
+                gulp.src(commonPath + '/scripts/' + answers.jsFramework + '/**/*', { dot: true })
                     .pipe(conflict('./scripts'))
                     .pipe(gulp.dest('./scripts'))
                     .on('end', cb);
             }
 
-            function installTemplateFiles(cb) {
-                gulp.src(__dirname + '/templates/**/*.slush', { dot: true })
+            function installFrameworkFiles(cb) {
+
+                var ignorePaths = [
+                    frameworkPath + '/package.json'
+                ];
+
+                gulp.src(frameworkPath + '/**/!(*.slush)', { dot: true })
+                    .pipe(ignore(ignorePaths))
+                    .pipe(conflict('./'))
+                    .pipe(gulp.dest('./'))
+                    .on('end', cb);
+            }
+
+
+            function installTemplatedFiles(cb) {
+                var templateGlobs = [
+                    commonPath + '/**/*.slush',
+                    frameworkPath + '/**/*.slush'
+                ];
+
+                gulp.src(templateGlobs, { dot: true })
                     .pipe(template(locals))
                     .pipe(rename({ extname: '' }))
                     .pipe(conflict('./'))
@@ -138,24 +174,27 @@ gulp.task('default', function (done) {
             }
 
             function extendPackageAndInstall(cb) {
+
+                var pkg = gulp.src(commonPath + '/package.json');
+
+                pkg.pipe(template(locals));
+                pkg.pipe(extend(frameworkPath + '/package.json', null, 2));
+
                 var exists = fs.existsSync('package.json');
-                var package = gulp.src(__dirname + '/templates/package.json');
-
-                package.pipe(template(locals));
-
                 if (exists) {
-                    package.pipe(extend('package.json', null, 2));
+                    pkg.pipe(extend('package.json', null, 2));
                 }
 
-                package.pipe(gulp.dest('./'))
-                    .pipe(install())
-                    .on('end', cb);
+                pkg.pipe(gulp.dest('./'));
+                pkg.pipe(install());
+                pkg.on('end', cb);
             }
 
             async.series([
-                installPlainFiles,
-                installScripts,
-                installTemplateFiles,
+                installCommonFiles,
+                installCommonScripts,
+                installFrameworkFiles,
+                installTemplatedFiles,
                 extendPackageAndInstall
             ], done);
         });

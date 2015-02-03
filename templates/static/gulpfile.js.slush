@@ -1,0 +1,97 @@
+var Gulp = require('gulp');
+    Util = require('gulp-util'),
+    Path = require('path'),
+    Fs = require('fs'),
+    AwsPublish = require('gulp-awspublish'),
+    Notify = require('gulp-notify'),
+    browserSync = require('browser-sync'),
+    s3Website = require('s3-website'),
+    watch = require('gulp-watch'),
+    swig = require('gulp-swig'),
+    data = require('gulp-data');
+
+var STAGE_BUCKET = 'stage.<%= domain %>';
+var PROD_BUCKET = '<%= domain %>';
+var DEST = './.build';
+var src = {};
+
+var common = require('./tasks/gulp-tasks-common')(src, DEST);
+
+var getJsonData = function(file) {
+    var jsonData;
+
+    try {
+        var basename = Path.basename(file.path, Path.extname(file.path));
+        jsonData = require('./data/' + basename + '.json');
+    } catch(e) {}
+
+    return jsonData;
+};
+
+Gulp.task('templates', function() {
+    return Gulp.src('./templates/**/*.html')
+        .pipe(data(getJsonData))
+        .pipe(swig())
+        .on('error', Notify.onError())
+        .pipe(Gulp.dest(DEST));
+});
+
+Gulp.task('s3-deploy', ['build', 's3-deploy-config'], function() {
+    var publisher = AwsPublish.create({
+        bucket: STAGE_BUCKET
+    });
+    var headers = {
+        'Cache-Control': 'max-age=315360000, no-transform, public'
+    };
+
+    return Gulp.src('.build/**/*')
+        .pipe(AwsPublish.gzip())
+        .pipe(publisher.publish(headers))
+        .pipe(publisher.sync())
+        .pipe(publisher.cache())
+        .pipe(AwsPublish.reporter());
+});
+
+Gulp.task('s3-deploy-config', function(cb) {
+    var s3Config = {
+        domain: STAGE_BUCKET,
+        index: 'index.html',
+        error: 'error.html'
+    };
+
+    s3Website(s3Config, function(err, website) {
+        if (err) {
+            Notify.onError(err);
+        }
+
+        if (website.modified) {
+            Util.log('[deploy-s3-config]',
+                'Site configuration updated %s',
+                website.url);
+        }
+        cb(err);
+    });
+});
+
+Gulp.task('watch', ['templates', 'watch:common'], function() {
+    watch('./templates/**/*.html', function() {
+        Gulp.start('templates');
+    });
+
+    watch(DEST + '/**/*.*', function(file) {
+        browserSync.reload(Path.relative(__dirname, file.path));
+    });
+});
+
+Gulp.task('serve', ['watch'], function() {
+    browserSync({
+        notify: false,
+        server: {
+            baseDir: DEST
+        }
+    });
+});
+
+Gulp.task('build', ['templates', 'build:common']);
+Gulp.task('deploy', ['s3-deploy']);
+Gulp.task('default', ['serve']);
