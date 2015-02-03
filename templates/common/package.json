@@ -37,7 +37,6 @@
     , "jsxhint-loader": "^0.2.0"
     , "jshint-stylish": "^1.0.0"
     , "nib": "^1.0.4"
-    , "react-hot-loader": "^1.1.4"
     , "rupture": "^0.6.1"
     , "s3-website": "^1.4.0"
     , "uslug": "^1.0.3"
