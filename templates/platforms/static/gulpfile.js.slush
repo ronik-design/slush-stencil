@@ -12,10 +12,11 @@ var Gulp = require('gulp');
 
 var STAGE_BUCKET = 'stage.<%= domain %>';
 var PROD_BUCKET = '<%= domain %>';
-var DEST = './.build';
+var DEST = '<%= buildDir %>';
 var src = {};
 
-var common = require('./tasks/gulp-tasks-common')(src, DEST);
+var dest = Path.resolve(__dirname, DEST);
+var common = require('./tasks/gulp-tasks-common')(src, dest);
 
 var getJsonData = function(file) {
     var jsonData;

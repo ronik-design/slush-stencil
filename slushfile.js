@@ -115,8 +115,9 @@ gulp.task('default', function (done) {
             }
 
             var locals = clone(answers);
-
             var platform = locals.platform;
+            locals.buildDir = (platform === 'webhook') ? './static' : './.build';
+
             var commonPath = __dirname + '/templates/common';
             var platformPath = __dirname + '/templates/platforms/' + platform;
 

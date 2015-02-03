@@ -4,11 +4,12 @@ var Gulp = require('gulp'),
 
 var BUCKET = 'qa.<%= domain %>';
 var WEBHOOK_DOMAIN = '<%= slug %>.webhook.org';
-var DEST = './static';
+var DEST = '<%= buildDir %>';
 
 var src = {};
 
-var common = require('./tasks/gulp-tasks-common')(src, DEST);
+var dest = Path.resolve(__dirname, DEST);
+var common = require('./tasks/gulp-tasks-common')(src, dest);
 
 Gulp.task('watch', ['watch:commmon']);
 

@@ -1,7 +1,7 @@
 {
   "name": "slush-website",
   "description": "Webhook or static S3-powered sites with JS framework selection, powerful Gulp tasks and more...",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "homepage": "https://github.com/ronik-design/slush-website",
   "author": {
     "name": "Michael Shick",

@@ -8,27 +8,32 @@ var Gulp = require('gulp'),
     stylus = require('gulp-stylus'),
     nib = require('nib'),
     jeet = require('jeet'),
+    minifyCss = require('gulp-minify-css'),
+    gulpIf = require('gulp-if'),
     rupture = require('rupture'),
-    to5ify = require('6to5ify'),
-    browserify = require('browserify'),
-    watchify = require('watchify'),
     uglify = require('gulp-uglify'),
     Notify = require('gulp-notify'),
-    source = require('vinyl-source-stream'),
-    buffer = require('vinyl-buffer'),
     assign = require('101/assign'),
     jshint = require('gulp-jshint'),
     stylish = require('jshint-stylish'),
-    react = require('gulp-react');
+    react = require('gulp-react'),
+    Webpack = require('webpack'),
+    Util = require('gulp-util'),
+    del = require('del');
 
 module.exports = function(src, dest) {
 
-    var DEST = dest;
+    var watching = false;
+
+    Gulp.task('clean', function(cb) {
+        del([dest + '/javascript/**/*.{js,json,map}'], cb);
+    });
 
     Gulp.task('assets', function() {
         src.assets = 'assets/**/*';
         return Gulp.src(src.assets)
-            .pipe(Gulp.dest(DEST + '/'));
+            .pipe(size({ title: 'assets' }))
+            .pipe(Gulp.dest(dest + '/'));
     });
 
     Gulp.task('styles', function() {
@@ -37,62 +42,52 @@ module.exports = function(src, dest) {
             .pipe(stylus({
                 use: [nib(), jeet(), rupture()]
             }))
-            .pipe(Gulp.dest(DEST + '/css/'));
+            .pipe(minifyCss())
+            .pipe(size({ title: 'styles' }))
+            .pipe(Gulp.dest(dest + '/css/'));
     });
 
-    Gulp.task('watchify', ['lint'], function() {
-        var app = 'main.js';
-        var src = './scripts/' + app;
-        var dst = DEST + '/javascript';
-        var opt = assign(watchify.args, {
-            debug: true
-        });
+    Gulp.task('webpack', function(cb) {
+        var release = !watching;
+        var started = false;
+        var config = require('../webpack.config.js')(dest, release);
+        var bundler = Webpack(config);
 
-        var bundler = watchify(browserify(src, opt));
+        function bundle(err, stats) {
+            if (err) {
+                throw Util.PluginError('webpack', err);
+            }
 
-        function rebundle() {
-            return bundler
-                .bundle()
-                .on('error', Notify.onError())
-                .pipe(source(app))
-                .pipe(Gulp.dest(dst));
+            if (stats.hasErrors()) {
+                Util.log('[webpack]', stats.toString({
+                    colors: true
+                }));
+            }
+
+            if (!started) {
+                started = true;
+                return cb();
+            }
         }
 
-        bundler
-            .transform(to5ify.configure({
-                sourceMap: 'inline',
-                sourceMapRelative: __dirname + '/scripts',
-                experimental: true
-            }))
-            .on('update', rebundle);
-
-        return rebundle();
-    });
-
-    Gulp.task('browserify', ['lint'], function() {
-        browserify('./scripts/main.js')
-            .transform(to5ify.configure({
-                experimental: true
-            }))
-            .bundle()
-            .pipe(source('main.js'))
-            .pipe(buffer())
-            .pipe(uglify())
-            .pipe(Gulp.dest(DEST + '/javascript'));
+        if (watching) {
+            bundler.watch(200, bundle);
+        } else {
+            bundler.run(bundle);
+        }
     });
 
     Gulp.task('images', function() {
         src.images = 'images/**/*';
         return Gulp.src(src.images)
-            .pipe(changed(DEST + '/images'))
+            .pipe(changed(dest + '/images'))
             .pipe(imagemin({
                 progressive: true,
                 interlaced: true
             }))
-            .pipe(Gulp.dest(DEST + '/images'))
-            .pipe(size({
-                title: 'images'
-            }));
+            .on('error', Notify.onError())
+            .pipe(size({ title: 'images' }))
+            .pipe(Gulp.dest(dest + '/images'));
     });
 
     Gulp.task('icons', function() {
@@ -106,8 +101,8 @@ module.exports = function(src, dest) {
             .on('codepoints', function(codepoints, options) {
                 var len = codepoints.length;
                 var str = 'icons = {';
-                codepoints.forEach(function(icon, idx) {
-                    str += '"'+icon.name+'":'+(icon.codepoint).toString(16);
+                codepoints.forEach(function(ico, idx) {
+                    str += '"' + ico.name + '":' + (ico.codepoint).toString(16);
                     if (idx < len - 1) {
                         str += ',';
                     }
@@ -115,7 +110,9 @@ module.exports = function(src, dest) {
                 str += '}';
                 Fs.writeFileSync('./icons/icons.styl', str);
             })
-            .pipe(Gulp.dest(DEST + '/fonts'));
+            .on('error', Notify.onError())
+            .pipe(size({ title: 'icons' }))
+            .pipe(Gulp.dest(dest + '/fonts'));
     });
 
     Gulp.task('lint', function() {
@@ -127,17 +124,19 @@ module.exports = function(src, dest) {
             .on('error', Notify.onError());
     });
 
-    /**
-     * Develop stuff
-     */
+    Gulp.task('watch-start', function () {
+        watching = true;
+    });
 
-    Gulp.task('watch:common',
-        ['icons',
-         'styles',
-         'images',
-         'assets',
-         'watchify'
-        ], function() {
+    Gulp.task('watch:common', [
+        'watch-start',
+        'clean',
+        'icons',
+        'styles',
+        'images',
+        'assets',
+        'webpack'
+    ], function() {
 
         watch(src.assets, function() {
             Gulp.start('assets');
@@ -153,32 +152,12 @@ module.exports = function(src, dest) {
         });
     });
 
-    // Starts the webhook serve process, and captures stdout
-    Gulp.task('serve', ['watch'], function() {
-        exec('wh serve').stdout.pipe(process.stdout);
-    });
-
-    /**
-     * Release stuff
-     */
-
     Gulp.task('build:common', [
+        'clean',
         'icons',
         'styles',
         'images',
         'assets',
-        'browserify'
+        'webpack'
     ]);
-
-    Gulp.task('wh-build', ['build'], function(cb) {
-        var whBuild = exec('wh build');
-        whBuild.stdout.pipe(process.stdout);
-        whBuild.on('exit', cb);
-    });
-
-    Gulp.task('wh-deploy', ['build'], function() {
-        var whDeploy = exec('wh deploy');
-        whDeploy.stdout.pipe(process.stdout);
-        whDeploy.on('exit', cb);
-    });
 };
