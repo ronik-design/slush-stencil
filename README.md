@@ -33,7 +33,10 @@ Create your git repository in github. Don't add any default files.
 ```shell
 $ git init
 $ git remote add origin git@github.com:[repo-name].git
-$ git commit -a -m "Initial commit"
+$ git add .
+$ git commit -am "Initial commit"
+$ git branch --set-upstream-to=origin/master
+$ git pull --rebase
 $ git push origin master
 ```
 
