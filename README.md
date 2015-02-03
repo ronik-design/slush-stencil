@@ -15,16 +15,31 @@ $ npm install -g slush ronik-design/slush-webhook wh grunt-cli
 
 If this is a totally new project, you'll first need to create your webhook site.
 
-```bash
+```shell
 $ wh create [my-site]
 ```
 
 Run the generator from within the new [my-site] folder:
 
-```bash
+```shell
 $ cd [my-site]
 $ slush webhook
 ```
+
+### Collaborating with git
+
+Create your git repository in github. Don't add any default files.
+
+```shell
+$ git init
+$ git remote add origin git@github.com:[repo-name].git
+$ git add .
+$ git commit -am "Initial commit"
+$ git branch --set-upstream-to=origin/master
+$ git pull --rebase
+$ git push origin master
+```
+
 
 ## Getting To Know Slush
 
