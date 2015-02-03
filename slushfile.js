@@ -1,9 +1,9 @@
 /*
- * slush-webhook
- * https://github.com/ronik-design/slush-webhook
+ * slush-website
+ * https://github.com/ronik-design/slush-website
  *
  * Copyright (c) 2015, Michael Shick
- * Licensed under the MIT license.
+ * Licensed under the ISC license.
  */
 
 var gulp = require('gulp'),
@@ -45,8 +45,8 @@ var defaults = (function () {
 
 gulp.task('default', function (done) {
     var prompts = [{
-        name: 'framework',
-        message: 'What server framework would you like to use?',
+        name: 'platform',
+        message: 'What serving platform would you like to use?',
         type: 'list',
         choices: [
             {
@@ -116,9 +116,9 @@ gulp.task('default', function (done) {
 
             var locals = clone(answers);
 
-            var framework = locals.framework;
+            var platform = locals.platform;
             var commonPath = __dirname + '/templates/common';
-            var frameworkPath = __dirname + '/templates/' + framework;
+            var platformPath = __dirname + '/templates/' + platform;
 
             function cleanUp(cb) {
                 del(['README.md'], cb);
@@ -148,10 +148,10 @@ gulp.task('default', function (done) {
             function installFrameworkFiles(cb) {
 
                 var ignorePaths = [
-                    frameworkPath + '/package.json'
+                    platformPath + '/package.json'
                 ];
 
-                gulp.src(frameworkPath + '/**/!(*.slush)', { dot: true })
+                gulp.src(platformPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
                     .pipe(conflict('./'))
                     .pipe(gulp.dest('./'))
@@ -162,7 +162,7 @@ gulp.task('default', function (done) {
             function installTemplatedFiles(cb) {
                 var templateGlobs = [
                     commonPath + '/**/*.slush',
-                    frameworkPath + '/**/*.slush'
+                    platformPath + '/**/*.slush'
                 ];
 
                 gulp.src(templateGlobs, { dot: true })
@@ -178,7 +178,7 @@ gulp.task('default', function (done) {
                 var pkg = gulp.src(commonPath + '/package.json');
 
                 pkg.pipe(template(locals));
-                pkg.pipe(extend(frameworkPath + '/package.json', null, 2));
+                pkg.pipe(extend(platformPath + '/package.json', null, 2));
 
                 var exists = fs.existsSync('package.json');
                 if (exists) {
