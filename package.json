@@ -1,23 +1,23 @@
 {
-  "name": "slush-webhook",
-  "description": "Bootstrapping webhook projects.",
-  "version": "0.2.0",
-  "homepage": "https://github.com/ronik-design/slush-webhook",
+  "name": "slush-website",
+  "description": "Webhook or static S3-powered sites with JS framework selection, powerful Gulp tasks and more...",
+  "version": "0.9.0",
+  "homepage": "https://github.com/ronik-design/slush-website",
   "author": {
     "name": "Michael Shick",
     "email": "michael@ronikdesign.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ronik-design/slush-webhook.git"
+    "url": "git://github.com/ronik-design/slush-website.git"
   },
   "bugs": {
-    "url": "https://github.com/ronik-design/slush-webhook/issues"
+    "url": "https://github.com/ronik-design/slush-website/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/ronik-design/slush-webhook/blob/master/LICENSE"
+      "url": "https://github.com/ronik-design/slush-website/blob/master/LICENSE"
     }
   ],
   "main": "slushfile.js",
@@ -47,6 +47,16 @@
     "underscore.string": "^3.0.2"
   },
   "keywords": [
-    "slushgenerator"
+    "slushgenerator",
+    "webhook",
+    "static",
+    "s3",
+    "react",
+    "flux",
+    "alt",
+    "stylus",
+    "jquery",
+    "generator",
+    "scaffold"
   ]
 }
