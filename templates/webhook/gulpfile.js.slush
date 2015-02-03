@@ -1,8 +1,9 @@
 var Gulp = require('gulp'),
+    Notify = require('gulp-notify'),
     exec = require('child_process').exec;
 
 var BUCKET = 'qa.<%= domain %>';
-var WEBHOOK_DOMAIN = '<%= nameWebhook %>.webhook.org';
+var WEBHOOK_DOMAIN = '<%= slug %>.webhook.org';
 var DEST = './static';
 
 var src = {};

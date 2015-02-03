@@ -37,7 +37,7 @@ var defaults = (function () {
     }
     return {
         name: workingDirName,
-        nameWebhook: slugify(workingDirName),
+        slug: slugify(workingDirName),
         userName: format(user.name) || osUserName,
         authorEmail: user.email || ''
     };
@@ -60,19 +60,19 @@ gulp.task('default', function (done) {
         ]
     }, {
         name: 'name',
-        message: 'What is the name of your site?',
+        message: 'What is the PRETTY name of your site?',
         default: defaults.name
+    }, {
+        name: 'slug',
+        message: 'What is the SLUGLY name of your site? (WebHook: sitename)',
+        default: defaults.slug,
+        validate: function (slug) {
+            return (slug === slugify(slug));
+        }
     }, {
         name: 'domain',
         message: 'What is the domain for your site?',
-        default: defaults.nameWebhook + '.com'
-    }, {
-        name: 'nameWebhook',
-        message: 'What is your Webhook site name? (slug chars only)',
-        default: defaults.nameWebhook,
-        validate: function (nameWebhook) {
-            return (nameWebhook === slugify(nameWebhook));
-        }
+        default: defaults.slug + '.com'
     }, {
         name: 'description',
         message: 'Please describe your site?'
@@ -83,7 +83,7 @@ gulp.task('default', function (done) {
     }, {
         name: 'github',
         message: 'GitHub repo name?',
-        default: 'ronik-design/' + defaults.nameWebhook + '.com'
+        default: 'ronik-design/' + defaults.slug + '.com'
     }, {
         name: 'jsFramework',
         type: 'list',
