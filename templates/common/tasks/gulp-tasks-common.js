@@ -116,7 +116,12 @@ module.exports = function(src, dest) {
     });
 
     Gulp.task('lint', function() {
-        return Gulp.src(['./scripts/**/*.{js,jsx}'])
+        var patterns = [
+            './scripts/**/*.{js,jsx}',
+            '!./scripts/{vendor,vendor/**,vendor/**/.*}'
+        ];
+
+        return Gulp.src(patterns)
             .pipe(react())
             .pipe(jshint())
             .pipe(jshint.reporter(stylish))

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "<%= name %>",
+  "name": "<%= slug %>",
   "version": "<%= version %>",
   "description": "<%= description %>",
   "repository": {
