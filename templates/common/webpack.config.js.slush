@@ -54,6 +54,11 @@ module.exports = function(dest, release) {
             new Webpack.ProvidePlugin(plugins)
         ],
 
+        externals: {
+            xmlhttprequest: 'xmlhttprequest',
+            localStorage: 'localStorage'
+        },
+
         resolve: {
             extensions: ['', '.js', '.jsx']
         },
