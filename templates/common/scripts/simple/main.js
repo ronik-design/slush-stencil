@@ -1,4 +1,3 @@
-import './shim';
 import Example from './modules/example';
 
 $(() => {

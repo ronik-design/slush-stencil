@@ -1,4 +1,3 @@
-import './shim';
 import App from './App';
 
 $(() => {

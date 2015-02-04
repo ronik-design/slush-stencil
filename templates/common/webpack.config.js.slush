@@ -1,6 +1,18 @@
 var Webpack = require('webpack'),
     env = process.env.NODE_ENV;
 
+var plugins = {
+    <% if (jsFramework === 'simple') { %>
+    $: 'jquery',
+    _: 'lodash'
+    <% } %>
+    <% if (jsFramework === 'backbone') { %>
+    $: 'jquery',
+    _: 'lodash',
+    Backbone: 'backbone'
+    <% } %>
+};
+
 module.exports = function(dest, release) {
 
     if (typeof release === 'undefined') {
@@ -30,6 +42,7 @@ module.exports = function(dest, release) {
                 'process.env.NODE_ENV': '"production"',
                 '__DEV__': false
             }),
+            new Webpack.ProvidePlugin(plugins),
             new Webpack.optimize.DedupePlugin(),
             new Webpack.optimize.UglifyJsPlugin(),
             new Webpack.optimize.OccurenceOrderPlugin(),
@@ -37,7 +50,8 @@ module.exports = function(dest, release) {
         ] : [
             new Webpack.DefinePlugin({
                 '__DEV__': true
-            })
+            }),
+            new Webpack.ProvidePlugin(plugins)
         ],
 
         resolve: {
@@ -63,9 +77,12 @@ module.exports = function(dest, release) {
                 loader: 'jsxhint'
             }],
             loaders: [{
+                test: /scripts\/vendor\/.+\.js$/,
+                loader: 'imports?this=>window'
+            }, {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loader:'6to5?experimental&optional=selfContained'
+                exclude: /node_modules|scripts\/vendor/,
+                loader: '6to5?experimental&optional=selfContained'
             }]
         }
     };
