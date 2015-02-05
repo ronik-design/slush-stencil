@@ -52,7 +52,7 @@ module.exports = function(buildDir, devServer) {
 
         src.styles = 'styles/**/*.{css,styl}';
 
-        Gulp.src('styles/**/[!_]*.{css,styl}')
+        return Gulp.src('styles/**/[!_]*.{css,styl}')
             .pipe(gulpIf(watching, sourcemaps.init()))
             .pipe(stylus({
                 use: [nib(), jeet(), rupture()],
@@ -150,7 +150,7 @@ module.exports = function(buildDir, devServer) {
       return Gulp.src(buildDir + '/fonts/iconfont.ttf')
             .pipe(cssfont64())
             .pipe(rename('_iconfont_embedded.css'))
-            .pipe(Gulp.dest('styles/global/'));
+            .pipe(Gulp.dest('styles/'));
     });
 
     Gulp.task('watch:common', [
@@ -174,6 +174,8 @@ module.exports = function(buildDir, devServer) {
         watch(src.icons, function() {
             Gulp.start('icons');
         });
+
+        cb();
     });
 };
 
@@ -193,8 +195,9 @@ Gulp.task('lint', function() {
         .on('error', Notify.onError());
 });
 
-Gulp.task('watch-start', function () {
+Gulp.task('watch-start', function (cb) {
     watching = true;
+    cb();
 });
 
 Gulp.task('build:common', [
@@ -206,7 +209,7 @@ Gulp.task('build:common', [
     'webpack'
 ]);
 
-Gulp.task('default', function () {
+Gulp.task('default', function (cb) {
     log('\n \
          Usage: gulp [task] [options]\n\
          \n\
@@ -216,4 +219,5 @@ Gulp.task('default', function () {
          gulp build\n\
          gulp watch\n\
          gulp deploy');
+    cb();
 });

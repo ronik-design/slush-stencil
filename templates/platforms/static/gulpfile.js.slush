@@ -105,14 +105,18 @@ Gulp.task('s3-deploy-config', function(cb) {
     });
 });
 
-Gulp.task('watch:local', ['watch:common'], function() {
-    watching = true;
-    Gulp.start('templates');
+Gulp.task('watch:local', [
+        'watch-start',
+        'templates',
+        'watch:common'],
+    function(cb) {
+        watch('./templates/**/*.html', function() {
+            Gulp.start('templates');
+        });
 
-    watch('./templates/**/*.html', function() {
-        Gulp.start('templates');
-    });
-});
+        cb();
+    }
+);
 
 Gulp.task('webpack-dev-server', ['watch:local'], function(cb) {
 
@@ -136,12 +140,13 @@ Gulp.task('webpack-dev-server', ['watch:local'], function(cb) {
         if (err) {
             throw new Util.PluginError('webpack-dev-server', err);
         }
-        log('[webpack-dev-server]', 'http://' + HOST + ':' + PORT);
         cb();
     });
 });
 
 Gulp.task('watch', ['watch:local']);
-Gulp.task('serve', ['webpack-dev-server']);
+Gulp.task('serve', ['webpack-dev-server'], function () {
+    log('[serve]', 'http://' + HOST + ':' + PORT);
+});
 Gulp.task('build', ['templates', 'build:common']);
 Gulp.task('deploy', ['s3-deploy']);
