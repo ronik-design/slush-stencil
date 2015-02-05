@@ -1,24 +1,31 @@
 var Gulp = require('gulp'),
     Url = require('url'),
+    Webpack = require('webpack'),
+    WebpackDevServer = require('webpack-dev-server'),
     Util = require('gulp-util'),
+    log = Util.log,
     Path = require('path'),
     Fs = require('fs'),
     Glob = require('glob'),
     AwsPublish = require('gulp-awspublish'),
     Notify = require('gulp-notify'),
-    browserSync = require('browser-sync'),
     s3Website = require('s3-website'),
     watch = require('gulp-watch'),
     swig = require('gulp-swig'),
-    data = require('gulp-data');
+    data = require('gulp-data'),
+    touch = require('touch');
 
 var STAGE_BUCKET = 'stage.<%= domain %>';
 var PROD_BUCKET = '<%= domain %>';
-var DEST = '<%= buildDir %>';
-var src = {};
+var BUILD_DIR = '<%= buildDir %>';
+var PORT = Util.env.port || 8080;
+var HOST = 'localhost';
 
-var dest = Path.resolve(__dirname, DEST);
-var common = require('./tasks/gulp-tasks-common')(src, dest);
+var watching = false;
+var devServer = {};
+var buildDir = Path.resolve(__dirname, BUILD_DIR);
+
+require('./tasks/gulp-tasks-common')(buildDir, devServer);
 
 var getJsonData = function(file) {
     var jsonData;
@@ -42,18 +49,22 @@ var getJsonGlobals = function () {
 };
 
 Gulp.task('templates', function() {
+    var jsonGlobals = getJsonGlobals();
+    var globals = assign(jsonGlobals, { '__DEV__': watching });
+
     var opts = {
         defaults: {
             cache: false,
-            locals: getJsonGlobals()
+            locals: globals
         }
     };
 
     return Gulp.src('./templates/**/*.html')
         .pipe(data(getJsonData))
+        .on('error', Notify.onError())
         .pipe(swig(opts))
         .on('error', Notify.onError())
-        .pipe(Gulp.dest(DEST));
+        .pipe(Gulp.dest(buildDir));
 });
 
 Gulp.task('s3-deploy', ['build', 's3-deploy-config'], function() {
@@ -85,7 +96,7 @@ Gulp.task('s3-deploy-config', function(cb) {
         }
 
         if (website.modified) {
-            Util.log('[deploy-s3-config]',
+            log('[deploy-s3-config]',
                 'Site configuration updated %s',
                 website.url);
         }
@@ -93,41 +104,43 @@ Gulp.task('s3-deploy-config', function(cb) {
     });
 });
 
-Gulp.task('watch', ['templates', 'watch:common'], function() {
+Gulp.task('watch:local', ['watch:common'], function() {
+    watching = true;
+    Gulp.start('templates');
+
     watch('./templates/**/*.html', function() {
         Gulp.start('templates');
     });
+});
 
-    watch(DEST + '/**/*.*', function(file) {
-        browserSync.reload(Path.relative(__dirname, file.path));
+Gulp.task('webpack-dev-server', ['watch:local'], function(cb) {
+
+    touch.sync(buildDir + '/css/main.css', {
+        time: new Date(0)
+    });
+
+    var config = require('./webpack.config.js');
+
+    devServer = new WebpackDevServer(Webpack(config), {
+        contentBase: buildDir,
+        hot: true,
+        watchDelay: 100,
+        noInfo: true,
+        publicPath: '/javascript/',
+        quiet: true,
+        historyApiFallback: true
+    });
+
+    devServer.listen(PORT, HOST, function(err) {
+        if (err) {
+            throw new Util.PluginError('webpack-dev-server', err);
+        }
+        log('[webpack-dev-server]', 'http://' + HOST + ':' + PORT);
+        cb();
     });
 });
 
-Gulp.task('serve', ['watch'], function() {
-
-    var defaultFile = 'index.html';
-
-    var spaRouting = function(req, res, next) {
-        var fileName = Url.parse(req.url);
-        fileName = fileName.href.split(fileName.search).join('');
-
-        var fileExists = Fs.existsSync(dest + fileName);
-        if (!fileExists && fileName.indexOf('browser-sync-client') < 0) {
-            req.url = '/' + defaultFile;
-        }
-
-        return next();
-    };
-
-    browserSync({
-        notify: false,
-        server: {
-            baseDir: DEST,
-            middleware: spaRouting
-        }
-    });
-});
-
+Gulp.task('watch', ['watch:local']);
+Gulp.task('serve', ['webpack-dev-server']);
 Gulp.task('build', ['templates', 'build:common']);
 Gulp.task('deploy', ['s3-deploy']);
-Gulp.task('default', ['serve']);

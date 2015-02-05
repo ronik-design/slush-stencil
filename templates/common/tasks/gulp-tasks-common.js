@@ -19,38 +19,68 @@ var Gulp = require('gulp'),
     react = require('gulp-react'),
     Webpack = require('webpack'),
     Util = require('gulp-util'),
-    del = require('del');
+    log = Util.log,
+    del = require('del'),
+    sourcemaps = require('gulp-sourcemaps'),
+    cssfont64 = require('gulp-cssfont64'),
+    rename = require('gulp-rename'),
+    map = require('map-stream');
 
-module.exports = function(src, dest) {
+module.exports = function(buildDir, devServer) {
 
+    var src = {};
     var watching = false;
 
     Gulp.task('clean', function(cb) {
-        del([dest + '/javascript/**/*.{js,json,map}'], cb);
+        del([
+            buildDir + '/javascript/**/*.{js,json,map}',
+            buildDir + '/css/**/*.css',
+            buildDir + '/fonts/**/*.*'
+        ], cb);
     });
 
     Gulp.task('assets', function() {
+
         src.assets = 'assets/**/*';
+
         return Gulp.src(src.assets)
             .pipe(size({ title: 'assets' }))
-            .pipe(Gulp.dest(dest + '/'));
+            .pipe(Gulp.dest(buildDir + '/'));
     });
 
     Gulp.task('styles', function() {
+
         src.styles = 'styles/**/*.{css,styl}';
+
         Gulp.src('styles/**/[!_]*.{css,styl}')
+            .pipe(gulpIf(watching, sourcemaps.init()))
             .pipe(stylus({
-                use: [nib(), jeet(), rupture()]
+                use: [nib(), jeet(), rupture()],
+                'include css': true
             }))
-            .pipe(gulpIf(!watching, minifyCss()))
+            .on('error', Notify.onError())
+            .pipe(gulpIf(watching, sourcemaps.write()))
             .pipe(size({ title: 'styles' }))
-            .pipe(Gulp.dest(dest + '/css/'));
+            .pipe(Gulp.dest(buildDir + '/css/'))
+            .pipe(map(function(a, cb) {
+                if (devServer && devServer.invalidate) {
+                    devServer.invalidate();
+                }
+                cb();
+            }));
     });
 
     Gulp.task('webpack', function(cb) {
         var release = !watching;
         var started = false;
-        var config = require('../webpack.config.js')(dest, release);
+        var config;
+
+        if (release) {
+            config = require('../webpack.production.config.js');
+        } else {
+            config = require('../webpack.config.js');
+        }
+
         var bundler = Webpack(config);
 
         function bundle(err, stats) {
@@ -59,7 +89,7 @@ module.exports = function(src, dest) {
             }
 
             if (stats.hasErrors()) {
-                Util.log('[webpack]', stats.toString({
+                log('[webpack]', stats.toString({
                     colors: true
                 }));
             }
@@ -80,17 +110,17 @@ module.exports = function(src, dest) {
     Gulp.task('images', function() {
         src.images = 'images/**/*';
         return Gulp.src(src.images)
-            .pipe(changed(dest + '/images'))
+            .pipe(changed(buildDir + '/images'))
             .pipe(imagemin({
                 progressive: true,
                 interlaced: true
             }))
             .on('error', Notify.onError())
             .pipe(size({ title: 'images' }))
-            .pipe(Gulp.dest(dest + '/images'));
+            .pipe(Gulp.dest(buildDir + '/images'));
     });
 
-    Gulp.task('icons', function() {
+    Gulp.task('iconfont', function() {
         src.icons = 'icons/*.svg';
 
         return Gulp.src(src.icons)
@@ -98,6 +128,7 @@ module.exports = function(src, dest) {
                 fontName: 'iconfont',
                 appendCodepoints: true
             }))
+            .on('error', Notify.onError())
             .on('codepoints', function(codepoints, options) {
                 var len = codepoints.length;
                 var str = 'icons = {';
@@ -108,29 +139,18 @@ module.exports = function(src, dest) {
                     }
                 });
                 str += '}';
-                Fs.writeFileSync('./icons/icons.styl', str);
+                Fs.writeFileSync('styles/collection/_icons.styl', str);
             })
             .on('error', Notify.onError())
             .pipe(size({ title: 'icons' }))
-            .pipe(Gulp.dest(dest + '/fonts'));
+            .pipe(Gulp.dest(buildDir + '/fonts'));
     });
 
-    Gulp.task('lint', function() {
-        var patterns = [
-            './scripts/**/*.{js,jsx}',
-            '!./scripts/{vendor,vendor/**,vendor/**/.*}'
-        ];
-
-        return Gulp.src(patterns)
-            .pipe(react())
-            .pipe(jshint())
-            .pipe(jshint.reporter(stylish))
-            .pipe(jshint.reporter('fail'))
-            .on('error', Notify.onError());
-    });
-
-    Gulp.task('watch-start', function () {
-        watching = true;
+    Gulp.task('icons', ['iconfont'], function () {
+      return Gulp.src(buildDir + '/fonts/iconfont.ttf')
+            .pipe(cssfont64())
+            .pipe(rename('_iconfont_embedded.css'))
+            .pipe(Gulp.dest('styles/global/'));
     });
 
     Gulp.task('watch:common', [
@@ -139,8 +159,7 @@ module.exports = function(src, dest) {
         'icons',
         'styles',
         'images',
-        'assets',
-        'webpack'
+        'assets'
     ], function() {
 
         watch(src.assets, function() {
@@ -156,13 +175,45 @@ module.exports = function(src, dest) {
             Gulp.start('icons');
         });
     });
-
-    Gulp.task('build:common', [
-        'clean',
-        'icons',
-        'styles',
-        'images',
-        'assets',
-        'webpack'
-    ]);
 };
+
+Gulp.task('lint', function() {
+    var patterns = [
+        './scripts/**/*.{js,jsx}',
+        '!./scripts/{vendor,vendor/**,vendor/**/.*}'
+    ];
+
+    return Gulp.src(patterns)
+        .pipe(react())
+        .on('error', Notify.onError())
+        .pipe(jshint())
+        .on('error', Notify.onError())
+        .pipe(jshint.reporter(stylish))
+        .pipe(jshint.reporter('fail'))
+        .on('error', Notify.onError());
+});
+
+Gulp.task('watch-start', function () {
+    watching = true;
+});
+
+Gulp.task('build:common', [
+    'clean',
+    'icons',
+    'styles',
+    'images',
+    'assets',
+    'webpack'
+]);
+
+Gulp.task('default', function () {
+    log('\n \
+         Usage: gulp [task] [options]\n\
+         \n\
+         Tasks:\n\
+         gulp serve\n\
+         gulp clean\n\
+         gulp build\n\
+         gulp watch\n\
+         gulp deploy');
+});

@@ -1,0 +1,74 @@
+var Webpack = require('webpack');
+
+var DEST = '<%= buildDir %>';
+
+var ENTRY = [
+    './scripts/main'
+];
+
+var PROVIDE_PLUGINS = {
+    <% if (jsFramework === 'simple') { %>
+    $: 'jquery',
+    _: 'lodash'
+    <% } %>
+    <% if (jsFramework === 'backbone') { %>
+    $: 'jquery',
+    _: 'lodash',
+    Backbone: 'backbone'
+    <% } %>
+};
+
+var PLUGINS = [
+    new Webpack.DefinePlugin({
+        'process.env.NODE_ENV': '"production"',
+        '__DEV__': false
+    }),
+    new Webpack.ProvidePlugin(PROVIDE_PLUGINS),
+    new Webpack.optimize.DedupePlugin(),
+    new Webpack.optimize.UglifyJsPlugin(),
+    new Webpack.optimize.OccurenceOrderPlugin(),
+    new Webpack.optimize.AggressiveMergingPlugin()
+];
+
+var LOADERS = [{
+    test: /scripts\/vendor\/.+\.js$/,
+    loaders: ['imports?this=>window']
+}, {
+    test: /\.jsx?$/,
+    exclude: /node_modules|scripts\/vendor/,
+    loaders: ['6to5?experimental&optional=selfContained']
+}];
+
+module.exports = {
+    entry: './scripts/main',
+
+    output: {
+        filename: 'main.js',
+        path: DEST + '/javascript/',
+        publicPath: '/javascript/'
+    },
+
+    cache: false,
+    debug: false,
+    devtool: false,
+
+    stats: {
+        colors: true,
+        reasons: false
+    },
+
+    plugins: PLUGINS,
+
+    externals: {
+        xmlhttprequest: 'xmlhttprequest',
+        localStorage: 'localStorage'
+    },
+
+    resolve: {
+        extensions: ['', '.js', '.jsx']
+    },
+
+    module: {
+        loaders: LOADERS
+    }
+};

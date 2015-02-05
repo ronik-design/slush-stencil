@@ -1,20 +1,19 @@
 var Gulp = require('gulp'),
+    Path = require('path'),
     Notify = require('gulp-notify'),
     exec = require('child_process').exec;
 
 var BUCKET = 'qa.<%= domain %>';
 var WEBHOOK_DOMAIN = '<%= slug %>.webhook.org';
-var DEST = '<%= buildDir %>';
+var BUILD_DIR = '<%= buildDir %>';
 
-var src = {};
+var buildDir = Path.resolve(__dirname, BUILD_DIR);
+require('./tasks/gulp-tasks-common')(buildDir);
 
-var dest = Path.resolve(__dirname, DEST);
-var common = require('./tasks/gulp-tasks-common')(src, dest);
-
-Gulp.task('watch', ['watch:commmon']);
+Gulp.task('watch', ['watch-start', 'webpack', 'watch:common']);
 
 // Starts the webhook serve process, and captures stdout
-Gulp.task('serve', ['watch:common'], function(cb) {
+Gulp.task('serve', ['watch'], function(cb) {
     var whServe = exec('wh serve');
     whServe.stdout.pipe(process.stdout);
     whServe.on('exit', cb);
@@ -31,5 +30,3 @@ Gulp.task('deploy', ['build'], function() {
     whDeploy.stdout.pipe(process.stdout);
     whDeploy.on('exit', cb);
 });
-
-Gulp.task('default', ['serve']);
