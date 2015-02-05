@@ -1,4 +1,5 @@
-var Gulp = require('gulp');
+var Gulp = require('gulp'),
+    Url = require('url'),
     Util = require('gulp-util'),
     Path = require('path'),
     Fs = require('fs'),
@@ -103,10 +104,26 @@ Gulp.task('watch', ['templates', 'watch:common'], function() {
 });
 
 Gulp.task('serve', ['watch'], function() {
+
+    var defaultFile = 'index.html';
+
+    var spaRouting = function(req, res, next) {
+        var fileName = Url.parse(req.url);
+        fileName = fileName.href.split(fileName.search).join('');
+
+        var fileExists = Fs.existsSync(dest + fileName);
+        if (!fileExists && fileName.indexOf('browser-sync-client') < 0) {
+            req.url = '/' + defaultFile;
+        }
+
+        return next();
+    };
+
     browserSync({
         notify: false,
         server: {
-            baseDir: DEST
+            baseDir: DEST,
+            middleware: spaRouting
         }
     });
 });

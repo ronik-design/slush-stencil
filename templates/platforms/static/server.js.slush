@@ -1,10 +1,17 @@
 var Http = require('http'),
     Static = require('node-static');
 
+var HOST = '127.0.0.1';
+var PORT = 3000;
+
 var file = new Static.Server('<%= buildDir %>');
 
-Http.createServer(function (request, response) {
+var server = Http.createServer(function (request, response) {
     request.addListener('end', function () {
         file.serve(request, response);
     }).resume();
-}).listen(3000);
+});
+
+server.listen(PORT, HOST, function () {
+    console.log('Server listening on at %s:%d', HOST, PORT);
+});
