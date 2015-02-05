@@ -13,7 +13,8 @@ var Gulp = require('gulp'),
     watch = require('gulp-watch'),
     swig = require('gulp-swig'),
     data = require('gulp-data'),
-    touch = require('touch');
+    touch = require('touch'),
+    assign = require('101/assign');
 
 var STAGE_BUCKET = 'stage.<%= domain %>';
 var PROD_BUCKET = '<%= domain %>';
