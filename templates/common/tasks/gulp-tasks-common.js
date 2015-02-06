@@ -26,10 +26,10 @@ var Gulp = require('gulp'),
     rename = require('gulp-rename'),
     map = require('map-stream');
 
-module.exports = function(buildDir, devServer) {
+var src = {};
+var watching = false;
 
-    var src = {};
-    var watching = false;
+module.exports = function(buildDir, devServer) {
 
     Gulp.task('clean', function(cb) {
         del([
