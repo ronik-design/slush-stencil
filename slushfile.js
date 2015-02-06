@@ -16,7 +16,6 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     ignore = require('gulp-ignore'),
     gulpif = require('gulp-if'),
-    del = require('del'),
     clone = require('101/clone'),
     slugify = require('underscore.string/slugify'),
     inquirer = require('inquirer');
@@ -120,10 +119,6 @@ gulp.task('default', function (done) {
 
             var commonPath = __dirname + '/templates/common';
             var platformPath = __dirname + '/templates/platforms/' + platform;
-
-            function cleanUp(cb) {
-                del(['README.md'], cb);
-            }
 
             function installCommonFiles(cb) {
 
