@@ -160,7 +160,7 @@ module.exports = function(buildDir, devServer) {
         'styles',
         'images',
         'assets'
-    ], function() {
+    ], function(cb) {
 
         watch(src.assets, function() {
             Gulp.start('assets');
