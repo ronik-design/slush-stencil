@@ -132,7 +132,7 @@ Gulp.task('webpack-dev-server', ['watch:local'], function(cb) {
         watchDelay: 100,
         noInfo: true,
         publicPath: '/javascript/',
-        quiet: true,
+        quiet: false,
         historyApiFallback: true
     });
 
