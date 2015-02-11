@@ -1,3 +1,7 @@
+# testing 
+
+only adding this line to test docsync 
+
 # slush-website
 
 > Bootstrapping websites of all shapes and sizes projects. Build tools, and
