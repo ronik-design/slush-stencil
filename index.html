@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Slush-website by ronik-design</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Slush-website</h1>
+        <p>A slush generator for webhook-based projects.</p>
+
+        <p class="view"><a href="https://github.com/ronik-design/slush-website">View the Project on GitHub <small>ronik-design/slush-website</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ronik-design/slush-website/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ronik-design/slush-website/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ronik-design/slush-website">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="slush-website" class="anchor" href="#slush-website" aria-hidden="true"><span class="octicon octicon-link"></span></a>slush-website</h1>
+
+<blockquote>
+<p>Bootstrapping websites of all shapes and sizes projects. Build tools, and
+  platform selection, supporting static sites with S3 deployment, Webhook CMS-
+  powered sites, and a choice of three client-side JS frameworks (jQuery,
+  Backbone, React/Flux/alt).</p>
+</blockquote>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<p>Install your global dependencies.</p>
+
+<div class="highlight highlight-bash"><pre>$ npm install -g slush ronik-design/slush-website</pre></div>
+
+<p>and for Webhook</p>
+
+<div class="highlight highlight-shell"><pre>$ npm install -g wh grunt-cli</pre></div>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<p>If this is a totally new Webhook project, you'll first need to create your Webhook site.</p>
+
+<div class="highlight highlight-shell"><pre>$ wh create [my-site]</pre></div>
+
+<p>Otherwise, make a new directory</p>
+
+<div class="highlight highlight-shell"><pre>$ mkdir [my-site]</pre></div>
+
+<p>Run the generator from within the new [my-site] folder:</p>
+
+<div class="highlight highlight-shell"><pre>$ <span class="pl-s3">cd</span> [my-site]
+$ slush website</pre></div>
+
+<h3>
+<a id="collaborating-with-git" class="anchor" href="#collaborating-with-git" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collaborating with git</h3>
+
+<p>Create your git repository in github. Don't add any default files.</p>
+
+<div class="highlight highlight-shell"><pre>$ git init
+$ git remote add origin git@github.com:[repo-name].git
+$ git add <span class="pl-s3">.</span>
+$ git commit -am <span class="pl-s1"><span class="pl-pds">"</span>Initial commit<span class="pl-pds">"</span></span>
+$ git branch --set-upstream-to=origin/master
+$ git pull --rebase
+$ git push origin master</pre></div>
+
+<h2>
+<a id="getting-to-know-slush" class="anchor" href="#getting-to-know-slush" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting To Know Slush</h2>
+
+<p>Slush is a tool that uses Gulp for project scaffolding.</p>
+
+<p>Slush does not contain anything "out of the box", except the ability to locate installed slush generators and to run them with liftoff.</p>
+
+<p>To find out more about Slush, check out the <a href="https://github.com/klei/slush">documentation</a>.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>See the <a href="https://github.com/ronik-design/slush-website/blob/master/CONTRIBUTING.md">CONTRIBUTING Guidelines</a></p>
+
+<h2>
+<a id="support" class="anchor" href="#support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h2>
+
+<p>If you have any problem or suggestion please open an issue <a href="https://github.com/ronik-design/slush-website/issues">here</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ronik-design">ronik-design</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
