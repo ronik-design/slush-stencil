@@ -1,13 +1,13 @@
 # <%= name %> (<%= domain %>)
 
-<%= description %>
+> <%= description %>
 
 ## Useful commands
 
 Builds, starts watch tasks, and launches the dev server.
 
 ```shell
-$ gulp
+$ gulp serve
 ```
 
 Builds all files, as for a release
@@ -20,6 +20,12 @@ Lint your client-side js, also happens automatically before a build.
 
 ```shell
 $ gulp lint
+```
+
+Put your website somewhere people can see it!
+
+```shell
+$ gulp deploy
 ```
 
 ## Directory structure
@@ -40,3 +46,7 @@ $ gulp lint
   available.
 
 * `templates` where your templates live. Uses swig.
+
+### This site was made using slush-stencil
+
+You can find it here: [slush-stencil](http://ronik-design.github.io/slush-stencil/)
