@@ -1,0 +1,60 @@
+path.spray1 {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  -webkit-animation: dash1 1s linear forwards;
+  animation: dash1 1s linear forwards;
+  -webkit-animation-delay: 0s;
+}
+path.spray2 {
+  stroke-dasharray: 1300;
+  stroke-dashoffset: 1300;
+  -webkit-animation: dash2 1.3s linear forwards;
+  animation: dash2 1.3s linear forwards;
+  -webkit-animation-delay: 1s;
+}
+
+
+
+@-webkit-keyframes dash1 {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes dash1 {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@-webkit-keyframes dash2 {
+  from {
+    stroke-dashoffset: 1300;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes dash2 {
+  from {
+    stroke-dashoffset: 1300;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/*#diamond {
+	-moz-transform: translateX(155px);
+	transform: translateX(155px);
+}*/
+
+svg {
+	position: absolute;
+	top: -25px;
+	left: -25px;
+	width: 24rem;
+}
