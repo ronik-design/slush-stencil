@@ -20,6 +20,7 @@
 * Stylus styles, with documentation on best practices including [BEM](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/)
 * Iconfont folder and auto compilation through Gulp (creates iconfonts automatically from SVG files and generates classes)
 * Image optimization
+* Gulp-based build tools are fast!
 * Other buzzwords and cool technologies...
 
 ## Getting Started
