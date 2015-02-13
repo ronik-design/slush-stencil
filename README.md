@@ -1,6 +1,6 @@
 # slush-stencil 
 
-<img src="http://ronik-design.github.io/slush-stencil/img/stencil-logo.svg" height="96" width="96" align="right">
+<img src="http://ronik-design.github.io/slush-stencil/img/stencil-logo.svg" height="128" width="128" align="right">
 
 > Bootstrapping websites of all shapes and sizes projects. Build tools, and
   platform selection, supporting static sites with S3 deployment, Webhook CMS-
