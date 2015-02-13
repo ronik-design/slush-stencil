@@ -7,6 +7,19 @@
   powered sites, and a choice of three client-side JS frameworks (jQuery,
   Backbone, React/Flux/alt).
 
+## Features
+
+* Scaffold [Webhook](http://webhook.com) projects
+* Scaffold simple static (swig-templated) projects and deploy easily to S3 (requires a properly configured AWS account. The easiest approach here is probabl `brew install awscli` then `aws configure`)
+* Choose from one of three JS approach, all using [ES6](http://6to5.org) and [webpack](http://webpack.github.io)
+  * jQuery (Simple module folder scaffolding, plus underscore/lodash)
+  * Backbone
+  * React w/ [alt](https://github.com/goatslacker/alt), react-router & [react-hot-loader](https://github.com/gaearon/react-hot-loader)
+* Stylus styles, with documentation on best practices including [BEM](http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/)
+* Iconfont folder and auto compilation through Gulp (creates iconfonts automatically from SVG files and generates classes)
+* Image optimization
+* Other buzzwords and cool technologies...
+
 ## Getting Started
 
 Install your global dependencies.
