@@ -1,6 +1,6 @@
-# <%= name %>
+# <%= name %> (<%= domain %>)
 
-<%= description %>
+> <%= description %>
 
 ## Useful commands
 
