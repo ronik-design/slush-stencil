@@ -1,4 +1,4 @@
-# Contributing to slush-website
+# Contributing to slush-stencil
 
 Please take a moment to review this document in order to make the contribution
 process easy and effective for everyone involved.
@@ -93,11 +93,11 @@ project:
 
    ```bash
    # Clone your fork of the repo into the current directory
-   git clone https://github.com/<your-username>/slush-webhook
+   git clone https://github.com/<your-username>/slush-stencil
    # Navigate to the newly cloned directory
-   cd slush-webhook
+   cd slush-stencil
    # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/ronik-design/slush-webhook
+   git remote add upstream https://github.com/ronik-design/slush-stencil
    ```
 
 2. If you cloned a while ago, get the latest changes from upstream:
