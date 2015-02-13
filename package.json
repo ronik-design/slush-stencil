@@ -2,7 +2,7 @@
   "name": "slush-stencil",
   "description": "Webhook or static S3-powered sites with JS framework selection, powerful Gulp tasks and more...",
   "version": "0.9.12",
-  "homepage": "https://github.com/ronik-design/slush-stencil",
+  "homepage": "http://ronik-design.github.io/slush-stencil/",
   "author": {
     "name": "Michael Shick",
     "email": "michael@ronikdesign.com"
