@@ -39,6 +39,8 @@ $ npm install -g wh grunt-cli
 
 ### Usage
 
+> Warning! This generator uses conflict resolution with your input, BUT you could very easily overwrite something you care about as it spews a bunch of files and folders into your current directory and merges with your package.json. Be careful, try it out first on something you don't care about, commit or backup first. But also, feel free to run it again and again.
+
 If this is a totally new Webhook project, you'll first need to create your Webhook site.
 
 ```shell
