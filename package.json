@@ -1,23 +1,23 @@
 {
-  "name": "slush-website",
+  "name": "slush-stencil",
   "description": "Webhook or static S3-powered sites with JS framework selection, powerful Gulp tasks and more...",
-  "version": "0.9.11",
-  "homepage": "https://github.com/ronik-design/slush-website",
+  "version": "0.9.12",
+  "homepage": "https://github.com/ronik-design/slush-stencil",
   "author": {
     "name": "Michael Shick",
     "email": "michael@ronikdesign.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ronik-design/slush-website.git"
+    "url": "git://github.com/ronik-design/slush-stencil.git"
   },
   "bugs": {
-    "url": "https://github.com/ronik-design/slush-website/issues"
+    "url": "https://github.com/ronik-design/slush-stencil/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/ronik-design/slush-website/blob/master/LICENSE"
+      "url": "https://github.com/ronik-design/slush-stencil/blob/master/LICENSE"
     }
   ],
   "main": "slushfile.js",
@@ -56,6 +56,7 @@
     "stylus",
     "jquery",
     "generator",
-    "scaffold"
+    "scaffold",
+    "stencil"
   ]
 }
