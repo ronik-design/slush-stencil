@@ -1,4 +1,4 @@
-# slush-website
+# slush-stencil
 
 > Bootstrapping websites of all shapes and sizes projects. Build tools, and
   platform selection, supporting static sites with S3 deployment, Webhook CMS-
@@ -10,7 +10,7 @@
 Install your global dependencies.
 
 ```bash
-$ npm install -g slush ronik-design/slush-website
+$ npm install -g slush slush-stencil
 ```
 
 and for Webhook
@@ -37,12 +37,12 @@ Run the generator from within the new [my-site] folder:
 
 ```shell
 $ cd [my-site]
-$ slush website
+$ slush stencil
 ```
 
 ### Collaborating with git
 
-Create your git repository in github. Don't add any default files.
+Create your git repository in Github. Don't add any default files.
 
 ```shell
 $ git init
