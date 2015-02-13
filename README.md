@@ -1,4 +1,4 @@
-# slush-stencil 
+# slush-stencil ![npm release](https://img.shields.io/npm/v/slush-stencil.svg?style=flat)
 
 <img src="http://ronik-design.github.io/slush-stencil/img/stencil-logo.svg" height="128" width="128" align="right">
 
@@ -6,6 +6,8 @@
   platform selection, supporting static sites with S3 deployment, Webhook CMS-
   powered sites, and a choice of three client-side JS frameworks (jQuery,
   Backbone, React/Flux/alt).
+  
+> Created by [Ronik Design](http://www.ronikdesign.com) and used to speed up internal development.
 
 ## Features
 
