@@ -149,13 +149,31 @@
       <div class="background">
 
         <p class="copy--dek">A slush generator for webhook-based projects.</p>
-        <p class="copy">Bootstrapping websites of all shapes and sizes projects. Build tools, and
-    platform selection, supporting static sites with S3 deployment, <a href="http://webhook.com">Webhook</a> CMS- powered sites, and a choice of three client-side JS frameworks (jQuery,
-    Backbone, React/Flux/alt).</p>
+        <p class="copy">Bootstrapping websites of all shapes and sizes projects. Build tools, and platform selection, supporting static sites with S3 deployment, <a href="http://webhook.com">Webhook</a>-powered sites, and a choice of three client-side JS frameworks (jQuery, Backbone, React/Flux/alt).</p>
+
+        <h3 class="heading">Features</h3>
+        <ul class="task-list">
+          <li>Scaffold <a href="http://webhook.com">Webhook</a> projects</li>
+          <li>Scaffold simple static (swig-templated) projects and deploy easily to S3 (requires a properly configured AWS account. The easiest approach here is probabl <code>brew install awscli</code> then <code>aws configure</code>)</li>
+          <li>Choose from one of three JS approach, all using <a href="http://6to5.org">ES6</a> and <a href="http://webpack.github.io">webpack</a>
+            <ul class="task-list">
+              <li>jQuery (Simple module folder scaffolding, plus underscore/lodash)</li>
+              <li>Backbone</li>
+              <li>React w/ <a href="https://github.com/goatslacker/alt">alt</a>, react-router &amp; <a href="https://github.com/gaearon/react-hot-loader">react-hot-loader</a>
+              </li>
+            </ul>
+          </li>
+          <li>Stylus styles, with documentation on best practices including <a href="http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/">BEM</a>
+          </li>
+          <li>Iconfont folder and auto compilation through Gulp (creates iconfonts automatically from SVG files and generates classes)</li>
+          <li>Image optimization</li>
+          <li>Gulp-based build tools are fast!</li>
+          <li>Other buzzwords and cool technologies...</li>
+        </ul>        
 
         <h3 class="heading">Getting Started</h3>
         <p class="copy">Install your global dependencies.</p>
-        <div class="highlight highlight-bash"><pre>$ npm install -g slush ronik-design/slush-stencil</pre></div>
+        <div class="highlight highlight-bash"><pre>$ npm install -g slush slush-stencil</pre></div>
         <p class="copy">and for Webhook</p>
         <div class="highlight highlight-shell"><pre>$ npm install -g wh grunt-cli</pre></div>
 
