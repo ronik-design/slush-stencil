@@ -17,7 +17,37 @@ Example of a fully fleshed-out Stylus rule using Ronik writing style
  * For clarity, consistency and for some CSS inheritance issues, avoid defining
  * the element type (e.g. p, h1, span) in the CSS selector when possible
  */
-.example-selector__element--modifier
+
+/**
+ * All class names starting with a block should be inside that block.
+ *
+ * There should be no more than one element definition
+ * (ie: no example-selector__element__sub-element)
+ *
+ * If you need to do this, then consider how you can change the naming structure
+ * to remove the necessity.
+ *
+ * Use a --modifier to show if the element is styled differently than its default, and
+ * an .is-state class to show that the state has changed
+ *
+ * Do not use --modifier for a state change
+ * Do not use --modifier inside a block element
+ * (i.e. .example-selector--modifier__element)
+ * instead use nested rules in the CSS for the same effect:
+ *
+ * .example-selector
+ *    // style for basic block
+ *
+ * .example-selector__element
+ *    // style for basic element
+ *
+ * .example-selector--modifier
+ *    .example-selector__element
+ *      // add'l style for element in modified block
+ *
+ */
+
+.example-selector__element--modifier.is-selected
     /**
      * Define all extends first, and separate them from regular styles
      * with a carriage return
