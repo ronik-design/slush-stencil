@@ -21,8 +21,11 @@ var gulp = require('gulp'),
     inquirer = require('inquirer');
 
 function format(string) {
-    var username = string.toLowerCase();
-    return username.replace(/\s/g, '');
+    if(string) {
+        var username = string.toLowerCase();
+        return username.replace(/\s/g, '');
+    }
+    return '';
 }
 
 var defaults = (function () {
