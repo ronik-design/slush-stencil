@@ -39,7 +39,7 @@ $ gulp deploy
 * `images` static images (backgrounds, etc) that you want optimized.
 
 * `scripts` client-side JS, to be compiled with Browserify. Code style dictates
-  use of ES6 (all files are transpiled using 6to5) and the `jsx` extension
+  use of ES6 (all files are transpiled using babel) and the `jsx` extension
   when appropriate.
 
 * `styles` all site styles, written in Stylus. `jeet`, `nib`, and `rupture`

@@ -36,7 +36,7 @@ var LOADERS = [{
 }, {
     test: /\.jsx?$/,
     exclude: /node_modules|scripts\/vendor/,
-    loaders: ['6to5?experimental&optional=selfContained']
+    loaders: ['babel?experimental&optional=runtime']
 }];
 
 module.exports = {
