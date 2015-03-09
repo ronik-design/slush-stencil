@@ -13,7 +13,7 @@
 
 * Scaffold [Webhook](http://webhook.com) projects
 * Scaffold simple static (swig-templated) projects and deploy easily to S3 (requires a properly configured AWS account. The easiest approach here is probabl `brew install awscli` then `aws configure`)
-* Choose from one of three JS approach, all using [ES6](http://6to5.org) and [webpack](http://webpack.github.io)
+* Choose from one of three JS approach, all using [ES6](http://babeljs.io) and [webpack](http://webpack.github.io)
   * jQuery (Simple module folder scaffolding, plus underscore/lodash)
   * Backbone
   * React w/ [alt](https://github.com/goatslacker/alt), react-router & [react-hot-loader](https://github.com/gaearon/react-hot-loader)
