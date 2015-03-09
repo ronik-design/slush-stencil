@@ -15,9 +15,9 @@
   "homepage": "https://github.com/<%= github %>",
   "devDependencies": {
       "101": "^0.12.0"
-    , "babel-core": "^4.0.0"
-    , "babel-loader": "^4.0.0"
-    , "babel-runtime": "^4.0.1"
+    , "babel-core": "^4.7.4"
+    , "babel-loader": "^4.1.0"
+    , "babel-runtime": "^4.7.4"
     , "del": "^1.1.1"
     , "gulp": "^3.8.11"
     , "gulp-changed": "^1.1.1"
@@ -54,10 +54,9 @@
     , "backbone": "^1.1.2"
     <% } %>
     <% if (jsFramework === 'react') { %>
-    , "alt": "^0.13.4"
     , "superagent": "^0.21.0"
     , "react": "^0.12.2"
-    , "react-router": "0.12.0"
+    , "react-router": "0.12.4"
     , "react-document-title": "^1.0.1"
     , "react-hot-loader": "^1.1.5"
     <% } %>

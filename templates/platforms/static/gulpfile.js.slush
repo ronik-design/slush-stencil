@@ -20,7 +20,7 @@ var STAGE_BUCKET = 'stage.<%= domain %>';
 var PROD_BUCKET = '<%= domain %>';
 var BUILD_DIR = '<%= buildDir %>';
 var PORT = Util.env.port || 8080;
-var HOST = 'localhost';
+var HOST = Util.env.host || 'localhost';
 
 var watching = false;
 var devServer = {};
@@ -54,13 +54,18 @@ Gulp.task('templates', function() {
     var globals = assign(jsonGlobals, { '__DEV__': watching });
 
     var opts = {
+        setup: function(swig) {
+            swig.setDefaults({
+                loader: swig.loaders.fs(__dirname + '/templates')
+            });
+        },
         defaults: {
             cache: false,
             locals: globals
         }
     };
 
-    return Gulp.src('./templates/**/*.html')
+    return Gulp.src('./pages/**/*.html')
         .pipe(data(getJsonData))
         .on('error', Notify.onError())
         .pipe(swig(opts))

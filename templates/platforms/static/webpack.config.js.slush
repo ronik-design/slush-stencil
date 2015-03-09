@@ -47,7 +47,7 @@ var LOADERS = [{
         <% if (jsFramework === 'react') { %>
         'react-hot',
         <% } %>
-        '6to5?experimental&optional=selfContained'
+        'babel?experimental&optional=runtime'
     ]
 }];
 
