@@ -6,7 +6,7 @@ import PageCreateForm from '../components/PageCreateForm.jsx';
 import Page from '../components/Page.jsx';
 import NotFound from '../components/NotFound.jsx';
 
-var routes = (
+export default (
     <Route handler={App}>
         <Route name="create" handler={PageCreateForm}/>
         <Route name="page" path="page/:path" handler={Page}/>
@@ -14,5 +14,3 @@ var routes = (
         <NotFoundRoute handler={NotFound}/>
     </Route>
 );
-
-export default routes;

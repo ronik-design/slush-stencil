@@ -3,6 +3,7 @@ import Router from 'react-router';
 import ListenerMixin from 'alt/mixins/ListenerMixin';
 import DocumentTitle from 'react-document-title';
 import Store from '../stores/Store';
+import RouteActionMixin from '../mixins/RouteActionMixin';
 
 export default React.createClass({
 
@@ -12,7 +13,7 @@ export default React.createClass({
         path: React.PropTypes.string
     },
 
-    mixins: [ ListenerMixin, Router.Navigation, Router.State ],
+    mixins: [ ListenerMixin, Router.State, RouteActionMixin('Page') ],
 
     getStateFromStore: function (path) {
         path = this.getParams().path;

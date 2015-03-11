@@ -1,0 +1,23 @@
+<html>
+
+  {% set site_title = _site.name %}
+
+  <head>
+    <title>{% block title %}{{ site_title }}{% endblock %}</title>
+    <link rel="stylesheet" href="/css/main.css"/>
+    {% block head_extra %}{% endblock %}
+  </head>
+
+  <body {% block body_attributes %}{% endblock %}>
+    {% block body %}
+
+      {% block content %}{% endblock %}
+
+      <script src="/javascript/main.js"></script>
+
+      {% block scripts_extra %}{% endblock %}
+
+    {% endblock %}
+  </body>
+
+</html>

@@ -5,7 +5,7 @@
   "devDependencies": {
     "css-loader": "^0.9.1",
     "lodash": "^3.0.0",
-    "glob": "^4.3.5",
+    "glob": "^5.0.0",
     "gulp-awspublish": "^1.0.0",
     "gulp-swig": "^0.7.4",
     "gulp-data": "^1.2.0",

@@ -1,18 +1,29 @@
 import alt from '../core/alt';
-
+import Data from '../services/Data';
+import RouteActions from '../actions/RouteActions';
 import ClientActions from '../actions/ClientActions';
 import ServerActions from '../actions/ServerActions';
 
 class Store {
     constructor() {
+        this.bindActions(RouteActions);
         this.bindActions(ClientActions);
         this.bindActions(ServerActions);
 
         this.pages = {};
     }
 
+    onToPage(payload) {
+        // Do something when transitioning to a page
+    }
+
+    onFromPage(payload) {
+        // Do something when transitioning from a page
+    }
+
     onCreatePage(page) {
         this.pages[page.path] = page;
+        Data.createPage(page);
     }
 
     onReceiveAll(rawPages) {

@@ -56,7 +56,7 @@ Gulp.task('templates', function() {
     var opts = {
         setup: function(swig) {
             swig.setDefaults({
-                loader: swig.loaders.fs(__dirname + '/templates')
+                loader: swig.loaders.fs(__dirname)
             });
         },
         defaults: {

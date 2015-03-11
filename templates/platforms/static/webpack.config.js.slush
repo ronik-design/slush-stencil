@@ -62,7 +62,12 @@ module.exports = {
 
     cache: true,
     debug: true,
+
+    <% if (jsFramework === 'react') { %>
     devtool: 'eval',
+    <% } else { %>
+    devtool: 'inline-source-map',
+    <% } %>
 
     stats: {
         colors: true,

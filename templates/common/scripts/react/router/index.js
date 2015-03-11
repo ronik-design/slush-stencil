@@ -1,9 +1,41 @@
-import Router from 'react-router';
-import routes from './routes.jsx';
+import ReactRouter from 'react-router';
 
-var router = Router.create({
-    location: process.env.NODE_ENV === 'production' ? Router.HashLocation : Router.HistoryLocation,
-    routes: routes
-});
+class Router {
+    constructor() {
+        this.router = null;
+    }
 
-export default router;
+    initialize(routes) {
+        this.router = ReactRouter.create({
+            location: ReactRouter.HistoryLocation,
+            routes: routes,
+            onError(err) { throw err; }
+        });
+    }
+
+    makePath() {
+        return this.router.makePath(...arguments);
+    }
+
+    makeHref() {
+        return this.router.makeHref(...arguments);
+    }
+
+    transitionTo() {
+        this.router.transitionTo(...arguments);
+    }
+
+    replaceWith() {
+        this.router.replaceWith(...arguments);
+    }
+
+    goBack() {
+        return this.router.goBack();
+    }
+
+    run() {
+        this.router.run(...arguments);
+    }
+}
+
+export default new Router();

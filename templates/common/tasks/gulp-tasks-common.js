@@ -52,10 +52,17 @@ module.exports = function(buildDir, devServer) {
 
         src.styles = 'styles/**/*.{css,styl}';
 
+        var imports = [];
+        var iconfontEmbedded = buildDir + '/.tmp/_iconfont_embedded.css';
+        if (Fs.existsSync(iconfontEmbedded)) {
+            imports.push(iconfontEmbedded);
+        }
+
         return Gulp.src('styles/**/[!_]*.{css,styl}')
             .pipe(gulpIf(watching, sourcemaps.init()))
             .pipe(stylus({
                 use: [nib(), jeet(), rupture()],
+                import: imports,
                 'include css': true
             }))
             .on('error', Notify.onError())
@@ -150,7 +157,7 @@ module.exports = function(buildDir, devServer) {
       return Gulp.src(buildDir + '/fonts/iconfont.ttf')
             .pipe(cssfont64())
             .pipe(rename('_iconfont_embedded.css'))
-            .pipe(Gulp.dest('styles/'));
+            .pipe(Gulp.dest(buildDir + '/.tmp/'));
     });
 
     Gulp.task('watch:common', [
