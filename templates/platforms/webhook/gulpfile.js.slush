@@ -8,7 +8,9 @@ var WEBHOOK_DOMAIN = '<%= slug %>.webhook.org';
 var BUILD_DIR = '<%= buildDir %>';
 
 var buildDir = Path.resolve(__dirname, BUILD_DIR);
-require('./tasks/gulp-tasks-common')(buildDir);
+
+var gulCommon = require('./tasks/gulp-tasks-common');
+gulCommon.gulpTasks(buildDir);
 
 Gulp.task('watch', ['watch-start', 'webpack', 'watch:common']);
 
@@ -29,4 +31,13 @@ Gulp.task('deploy', ['build'], function() {
     var whDeploy = exec('wh deploy');
     whDeploy.stdout.pipe(process.stdout);
     whDeploy.on('exit', cb);
+});
+
+Gulp.task('styles', function(cb) {
+    gulpCommon.styles(buildDir, false, {platform: 'webhook'}); //TODO pass this info better
+    cb();
+});
+
+Gulp.task('webpack', function(cb) {
+    gulpCommon.webpack(cb, {platform: 'webhook'});
 });

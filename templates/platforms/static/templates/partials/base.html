@@ -4,7 +4,9 @@
 
   <head>
     <title>{% block title %}{{ site_title }}{% endblock %}</title>
+    <!-- inject:css -->
     <link rel="stylesheet" href="/css/main.css"/>
+    <!-- endinject -->
     {% block head_extra %}{% endblock %}
   </head>
 
@@ -13,7 +15,9 @@
 
       {% block content %}{% endblock %}
 
+      <!-- inject:js -->
       <script src="/javascript/main.js"></script>
+      <!-- endinject -->
 
       {% block scripts_extra %}{% endblock %}
 

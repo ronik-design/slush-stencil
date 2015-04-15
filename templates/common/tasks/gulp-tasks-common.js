@@ -28,8 +28,9 @@ var Gulp = require('gulp'),
 
 var src = {};
 var watching = false;
+module.exports = {};
 
-module.exports = function(buildDir, devServer) {
+module.exports.gulpTasks = function(buildDir) {
 
     Gulp.task('clean', function(cb) {
         del([
@@ -48,72 +49,7 @@ module.exports = function(buildDir, devServer) {
             .pipe(Gulp.dest(buildDir + '/'));
     });
 
-    Gulp.task('styles', function() {
-
-        src.styles = 'styles/**/*.{css,styl}';
-
-        var imports = [];
-        var iconfontEmbedded = buildDir + '/.tmp/_iconfont_embedded.css';
-        if (Fs.existsSync(iconfontEmbedded)) {
-            imports.push(iconfontEmbedded);
-        }
-
-        return Gulp.src('styles/**/[!_]*.{css,styl}')
-            .pipe(gulpIf(watching, sourcemaps.init()))
-            .pipe(stylus({
-                use: [nib(), jeet(), rupture()],
-                import: imports,
-                'include css': true
-            }))
-            .on('error', Notify.onError())
-            .pipe(gulpIf(watching, sourcemaps.write()))
-            .pipe(size({ title: 'styles' }))
-            .pipe(Gulp.dest(buildDir + '/css/'))
-            .pipe(map(function(a, cb) {
-                if (devServer && devServer.invalidate) {
-                    devServer.invalidate();
-                }
-                cb();
-            }));
-    });
-
-    Gulp.task('webpack', function(cb) {
-        var release = !watching;
-        var started = false;
-        var config;
-
-        if (release) {
-            config = require('../webpack.production.config.js');
-        } else {
-            config = require('../webpack.config.js');
-        }
-
-        var bundler = Webpack(config);
-
-        function bundle(err, stats) {
-            if (err) {
-                throw Util.PluginError('webpack', err);
-            }
-
-            if (stats.hasErrors()) {
-                log('[webpack]', stats.toString({
-                    colors: true
-                }));
-            }
-
-            if (!started) {
-                started = true;
-                return cb();
-            }
-        }
-
-        if (watching) {
-            bundler.watch(200, bundle);
-        } else {
-            bundler.run(bundle);
-        }
-    });
-
+  
     Gulp.task('images', function() {
         src.images = 'images/**/*';
         return Gulp.src(src.images)
@@ -185,6 +121,81 @@ module.exports = function(buildDir, devServer) {
         cb();
     });
 };
+
+module.exports.styles = function(buildDir, devServer, platformObj) {
+    src.styles = 'styles/**/*.{css,styl}';
+
+    var imports = [];
+    var iconfontEmbedded = buildDir + '/.tmp/_iconfont_embedded.css';
+    if (Fs.existsSync(iconfontEmbedded)) {
+        imports.push(iconfontEmbedded);
+    }
+
+    var compiledStyles = Gulp.src('styles/main.styl')
+        .pipe(gulpIf(watching, sourcemaps.init()))
+        .pipe(stylus({
+            use: [nib(), jeet(), rupture()],
+            import: imports,
+            'include css': true
+        }))
+        .on('error', Notify.onError())
+        .pipe(gulpIf(watching, sourcemaps.write()))
+        .pipe(size({title: 'styles'}))
+        .pipe(gulpIf(
+            platformObj.platform === 'static' && !watching,
+            rename(function (path) {
+                path.basename = platformObj.hash + '.' + path.basename;
+                path.extname = ".css"
+            })))
+            .pipe(Gulp.dest(buildDir + '/css/'))
+            .pipe(map(function (a, cb) {
+                if (devServer && devServer.invalidate) {
+                    devServer.invalidate();
+                }
+                cb();
+            }));
+};
+
+module.exports.webpack = function(cb, platformObj) {
+    var release = !watching;
+    var started = false;
+    var config;
+
+    if (release) {
+        config = require('../webpack.production.config.js');
+        if (platformObj.platform === 'static') {
+            config.output.filename = platformObj.hash + '.' + config.output.filename;
+        }
+
+    } else {
+        config = require('../webpack.config.js');
+    }
+
+    var bundler = Webpack(config);
+
+    function bundle(err, stats) {
+        if (err) {
+            throw Util.PluginError('webpack', err);
+        }
+
+        if (stats.hasErrors()) {
+            log('[webpack]', stats.toString({
+                colors: true
+            }));
+        }
+
+        if (!started) {
+            started = true;
+            return cb();
+        }
+    }
+
+    if (watching) {
+        bundler.watch(200, bundle);
+    } else {
+        bundler.run(bundle);
+    }
+}
 
 Gulp.task('lint', function() {
     var patterns = [
