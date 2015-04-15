@@ -9,8 +9,8 @@ var BUILD_DIR = '<%= buildDir %>';
 
 var buildDir = Path.resolve(__dirname, BUILD_DIR);
 
-var gulCommon = require('./tasks/gulp-tasks-common');
-gulCommon.gulpTasks(buildDir);
+var gulpCommon = require('./tasks/gulp-tasks-common');
+gulpCommon.gulpTasks(buildDir);
 
 Gulp.task('watch', ['watch-start', 'webpack', 'watch:common']);
 

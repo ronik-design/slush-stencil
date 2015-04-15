@@ -28,8 +28,8 @@ var watching = false;
 var devServer = {};
 var buildDir = Path.resolve(__dirname, BUILD_DIR);
 
-var gulCommon = require('./tasks/gulp-tasks-common');
-gulCommon.gulpTasks(buildDir);
+var gulpCommon = require('./tasks/gulp-tasks-common');
+gulpCommon.gulpTasks(buildDir);
 
 var getJsonData = function(file) {
     var jsonData;
