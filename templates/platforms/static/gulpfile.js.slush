@@ -14,7 +14,9 @@ var Gulp = require('gulp'),
     swig = require('gulp-swig'),
     data = require('gulp-data'),
     touch = require('touch'),
-    assign = require('101/assign');
+    assign = require('101/assign'),
+    inject = require('gulp-inject'),
+    rev = require('git-rev');
 
 var STAGE_BUCKET = 'stage.<%= domain %>';
 var PROD_BUCKET = '<%= domain %>';
@@ -26,7 +28,8 @@ var watching = false;
 var devServer = {};
 var buildDir = Path.resolve(__dirname, BUILD_DIR);
 
-require('./tasks/gulp-tasks-common')(buildDir, devServer);
+var gulpCommon = require('./tasks/gulp-tasks-common');
+gulpCommon.gulpTasks(buildDir);
 
 var getJsonData = function(file) {
     var jsonData;
@@ -110,6 +113,42 @@ Gulp.task('s3-deploy-config', function(cb) {
     });
 });
 
+Gulp.task('inject', ['templates', 'build:common'], function(cb) {
+    var target = Gulp.src('./.build/**/*.html');
+    var sources = Gulp.src(['./.build/javascript/*.js', './.build/css/*.css'], {read: false});
+    return target.pipe(inject(sources, {relative: true, addRootSlash: true}))
+        .pipe(Gulp.dest('./.build'));
+});
+
+
+Gulp.task('styles', function(cb) {
+    var hashPromise = new Promise(function (resolve, reject) {
+        rev.short(function (hash) {
+            resolve(hash);
+        })
+    });
+    hashPromise.then(function(hash) {
+        var timestamp = Math.floor(Date.now() / 1000);
+        hash = hash === '' ? timestamp : hash;
+        gulpCommon.styles(buildDir, devServer, {platform: 'static', hash: hash});
+        cb();
+    })
+});
+
+
+Gulp.task('webpack', function(cb) {
+    var hashPromise = new Promise(function (resolve, reject) {
+        rev.short(function (hash) {
+            resolve(hash);
+        })
+    });
+    hashPromise.then(function(hash) {
+        var timestamp = Math.floor(Date.now() / 1000);
+        hash = hash === '' ? timestamp : hash;
+        gulpCommon.webpack(cb, {platform: 'static', hash: hash});
+    })
+});
+
 Gulp.task('watch:local', [
         'watch-start',
         'templates',
@@ -153,5 +192,5 @@ Gulp.task('watch', ['watch:local']);
 Gulp.task('serve', ['webpack-dev-server'], function () {
     log('[serve]', 'http://' + HOST + ':' + PORT);
 });
-Gulp.task('build', ['templates', 'build:common']);
+Gulp.task('build', ['inject']);
 Gulp.task('deploy', ['s3-deploy']);

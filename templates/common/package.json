@@ -46,6 +46,8 @@
     , "s3-website": "^1.4.0"
     , "uslug": "^1.0.3"
     , "webpack": "^1.5.3"
+    , "gulp-inject": "^1.2.0"
+    , "git-rev": "^0.2.1"
     <% if (jsFramework === 'simple') { %>
     , "jquery": "^2.1.3"
     <% } %>
