@@ -3,18 +3,19 @@ var modelTpl = `<li><%= title %></li>`;
 
 export default class HomeView extends Backbone.View {
 
-    constructor(options) {
-        this.el = '#content';
-        this.template = homeTpl;
-        this.collection = options.collection;
+    constructor(options={}) {
+        options = _.extend(options, { el: '#content' });
         super(options);
+
+        this.template = _.template(modelTpl);
+        this.collection = options.collection;
     }
 
     render() {
-        this.$el.html(_.template(this.template));
+        this.$el.html(homeTpl);
         this.$el.append('<ul></ul>');
-        this.collection.each((model) => {
-            let str = _.template(modelTpl, { title: 'foo' });
+        this.collection.each(() => {
+            let str = this.template({ title: 'foo' });
             $('ul', this.$el).append(str);
         });
     }

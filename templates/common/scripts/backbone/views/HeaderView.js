@@ -7,13 +7,14 @@ var headerTpl = `
 
 export default class HeaderView extends Backbone.View {
 
-    constructor(options) {
-        this.el = '#header';
-        this.template = headerTpl;
+    constructor(options={}) {
+        options = _.extend(options, { el: '#header' });
         super(options);
+
+        this.template = _.template(headerTpl);
     }
 
     render() {
-        $(this.el).html(_.template(this.template));
+        $(this.el).html(this.template());
     }
 }

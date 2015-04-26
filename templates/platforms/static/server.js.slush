@@ -1,17 +1,66 @@
-var Http = require('http'),
-    Static = require('node-static');
+var BUILD_DIR = '<%= buildDir %>';
 
-var HOST = '127.0.0.1';
-var PORT = 3000;
+/* $lab:coverage:off$ */
+var HOST = process.env.HOST || '0.0.0.0';
+var PORT = process.env.PORT || 8080;
+/* $lab:coverage:on$ */
 
-var file = new Static.Server('<%= buildDir %>');
+var path = require('path');
+var hapi = require('hapi');
+var bole = require('bole');
+var boleConsole = require('bole-console');
 
-var server = Http.createServer(function (request, response) {
-    request.addListener('end', function () {
-        file.serve(request, response);
-    }).resume();
+var log = bole('server');
+var boleConsoleStream = boleConsole();
+bole.output({
+    level: 'info',
+    stream: boleConsoleStream
 });
 
-server.listen(PORT, HOST, function () {
-    console.log('Server listening on at %s:%d', HOST, PORT);
+var server = new hapi.Server();
+
+var buildDir = path.join(__dirname, BUILD_DIR);
+
+server.connection({
+    host: HOST,
+    port: PORT
 });
+
+server.route([{
+    method: 'GET',
+    path: '/',
+    handler: {
+        file: path.join(buildDir, 'index.html')
+    }
+}, {
+    method: 'GET',
+    path: '/{param*}',
+    handler: {
+        directory: {
+            path: buildDir
+        }
+    },
+    config: {
+        cache: {
+            expiresIn: 1 * 365 * 24 * 60 * 60 * 1000
+        }
+    }
+}]);
+
+server.ext('onPreResponse', function (request, reply) {
+
+    if (request.response.isBoom) {
+        if (request.response.output.statusCode === 404) {
+            return reply.file(path.join(buildDir, 'index.html'));
+        }
+    }
+
+    reply.continue();
+});
+
+server.start(function () {
+
+    log.info('Listening at: http://%s:%d', HOST, PORT);
+});
+
+module.exports = server;

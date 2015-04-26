@@ -1,43 +1,96 @@
-var Gulp = require('gulp'),
-    Path = require('path'),
-    Notify = require('gulp-notify'),
-    exec = require('child_process').exec;
+var path = require('path');
+var gulp = require('gulp');
+var util = require('gulp-util');
+var watch = require('gulp-watch');
+var runSequence = require('run-sequence');
+var requireDir = require('require-dir');
 
-var BUCKET = 'qa.<%= domain %>';
-var WEBHOOK_DOMAIN = '<%= slug %>.webhook.org';
-var BUILD_DIR = '<%= buildDir %>';
+function dirPath(dir) {
+    return path.resolve(__dirname, dir);
+}
 
-var buildDir = Path.resolve(__dirname, BUILD_DIR);
+// Domain, for...
+util.env.domain = '<%= domain %>';
 
-var gulpCommon = require('./tasks/gulp-tasks-common');
-gulpCommon.gulpTasks(buildDir);
+// Build directory
+util.env.buildDir = dirPath('<%= buildDir %>');
+util.env.baseDir = dirPath('./');
+util.env.tmpDir = dirPath('.tmp');
 
-Gulp.task('watch', ['watch-start', 'webpack', 'watch:common']);
+// Various process sub-dirs
+util.env.assetsDir = dirPath('assets');
+util.env.imagesDir = dirPath('images');
+util.env.scriptsDir = dirPath('scripts');
+util.env.stylesDir = dirPath('styles');
+util.env.iconsDir = dirPath('icons');
 
-// Starts the webhook serve process, and captures stdout
-Gulp.task('serve', ['watch'], function(cb) {
-    var whServe = exec('wh serve');
-    whServe.stdout.pipe(process.stdout);
-    whServe.on('exit', cb);
+gulp.task('build', function(cb) {
+
+    runSequence(
+        'clean',
+        ['icons', 'lint', 'images', 'assets'],
+        ['styles', 'webpack'],
+        'webhook-build',
+        cb
+        );
 });
 
-Gulp.task('build', ['build:common'], function(cb) {
-    var whBuild = exec('wh build');
-    whBuild.stdout.pipe(process.stdout);
-    whBuild.on('exit', cb);
+gulp.task('watch', function (cb) {
+
+    util.env.watching = true;
+
+    function watchStart() {
+
+        watch('assets/**/*', function() {
+            gulp.start('assets');
+        });
+        watch('styles/**/*.{css,styl}', function() {
+            gulp.start('styles');
+        });
+        watch('images/**/*', function() {
+            gulp.start('images');
+        });
+        watch('icons/**/*.svg', function() {
+            gulp.start('icons');
+        });
+
+        cb();
+    }
+
+    runSequence('build', watchStart);
 });
 
-Gulp.task('deploy', ['build'], function() {
-    var whDeploy = exec('wh deploy');
-    whDeploy.stdout.pipe(process.stdout);
-    whDeploy.on('exit', cb);
+gulp.task('deploy', function (cb) {
+
+    runSequence('build', 'webhook-deploy', cb);
 });
 
-Gulp.task('styles', function(cb) {
-    gulpCommon.styles(buildDir, false, {platform: 'webhook'}); //TODO pass this info better
+gulp.task('serve', function (cb) {
+
+    runSequence('watch', 'webhook-serve', cb);
+});
+
+gulp.task('default', function (cb) {
+
+    var help = [
+        '',
+        '',
+        '---- S T E N C I L ----',
+        '',
+        'Usage: gulp [task] [options]',
+        '',
+        'gulp clean',
+        'gulp lint [--scripts]',
+        'gulp build',
+        'gulp deploy',
+        'gulp serve',
+        'gulp watch',
+        ''
+    ];
+
+    util.log(help.join('\n'));
+
     cb();
 });
 
-Gulp.task('webpack', function(cb) {
-    gulpCommon.webpack(cb, {platform: 'webhook'});
-});
+requireDir('./tasks');

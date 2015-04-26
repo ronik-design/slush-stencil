@@ -4,6 +4,12 @@
 
 ## Useful commands
 
+Prints all available top-level gulp tasks / commands.
+
+```shell
+$ gulp
+```
+
 Builds, starts watch tasks, and launches the dev server.
 
 ```shell
@@ -16,17 +22,24 @@ Builds all files, as for a release
 $ gulp build
 ```
 
-Lint your client-side js, also happens automatically before a build.
+Lint your js (gulp stuff mostly, optionally client-side JS),
+also happens automatically before a build.
 
 ```shell
-$ gulp lint
+$ gulp lint [--scripts]
 ```
 
-Put your website somewhere people can see it!
+Put your website somewhere people can see it!*
 
 ```shell
 $ gulp deploy
 ```
+
+> *This requires credentials acceptable to [s3-website](https://github.com/klaemo/s3-website)
+  and generally doing things s3 allows (your bucket name must be unique)
+
+> `--production` flag publishes to the primary domain, by default the domain has
+  `stage.` prepended.
 
 ## Directory structure
 
@@ -45,7 +58,13 @@ $ gulp deploy
 * `styles` all site styles, written in Stylus. `jeet`, `nib`, and `rupture`
   available.
 
-* `templates` where your templates live. Uses swig.
+* `data` json files that can store page data for swig templates
+
+* `pages` where your page templates live. These get converted into site pages. Uses swig.
+
+* `templates` supporting template files
+
+* `tasks` are all the gulp tasks for the project. caveat lector
 
 ### This site was made using slush-stencil
 

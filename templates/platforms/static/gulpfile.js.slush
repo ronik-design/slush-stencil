@@ -1,196 +1,111 @@
-var Gulp = require('gulp'),
-    Url = require('url'),
-    Webpack = require('webpack'),
-    WebpackDevServer = require('webpack-dev-server'),
-    Util = require('gulp-util'),
-    log = Util.log,
-    Path = require('path'),
-    Fs = require('fs'),
-    Glob = require('glob'),
-    AwsPublish = require('gulp-awspublish'),
-    Notify = require('gulp-notify'),
-    s3Website = require('s3-website'),
-    watch = require('gulp-watch'),
-    swig = require('gulp-swig'),
-    data = require('gulp-data'),
-    touch = require('touch'),
-    assign = require('101/assign'),
-    inject = require('gulp-inject'),
-    rev = require('git-rev');
+var path = require('path');
+var gulp = require('gulp');
+var util = require('gulp-util');
+var watch = require('gulp-watch');
+var runSequence = require('run-sequence');
+var requireDir = require('require-dir');
 
-var STAGE_BUCKET = 'stage.<%= domain %>';
-var PROD_BUCKET = '<%= domain %>';
-var BUILD_DIR = '<%= buildDir %>';
-var PORT = Util.env.port || 8080;
-var HOST = Util.env.host || 'localhost';
+function dirPath(dir) {
+    return path.resolve(__dirname, dir);
+}
 
-var watching = false;
-var devServer = {};
-var buildDir = Path.resolve(__dirname, BUILD_DIR);
+// Domain, for S3 deployment
+util.env.domain = '<%= domain %>';
 
-var gulpCommon = require('./tasks/gulp-tasks-common');
-gulpCommon.gulpTasks(buildDir);
+// SPA routing, default on for now
+util.env.spa = true;
 
-var getJsonData = function(file) {
-    var jsonData;
+// Build directory
+util.env.buildDir = dirPath('<%= buildDir %>');
+util.env.baseDir = dirPath('./');
+util.env.tmpDir = dirPath('.tmp');
 
-    try {
-        var basename = Path.basename(file.path, Path.extname(file.path));
-        jsonData = require('./data/' + basename + '.json');
-    } catch(e) {}
+// Various process sub-dirs
+util.env.assetsDir = dirPath('assets');
+util.env.imagesDir = dirPath('images');
+util.env.scriptsDir = dirPath('scripts');
+util.env.stylesDir = dirPath('styles');
+util.env.iconsDir = dirPath('icons');
+util.env.templatePagesDir = dirPath('pages');
+util.env.templateDataDir = dirPath('data');
 
-    return jsonData;
-};
+gulp.task('build', function(cb) {
 
-var getJsonGlobals = function () {
-    var globals = {};
-    var fileGlobs = Glob.sync('./data/**/_*.json');
-    fileGlobs.forEach(function(fileGlob) {
-        var prop = Path.basename(fileGlob).replace('.json', '');
-        globals[prop] = getJsonData({ path: fileGlob });
-    });
-    return globals;
-};
-
-Gulp.task('templates', function() {
-    var jsonGlobals = getJsonGlobals();
-    var globals = assign(jsonGlobals, { '__DEV__': watching });
-
-    var opts = {
-        setup: function(swig) {
-            swig.setDefaults({
-                loader: swig.loaders.fs(__dirname)
-            });
-        },
-        defaults: {
-            cache: false,
-            locals: globals
-        }
-    };
-
-    return Gulp.src('./pages/**/*.html')
-        .pipe(data(getJsonData))
-        .on('error', Notify.onError())
-        .pipe(swig(opts))
-        .on('error', Notify.onError())
-        .pipe(Gulp.dest(buildDir));
+    runSequence(
+        'clean',
+        'lint',
+        ['icons', 'images', 'assets'],
+        ['styles', 'webpack', 'templates'],
+        'revisions',
+        cb
+        );
 });
 
-Gulp.task('s3-deploy', ['build', 's3-deploy-config'], function() {
-    var publisher = AwsPublish.create({
-        bucket: STAGE_BUCKET
-    });
-    var headers = {
-        'Cache-Control': 'max-age=315360000, no-transform, public'
-    };
+gulp.task('watch', function (cb) {
 
-    return Gulp.src('.build/**/*')
-        .pipe(AwsPublish.gzip())
-        .pipe(publisher.publish(headers))
-        .pipe(publisher.sync())
-        .pipe(publisher.cache())
-        .pipe(AwsPublish.reporter());
-});
+    util.env.watching = true;
 
-Gulp.task('s3-deploy-config', function(cb) {
-    var s3Config = {
-        domain: STAGE_BUCKET,
-        index: 'index.html',
-        error: 'error.html'
-    };
+    function watchStart() {
 
-    s3Website(s3Config, function(err, website) {
-        if (err) {
-            Notify.onError(err);
-        }
-
-        if (website.modified) {
-            log('[deploy-s3-config]',
-                'Site configuration updated %s',
-                website.url);
-        }
-        cb(err);
-    });
-});
-
-Gulp.task('inject', ['templates', 'build:common'], function(cb) {
-    var target = Gulp.src('./.build/**/*.html');
-    var sources = Gulp.src(['./.build/javascript/*.js', './.build/css/*.css'], {read: false});
-    return target.pipe(inject(sources, {relative: true, addRootSlash: true}))
-        .pipe(Gulp.dest('./.build'));
-});
-
-
-Gulp.task('styles', function(cb) {
-    var hashPromise = new Promise(function (resolve, reject) {
-        rev.short(function (hash) {
-            resolve(hash);
-        })
-    });
-    hashPromise.then(function(hash) {
-        var timestamp = Math.floor(Date.now() / 1000);
-        hash = hash === '' ? timestamp : hash;
-        gulpCommon.styles(buildDir, devServer, {platform: 'static', hash: hash});
-        cb();
-    })
-});
-
-
-Gulp.task('webpack', function(cb) {
-    var hashPromise = new Promise(function (resolve, reject) {
-        rev.short(function (hash) {
-            resolve(hash);
-        })
-    });
-    hashPromise.then(function(hash) {
-        var timestamp = Math.floor(Date.now() / 1000);
-        hash = hash === '' ? timestamp : hash;
-        gulpCommon.webpack(cb, {platform: 'static', hash: hash});
-    })
-});
-
-Gulp.task('watch:local', [
-        'watch-start',
-        'templates',
-        'watch:common'],
-    function(cb) {
-        watch('./templates/**/*.html', function() {
-            Gulp.start('templates');
+        watch('assets/**/*', function() {
+            gulp.start('assets');
+        });
+        watch('styles/**/*.{css,styl}', function() {
+            gulp.start('styles');
+        });
+        watch('images/**/*', function() {
+            gulp.start('images');
+        });
+        watch('icons/**/*.svg', function() {
+            gulp.start('icons');
+        });
+        watch(['templates/**/*', 'pages/**/*'], function() {
+            gulp.start('templates');
         });
 
         cb();
     }
-);
 
-Gulp.task('webpack-dev-server', ['watch:local'], function(cb) {
-
-    touch.sync(buildDir + '/css/main.css', {
-        time: new Date(0)
-    });
-
-    var config = require('./webpack.config.js');
-
-    devServer = new WebpackDevServer(Webpack(config), {
-        contentBase: buildDir,
-        hot: true,
-        watchDelay: 100,
-        noInfo: true,
-        publicPath: '/javascript/',
-        quiet: false,
-        historyApiFallback: true
-    });
-
-    devServer.listen(PORT, HOST, function(err) {
-        if (err) {
-            throw new Util.PluginError('webpack-dev-server', err);
-        }
-        cb();
-    });
+    runSequence(
+        'clean',
+        'lint',
+        ['icons', 'images', 'assets', 'webpack', 'templates'],
+        ['styles'],
+        watchStart
+        );
 });
 
-Gulp.task('watch', ['watch:local']);
-Gulp.task('serve', ['webpack-dev-server'], function () {
-    log('[serve]', 'http://' + HOST + ':' + PORT);
+gulp.task('deploy', function (cb) {
+
+    runSequence('build', 's3-deploy', cb);
 });
-Gulp.task('build', ['inject']);
-Gulp.task('deploy', ['s3-deploy']);
+
+gulp.task('serve', function (cb) {
+
+    runSequence('watch', 'browser-sync', cb);
+});
+
+gulp.task('default', function (cb) {
+
+    var help = [
+        '',
+        '',
+        '---- S T E N C I L ----',
+        '',
+        'Usage: gulp [task] [options]',
+        '',
+        'gulp clean',
+        'gulp lint [--scripts]',
+        'gulp build',
+        'gulp deploy [--production]',
+        'gulp serve [--host, --port]',
+        'gulp watch',
+        ''
+    ];
+
+    util.log(help.join('\n'));
+
+    cb();
+});
+
+requireDir('./tasks');

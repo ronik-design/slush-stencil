@@ -1,0 +1,5 @@
+baseFontSize = 1.6rem
+<% if (styles.bootstrap) { %>
+// Boostrap variables
+$font-size-base = 1.6rem
+<% } %>

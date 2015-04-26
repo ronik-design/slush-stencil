@@ -6,13 +6,14 @@ var footerTpl = `
 
 export default class FooterView extends Backbone.View {
 
-    constructor(options) {
-        this.el = '#footer';
-        this.template = footerTpl;
+    constructor(options={}) {
+        options = _.extend(options, { el: '#footer' });
         super(options);
+
+        this.template = _.template(footerTpl);
     }
 
     render() {
-        this.$el.html(_.template(this.template));
+        this.$el.html(this.template());
     }
 }

@@ -2,6 +2,7 @@
 {% block title %}{% parent %}{% endblock %}
 
 {% block content %}
-    <h1>{{ _site.name }}</h1>
-    <p>{{ _site.description }}</p>
+<h1>{{ package.name }}</h1>
+<p>{{ package.description }}</p>
+<p>{{ _global.welcomeMessage }}</p>
 {% endblock %}

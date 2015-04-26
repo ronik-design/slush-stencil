@@ -5,11 +5,14 @@ import HomeView from './views/HomeView';
 
 export default class AppRouter extends Backbone.Router {
 
-    constructor() {
-        this.routes = {
+    constructor(options={}) {
+        let routes = {
             '': 'home',
             '*actions': 'home'
         };
+
+        options = _.extend(options, { routes: routes });
+        super(options);
 
         this.collection = new Models();
         this.collection.add({ title: 'The Model' });
@@ -18,15 +21,12 @@ export default class AppRouter extends Backbone.Router {
         this.headerView.render();
         this.footerView = new FooterView();
         this.footerView.render();
-
-        super();
     }
 
     home() {
         this.homeView = new HomeView({
             collection: this.collection
         });
-
         this.homeView.render();
     }
 }

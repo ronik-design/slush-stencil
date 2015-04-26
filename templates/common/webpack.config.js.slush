@@ -1,11 +1,9 @@
-var Webpack = require('webpack'),
-    Path = require('path');
+/* eslint no-trailing-spaces:0 */
+var webpack = require('webpack');
 
-var BUILD_DIR = '<%= buildDir %>';
+var DEST = '<%= buildDir %>';
 
-var ENTRY = [
-    './scripts/main'
-];
+var ENTRY = { 'main.js': './scripts/main.js' };
 
 var PROVIDE_PLUGINS = {
     <% if (jsFramework === 'simple') { %>
@@ -19,23 +17,16 @@ var PROVIDE_PLUGINS = {
     <% } %>
 };
 
-var PLUGINS = [
-    new Webpack.DefinePlugin({
-        '__DEV__': true
-    }),
-    new Webpack.ProvidePlugin(PROVIDE_PLUGINS)
-];
-
 var LOADERS = [{
-    test: /\.css$/,
-    loaders: ['style', 'css']
-}, {
     test: /scripts\/vendor\/.+\.js$/,
     loaders: ['imports?this=>window']
 }, {
     test: /\.jsx?$/,
     exclude: /node_modules|scripts\/vendor/,
-    loaders: ['babel?experimental&optional=runtime']
+    loaders: [
+        'babel?stage=0&optional=runtime',
+        'eslint'
+        ]
 }];
 
 module.exports = {
@@ -43,28 +34,26 @@ module.exports = {
 
     output: {
         filename: 'main.js',
-        path: Path.resolve(BUILD_DIR, 'javascript'),
+        path: DEST + '/javascript/',
         publicPath: '/javascript/'
     },
 
-    cache: true,
-    debug: true,
-    devtool: 'inline-source-map',
-
     stats: {
         colors: true,
-        reasons: true
+        reasons: false
     },
 
-    plugins: PLUGINS,
-
-    externals: {
-        xmlhttprequest: 'xmlhttprequest',
-        localStorage: 'localStorage'
-    },
+    plugins: [
+        new webpack.ProvidePlugin(PROVIDE_PLUGINS)
+    ],
 
     resolve: {
+        modulesDirectories: ['local_modules', 'node_modules'],
         extensions: ['', '.js', '.jsx']
+    },
+
+    eslint: {
+        configFile: './scripts/.eslintrc'
     },
 
     module: {

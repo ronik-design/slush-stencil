@@ -1,6 +1,7 @@
 import App from './App';
 
 $(() => {
-    new App();
+    var app = new App();
     Backbone.history.start();
+    console.log(app.message);
 });

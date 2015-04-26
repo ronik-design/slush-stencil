@@ -1,27 +1,19 @@
 <html>
 
-  {% set site_title = _site.name %}
+{% set site_title = _site.name %}
 
-  <head>
+<head>
     <title>{% block title %}{{ site_title }}{% endblock %}</title>
-    <!-- inject:css -->
-    <link rel="stylesheet" href="/css/main.css"/>
-    <!-- endinject -->
-    {% block head_extra %}{% endblock %}
-  </head>
+    <link rel="stylesheet" href="/css/main.css" /> {% block head_extra %}{% endblock %}
+</head>
 
-  <body {% block body_attributes %}{% endblock %}>
+<body {% block body_attributes %}{% endblock %}>
     {% block body %}
-
-      {% block content %}{% endblock %}
-
-      <!-- inject:js -->
-      <script src="/javascript/main.js"></script>
-      <!-- endinject -->
-
-      {% block scripts_extra %}{% endblock %}
-
-    {% endblock %}
-  </body>
+    <div id="header">{% block footer %}{% endblock %}</div>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">{% block footer %}{% endblock %}</div>
+    <script src="/javascript/main.js"></script>
+    {% block scripts_extra %}{% endblock %} {% endblock %}
+</body>
 
 </html>

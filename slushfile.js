@@ -1,6 +1,6 @@
 /*
- * slush-website
- * https://github.com/ronik-design/slush-website
+ * slush-stencil
+ * https://github.com/ronik-design/slush-stencil
  *
  * Copyright (c) 2015, Michael Shick
  * Licensed under the ISC license.
@@ -92,16 +92,31 @@ gulp.task('default', function (done) {
         message: 'Which client-side framework would you like to use?',
         choices: [
             {
-                name: 'Simple Modules (jQuery,lodash)',
+                name: 'Simple Modules (ES6, jQuery, lodash)',
                 value: 'simple'
             },
             {
-                name: 'Backbone',
+                name: 'Backbone (ES6, jQuery, lodash, Backbone)',
                 value: 'backbone'
             },
             {
-                name: 'React/Flux(alt)',
+                name: 'React (ES6, jsx, Flux/alt, React Router)',
                 value: 'react'
+            }
+        ]
+    }, {
+        name: 'stylusLibrary',
+        type: 'checkbox',
+        message: 'Which stylus libraries you like to use?',
+        choices: [
+            {
+                name: 'Base (BEM-style, topical)',
+                value: 'base',
+                disabled: true
+            },
+            {
+                name: 'Bootstrap (bootstrap-styl)',
+                value: 'bootstrap'
             }
         ]
     }, {
@@ -112,13 +127,25 @@ gulp.task('default', function (done) {
     //Ask
     inquirer.prompt(prompts,
         function (answers) {
+
             if (!answers.moveon) {
                 return done();
             }
 
-            var locals = clone(answers);
-            var platform = locals.platform;
-            locals.buildDir = (platform === 'webhook') ? './static' : './.build';
+            var config = clone(answers);
+            var platform = config.platform;
+            config.buildDir = (platform === 'webhook') ? './static' : './public';
+
+            config.styles = {
+                minifyCss: (platform !== 'webhook'),
+                revisionCss: (platform !== 'webhook')
+            };
+
+            config.browserSync = (platform !== 'webhook');
+
+            config.stylusLibrary.forEach(function (lib) {
+                config.styles[lib] = true;
+            });
 
             var commonPath = __dirname + '/templates/common';
             var platformPath = __dirname + '/templates/platforms/' + platform;
@@ -157,7 +184,6 @@ gulp.task('default', function (done) {
                     .on('end', cb);
             }
 
-
             function installTemplatedFiles(cb) {
                 var templateGlobs = [
                     commonPath + '/**/*.slush',
@@ -165,7 +191,7 @@ gulp.task('default', function (done) {
                 ];
 
                 gulp.src(templateGlobs, { dot: true })
-                    .pipe(template(locals))
+                    .pipe(template(config))
                     .pipe(rename({ extname: '' }))
                     .pipe(conflict('./'))
                     .pipe(gulp.dest('./'))
@@ -176,7 +202,7 @@ gulp.task('default', function (done) {
 
                 var pkg = gulp.src(commonPath + '/package.json');
 
-                pkg.pipe(template(locals));
+                pkg.pipe(template(config));
                 pkg.pipe(extend(platformPath + '/package.json', null, 2));
 
                 var exists = fs.existsSync('package.json');
