@@ -55,6 +55,7 @@ gulp.task('styles', function () {
         .on('error', notify.onError())
         .pipe(gulpIf(watching, sourcemaps.write('./')))
         .pipe(gulpIf(!watching, minify()))
+        .on('error', notify.onError())
         .pipe(size({ title: 'styles' }))
         .pipe(gulp.dest(buildDir + '/css/'))
         .pipe(gulpIf(!watching, rev()))

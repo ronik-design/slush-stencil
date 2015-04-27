@@ -7,6 +7,7 @@ var swig = require('gulp-swig');
 var data = require('gulp-data');
 var glob = require('glob');
 var assign = require('101/assign');
+var prettify = require('gulp-prettify');
 
 
 var getJsonData = function(dataDir) {
@@ -60,6 +61,7 @@ gulp.task('templates', function() {
         .on('error', notify.onError())
         .pipe(swig(opts))
         .on('error', notify.onError())
+        .pipe(prettify({ 'indent_size': 2 }))
         .pipe(size( { title: 'templates' }))
         .pipe(gulp.dest(buildDir));
 });

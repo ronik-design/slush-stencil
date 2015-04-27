@@ -21,8 +21,11 @@ gulp.task('s3-deploy', ['s3-deploy-config'], function () {
     return gulp.src(buildDir + '/**/*')
         .pipe(awsPublish.gzip())
         .pipe(publisher.publish(headers))
+        .on('error', notify.onError())
         .pipe(publisher.sync())
+        .on('error', notify.onError())
         .pipe(publisher.cache())
+        .on('error', notify.onError())
         .pipe(awsPublish.reporter());
 });
 

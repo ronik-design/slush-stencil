@@ -1,8 +1,7 @@
 var gulp = require('gulp');
 var util = require('gulp-util');
 var revCollector = require('gulp-rev-collector');
-var prettify = require('gulp-prettify');
-
+var notify = require('gulp-notify');
 
 gulp.task('revisions', function () {
 
@@ -18,6 +17,6 @@ gulp.task('revisions', function () {
 
     return gulp.src([buildDir + '/**/rev-manifest.json', buildDir + '/**/*.html'])
         .pipe(revCollector(revCollectorConfig))
-        .pipe(prettify({ 'indent_size': 2 }))
+        .on('error', notify.onError())
         .pipe(gulp.dest(buildDir));
 });
