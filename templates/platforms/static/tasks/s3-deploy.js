@@ -1,8 +1,8 @@
-var gulp = require('gulp'),
-    util = require('gulp-util'),
-    awsPublish = require('gulp-awspublish'),
-    s3Website = require('s3-website'),
-    notify = require('gulp-notify');
+var gulp = require('gulp');
+var util = require('gulp-util');
+var awsPublish = require('gulp-awspublish');
+var s3Website = require('s3-website');
+var notify = require('gulp-notify');
 
 
 gulp.task('s3-deploy', ['s3-deploy-config'], function () {
@@ -12,10 +12,7 @@ gulp.task('s3-deploy', ['s3-deploy-config'], function () {
     var buildDir = util.env.buildDir;
 
     var bucketName = production ? domain : 'stage.' + domain;
-
-    var publisher = awsPublish.create({
-        bucket: bucketName
-    });
+    var publisher = awsPublish.create({ bucket: bucketName });
 
     var headers = {
         'Cache-Control': 'max-age=315360000, no-transform, public'

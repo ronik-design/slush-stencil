@@ -1,21 +1,15 @@
 // Basic Libraries
 @import 'nib'
-@import 'jeet'
 @import 'rupture'
+@import 'jeet'
 
 // Framework basics
 @import '_variables'
+@import 'icons/_iconfont'
 @import 'collection/_*'
 @import 'utility/_*'
-@import 'icons/_iconfont'
-<% if (styles.bootstrap) { %>
-// Optional Bootstrap
-@import 'bootstrap'
-<% } else { %>
+
 // Globals
 @import 'global/_*'
-<% } %>
-
-// Different in every project
 @import 'component/_*'
-// @import 'page/_*'
+@import 'page/_*'

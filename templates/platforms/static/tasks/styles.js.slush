@@ -9,11 +9,13 @@ var size = require('gulp-size');
 var del = require('del');
 var rupture = require('rupture');
 var gulpIf = require('gulp-if');
-var jeet = require('jeet');
 var nib = require('nib');
 var minify = require('gulp-minify-css');
 var rev = require('gulp-rev');
-<% if (styles.bootstrap) { %>
+<% if (cssFramework === 'basic') { %>
+var jeet = require('jeet');
+<% } %>
+<% if (cssFramework === 'bootstrap') { %>
 var bootstrap = require('bootstrap-styl');
 <% } %>
 
@@ -42,8 +44,9 @@ gulp.task('styles', function () {
         imports.push('icons/_defaults.styl');
     }
 
-    var use = [nib(), jeet(), rupture()];
-    <% if (styles.bootstrap) { %>use.push(bootstrap());<% } %>
+    var use = [nib(), rupture()];
+    <% if (cssFramework === 'basic') { %>use.push(jeet());<% } %>
+    <% if (cssFramework === 'bootstrap') { %>use.push(bootstrap());<% } %>
     del.sync(buildDir + '/css/**/*');
 
     return gulp.src(stylesDir + '/**/[!_]*.{css,styl}')

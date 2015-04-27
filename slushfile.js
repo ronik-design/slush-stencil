@@ -9,6 +9,7 @@
 var gulp = require('gulp'),
     fs = require('fs'),
     async = require('async'),
+    util = require('gulp-util'),
     install = require('gulp-install'),
     conflict = require('gulp-conflict'),
     template = require('gulp-template'),
@@ -105,20 +106,27 @@ gulp.task('default', function (done) {
             }
         ]
     }, {
-        name: 'stylusLibrary',
-        type: 'checkbox',
+        name: 'cssFramework',
+        type: 'list',
         message: 'Which stylus libraries you like to use?',
         choices: [
             {
-                name: 'Base (BEM-style, topical)',
-                value: 'base',
-                disabled: true
+                name: 'Basic (BEM-style, topical)',
+                value: 'basic'
             },
             {
                 name: 'Bootstrap (bootstrap-styl)',
                 value: 'bootstrap'
+            },
+            {
+                name: 'Skeleton.css',
+                value: 'skeleton'
             }
         ]
+    }, {
+        type: 'confirm',
+        name: 'singlePageApplication',
+        message: 'Single Page Application? (Unknown routes are handled by index.html)'
     }, {
         type: 'confirm',
         name: 'moveon',
@@ -143,9 +151,9 @@ gulp.task('default', function (done) {
 
             config.browserSync = (platform !== 'webhook');
 
-            config.stylusLibrary.forEach(function (lib) {
-                config.styles[lib] = true;
-            });
+            // config.stylusLibrary.forEach(function (lib) {
+            //     config.styles[lib] = true;
+            // });
 
             var commonPath = __dirname + '/templates/common';
             var platformPath = __dirname + '/templates/platforms/' + platform;
@@ -153,21 +161,34 @@ gulp.task('default', function (done) {
             function installCommonFiles(cb) {
 
                 var ignorePaths = [
+                    commonPath + '/{styles,styles/**,styles/**/.*}',
                     commonPath + '/{scripts,scripts/**,scripts/**/.*}',
                     commonPath + '/package.json'
                 ];
 
                 gulp.src(commonPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
-                    .pipe(conflict('./'))
+                    .pipe(conflict('./', { logger: util.log }))
                     .pipe(gulp.dest('./'))
                     .on('end', cb);
             }
 
-            function installCommonScripts(cb) {
+            function installJsFramework(cb) {
                 gulp.src(commonPath + '/scripts/' + answers.jsFramework + '/**/*', { dot: true })
-                    .pipe(conflict('./scripts'))
+                    .pipe(conflict('./scripts', { logger: util.log }))
                     .pipe(gulp.dest('./scripts'))
+                    .on('end', cb);
+            }
+
+            function installCssFramework(cb) {
+                var paths = [
+                    commonPath + '/styles/common/**/*',
+                    commonPath + '/styles/' + answers.cssFramework + '/**/*'
+                ];
+
+                gulp.src(paths, { dot: true })
+                    .pipe(conflict('./styles', { logger: util.log }))
+                    .pipe(gulp.dest('./styles'))
                     .on('end', cb);
             }
 
@@ -179,7 +200,7 @@ gulp.task('default', function (done) {
 
                 gulp.src(platformPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
-                    .pipe(conflict('./'))
+                    .pipe(conflict('./', { logger: util.log }))
                     .pipe(gulp.dest('./'))
                     .on('end', cb);
             }
@@ -193,7 +214,7 @@ gulp.task('default', function (done) {
                 gulp.src(templateGlobs, { dot: true })
                     .pipe(template(config))
                     .pipe(rename({ extname: '' }))
-                    .pipe(conflict('./'))
+                    .pipe(conflict('./', { logger: util.log }))
                     .pipe(gulp.dest('./'))
                     .on('end', cb);
             }
@@ -217,7 +238,8 @@ gulp.task('default', function (done) {
 
             async.series([
                 installCommonFiles,
-                installCommonScripts,
+                installJsFramework,
+                installCssFramework,
                 installFrameworkFiles,
                 installTemplatedFiles,
                 extendPackageAndInstall

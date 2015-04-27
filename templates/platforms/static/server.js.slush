@@ -47,6 +47,7 @@ server.route([{
     }
 }]);
 
+<% if (singlePageApplication) { %>
 server.ext('onPreResponse', function (request, reply) {
 
     if (request.response.isBoom) {
@@ -57,6 +58,7 @@ server.ext('onPreResponse', function (request, reply) {
 
     reply.continue();
 });
+<% } %>
 
 server.start(function () {
 
