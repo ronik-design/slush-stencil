@@ -1,6 +1,5 @@
-var BUILD_DIR = '<%= buildDir %>';
-
 /* $lab:coverage:off$ */
+var PARAMS = require('./params.json');
 var HOST = process.env.HOST || '0.0.0.0';
 var PORT = process.env.PORT || 8080;
 /* $lab:coverage:on$ */
@@ -19,7 +18,7 @@ bole.output({
 
 var server = new hapi.Server();
 
-var buildDir = path.join(__dirname, BUILD_DIR);
+var buildDir = path.join(__dirname, PARAMS.buildDir);
 
 server.connection({
     host: HOST,
@@ -47,18 +46,18 @@ server.route([{
     }
 }]);
 
-<% if (singlePageApplication) { %>
-server.ext('onPreResponse', function (request, reply) {
+if (PARAMS.singlePageApplication) {
+    server.ext('onPreResponse', function (request, reply) {
 
-    if (request.response.isBoom) {
-        if (request.response.output.statusCode === 404) {
-            return reply.file(path.join(buildDir, 'index.html'));
+        if (request.response.isBoom) {
+            if (request.response.output.statusCode === 404) {
+                return reply.file(path.join(buildDir, 'index.html'));
+            }
         }
-    }
 
-    reply.continue();
-});
-<% } %>
+        reply.continue();
+    });
+}
 
 server.start(function () {
 

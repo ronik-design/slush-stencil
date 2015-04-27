@@ -1,21 +1,20 @@
-/* eslint no-trailing-spaces:0 */
 var webpack = require('webpack');
+var PARAMS = require('./params');
 
-var DEST = '<%= buildDir %>';
+var DEST = PARAMS.buildDir;
 
 var ENTRY = { 'main.js': './scripts/main.js' };
 
-var PROVIDE_PLUGINS = {
-    <% if (jsFramework === 'simple') { %>
-    $: 'jquery',
-    _: 'lodash'
-    <% } %>
-    <% if (jsFramework === 'backbone') { %>
-    $: 'jquery',
-    _: 'lodash',
-    Backbone: 'backbone'
-    <% } %>
-};
+var providePlugins = {};
+
+if (PARAMS.jsFramework === 'simple' || PARAMS.jsFramework === 'backbone') {
+    providePlugins.$ = 'jquery';
+    providePlugins._ = 'lodash';
+}
+
+if (PARAMS.jsFramework === 'backbone') {
+    providePlugins.Backbone = 'backbone';
+}
 
 var LOADERS = [{
     test: /scripts\/vendor\/.+\.js$/,
@@ -44,7 +43,7 @@ module.exports = {
     },
 
     plugins: [
-        new webpack.ProvidePlugin(PROVIDE_PLUGINS)
+        new webpack.ProvidePlugin(providePlugins)
     ],
 
     resolve: {

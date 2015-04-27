@@ -1,3 +1,6 @@
+var PACKAGE = require('./package');
+var PARAMS = require('./params');
+
 var path = require('path');
 var gulp = require('gulp');
 var util = require('gulp-util');
@@ -9,11 +12,18 @@ function dirPath(dir) {
     return path.resolve(__dirname, dir);
 }
 
-// Domain, for...
-util.env.domain = '<%= domain %>';
+// Params
+util.env.PACKAGE = PACKAGE;
+util.env.PARAMS = PARAMS;
+
+// Domain, for S3 deployment
+util.env.domain = PARAMS.domain;
+
+// SPA routing, default on for now
+util.env.spa = PARAMS.singlePageApplication;
 
 // Build directory
-util.env.buildDir = dirPath('<%= buildDir %>');
+util.env.buildDir = dirPath(PARAMS.buildDir);
 util.env.baseDir = dirPath('./');
 util.env.tmpDir = dirPath('.tmp');
 
@@ -23,14 +33,17 @@ util.env.imagesDir = dirPath('images');
 util.env.scriptsDir = dirPath('scripts');
 util.env.stylesDir = dirPath('styles');
 util.env.iconsDir = dirPath('icons');
+util.env.templatePagesDir = dirPath('pages');
+util.env.templateDataDir = dirPath('data');
 
 gulp.task('build', function(cb) {
 
     runSequence(
         'clean',
-        ['icons', 'lint', 'images', 'assets'],
-        ['styles', 'webpack'],
-        'webhook-build',
+        'lint',
+        ['icons', 'images', 'assets'],
+        ['styles', 'webpack', 'templates'],
+        'revisions',
         cb
         );
 });
@@ -53,21 +66,30 @@ gulp.task('watch', function (cb) {
         watch('icons/**/*.svg', function() {
             gulp.start('icons');
         });
+        watch(['templates/**/*', 'pages/**/*', 'data/**/*'], function() {
+            gulp.start('templates');
+        });
 
         cb();
     }
 
-    runSequence('build', watchStart);
+    runSequence(
+        'clean',
+        'lint',
+        ['icons', 'images', 'assets', 'webpack', 'templates'],
+        ['styles'],
+        watchStart
+        );
 });
 
 gulp.task('deploy', function (cb) {
 
-    runSequence('build', 'webhook-deploy', cb);
+    runSequence('build', 's3-deploy', cb);
 });
 
 gulp.task('serve', function (cb) {
 
-    runSequence('watch', 'webhook-serve', cb);
+    runSequence('watch', 'browser-sync', cb);
 });
 
 gulp.task('default', function (cb) {
@@ -82,8 +104,8 @@ gulp.task('default', function (cb) {
         'gulp clean',
         'gulp lint [--scripts]',
         'gulp build',
-        'gulp deploy',
-        'gulp serve',
+        'gulp deploy [--production]',
+        'gulp serve [--host, --port]',
         'gulp watch',
         ''
     ];

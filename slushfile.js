@@ -13,12 +13,13 @@ var gulp = require('gulp'),
     install = require('gulp-install'),
     conflict = require('gulp-conflict'),
     template = require('gulp-template'),
-    extend = require('gulp-multi-extend'),
+    jeditor = require('gulp-json-editor'),
     rename = require('gulp-rename'),
     ignore = require('gulp-ignore'),
     gulpif = require('gulp-if'),
-    clone = require('101/clone'),
-    slugify = require('underscore.string/slugify'),
+    clone = require('lodash.clone'),
+    merge = require('lodash.merge'),
+    slugify = require('uslug'),
     inquirer = require('inquirer');
 
 function format(string) {
@@ -206,6 +207,7 @@ gulp.task('default', function (done) {
             }
 
             function installTemplatedFiles(cb) {
+
                 var templateGlobs = [
                     commonPath + '/**/*.slush',
                     platformPath + '/**/*.slush'
@@ -219,21 +221,33 @@ gulp.task('default', function (done) {
                     .on('end', cb);
             }
 
+            function writeConfig(cb) {
+
+                gulp.src(commonPath + '/stencil-params.json')
+                    .pipe(jeditor(config, { 'indent_char': ' ', 'indent_size': 2 }))
+                    .pipe(gulp.dest('./'))
+                    .on('end', cb);
+            }
+
             function extendPackageAndInstall(cb) {
 
-                var pkg = gulp.src(commonPath + '/package.json');
+                var pkgMerge = function (commonPkg) {
 
-                pkg.pipe(template(config));
-                pkg.pipe(extend(platformPath + '/package.json', null, 2));
+                    var platformPkg, existingPkg;
+                    platformPkg = require(platformPath + '/package.json');
+                    if (fs.existsSync('./package.json')) {
+                        existingPkg = require('./package.json');
+                    }
 
-                var exists = fs.existsSync('package.json');
-                if (exists) {
-                    pkg.pipe(extend('package.json', null, 2));
-                }
+                    return merge(commonPkg, platformPkg, existingPkg || {});
+                };
 
-                pkg.pipe(gulp.dest('./'));
-                pkg.pipe(install());
-                pkg.on('end', cb);
+                gulp.src(commonPath + '/package.json')
+                    .pipe(template(config))
+                    .pipe(jeditor(pkgMerge, { 'indent_char': ' ', 'indent_size': 2 }))
+                    .pipe(gulp.dest('./'))
+                    .pipe(install())
+                    .on('end', cb);
             }
 
             async.series([
@@ -242,6 +256,7 @@ gulp.task('default', function (done) {
                 installCssFramework,
                 installFrameworkFiles,
                 installTemplatedFiles,
+                writeConfig,
                 extendPackageAndInstall
             ], done);
         });

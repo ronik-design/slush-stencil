@@ -1,0 +1,11 @@
+{% extends "templates/partials/base.html" %}
+
+{% block title %}{% parent %}{% endblock %}
+
+{% block content %}
+<div id="content">
+  <h1>{{ package.name }}</h1>
+  <p>{{ package.description }}</p>
+  <p>{{ _global.welcomeMessage }}</p>
+</div>
+{% endblock %}

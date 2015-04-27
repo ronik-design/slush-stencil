@@ -9,15 +9,14 @@ var size = require('gulp-size');
 var del = require('del');
 var rupture = require('rupture');
 var gulpIf = require('gulp-if');
-var jeet = require('jeet');
 var nib = require('nib');
-<% if (styles.bootstrap) { %>
-var bootstrap = require('bootstrap-styl');
-<% } %>
+var minify = require('gulp-minify-css');
+var rev = require('gulp-rev');
 
 
 gulp.task('styles', function () {
 
+    var PARAMS = util.env.PARAMS;
     var watching = util.env.watching;
     var buildDir = util.env.buildDir;
     var tmpDir = util.env.tmpDir;
@@ -40,8 +39,16 @@ gulp.task('styles', function () {
         imports.push('icons/_defaults.styl');
     }
 
-    var use = [nib(), jeet(), rupture()];
-    <% if (styles.bootstrap) { %>use.push(bootstrap());<% } %>
+    var use = [nib(), rupture()];
+
+    if (PARAMS.cssFramework === 'basic') {
+        use.push(require('jeet')());
+    }
+
+    if (PARAMS.cssFramework === 'bootstrap') {
+        use.push(require('bootstrap-styl')());
+    }
+
     del.sync(buildDir + '/css/**/*');
 
     return gulp.src(stylesDir + '/**/[!_]*.{css,styl}')
@@ -49,6 +56,12 @@ gulp.task('styles', function () {
         .pipe(stylus({ use: use, import: imports, 'include css': true }))
         .on('error', notify.onError())
         .pipe(gulpIf(watching, sourcemaps.write('./')))
+        .pipe(gulpIf(!watching, minify()))
+        .on('error', notify.onError())
         .pipe(size({ title: 'styles' }))
-        .pipe(gulp.dest(buildDir + '/css/'));
+        .pipe(gulp.dest(buildDir + '/css/'))
+        .pipe(gulpIf(!watching, rev()))
+        .pipe(gulpIf(!watching, gulp.dest(buildDir + '/css/')))
+        .pipe(gulpIf(!watching, rev.manifest()))
+        .pipe(gulpIf(!watching, gulp.dest(buildDir + '/css/')));
 });

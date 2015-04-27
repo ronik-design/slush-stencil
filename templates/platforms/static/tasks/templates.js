@@ -23,10 +23,13 @@ var getJsonData = function(dataDir) {
     };
 };
 
-var getJsonGlobals = function (baseDir, dataDir) {
+var getJsonGlobals = function (dataDir) {
+
     var globals = {
         package: require(baseDir + '/package.json')
+        params:
     };
+
     var fileGlobs = glob.sync(dataDir + '/**/_*.json');
     fileGlobs.forEach(function(fileGlob) {
         var prop = path.basename(fileGlob).replace('.json', '');
@@ -36,13 +39,17 @@ var getJsonGlobals = function (baseDir, dataDir) {
 };
 
 gulp.task('templates', function() {
-    var buildDir = util.env.buildDir,
-        baseDir = util.env.baseDir,
-        pagesDir = util.env.templatePagesDir,
-        dataDir = util.env.templateDataDir;
 
-    var jsonGlobals = getJsonGlobals(baseDir, dataDir);
-    var globals = assign(jsonGlobals, { '__DEV__': util.env.watching });
+    var buildDir = util.env.buildDir;
+    var baseDir = util.env.baseDir;
+    var pagesDir = util.env.templatePagesDir;
+    var dataDir = util.env.templateDataDir;
+
+    var globals = getJsonGlobals(dataDir);
+
+    globals.package = util.env.PACKAGE;
+    globals.params = util.env.PARAMS;
+    globals['__DEV__'] = util.env.watching;
 
     var opts = {
         setup: function(swigInstance) {
