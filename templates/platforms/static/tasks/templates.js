@@ -66,7 +66,7 @@ gulp.task('templates', function() {
         .on('error', notify.onError())
         .pipe(swig(opts))
         .on('error', notify.onError())
-        .pipe(prettify({ 'indent_size': 2 }))
+        .pipe(prettify({ 'indent_size': 2, 'unformatted': ['script'] }))
         .pipe(size( { title: 'templates' }))
         .pipe(gulp.dest(buildDir));
 });
