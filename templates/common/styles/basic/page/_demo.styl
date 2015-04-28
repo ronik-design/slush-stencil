@@ -1,0 +1,99 @@
+rupture.scale = 0 768px 992px 1200px
+rupture.scale-names = 'xs' 's' 'm' 'l'
+
+body.demo
+    font-family: 'Raleway'
+
+    .section
+        center(100%, 1.5rem)
+
+        +above('s')
+            center(750px)
+
+        +above('m')
+            center(970px)
+
+        +above('l')
+            center(1170px)
+
+    .section--hero__text,
+    .section--hero__logo,
+    .section--form__form,
+    .section--form__text
+        col(1)
+        +above('s')
+            col(1/2)
+
+    .section--hero__text
+        font-size: 3rem
+        padding: 5rem
+        display: flex
+        align-items: center
+        height: 30rem
+        h2
+            font-weight: 600
+        h4
+            font-weight: 300
+        a
+            font-size: 2rem
+
+    .section--hero__text--heading
+        @extend $hd-a
+
+    .section--hero__logo
+        text-align: center
+        svg
+            height: 30rem
+
+    .form--add
+        width: 75%
+
+    .form--add__group
+        @extend .form__group
+
+    .form--add__label
+        @extend $form-label
+        font-weight: 400
+        margin-bottom: .5rem
+        display: block
+
+    .form--add__input
+        width: 100%
+        margin-bottom: 1.5rem
+
+    .form--add__input--submit
+        @extend $button
+        text-transform: uppercase
+        padding: 1rem
+        font-size: 2rem
+        font-weight: 300
+        width: 100%
+        background: blue
+        border-radius: .6rem
+        background-color: #337ab7
+        border-color: #2e6da4
+        color: #fff
+
+    .section--form__text--heading
+        @extend $hd-a
+
+    .section--stats
+        display: flex
+        flex-wrap: wrap
+        justify-content: space-between
+
+    .section--stats__item
+        margin-top: 3rem
+        width: 30%
+        border-radius: 6px
+        padding: 2rem
+        background: #eee
+        display: flex-item
+
+    .section--footer
+        text-align: center
+        a
+            text-decoration: none
+
+    .stat-multiplier:after
+        content: '%'

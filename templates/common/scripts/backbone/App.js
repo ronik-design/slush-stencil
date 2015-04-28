@@ -1,3 +1,4 @@
+import Stats from './collections/Stats';
 import AppRouter from './AppRouter';
 
 export default class App {
@@ -12,4 +13,4 @@ export default class App {
     start() {
         Backbone.history.start();
     }
-};
+}

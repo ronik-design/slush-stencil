@@ -1,0 +1,88 @@
+{% extends "templates/partials/base.html" %}
+
+{% block title %}{% parent %}{% endblock %}
+
+{% block head_extra %}
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <script type="text/javascript">
+    window.IS_DEMO = true;
+  </script>
+{% endblock %}
+
+{% block body_attributes %}class="demo"{% endblock %}
+
+{% block header %}
+  <div class="section">
+    <div class="section--hero">
+      <div class="section--hero__text">
+        <div>
+          <h2 class="section--hero__text--heading">{{ params.name }}</h2>
+          <h4>{{ _global.welcomeMessage }}</h4>
+          <a href="http://ronik-design.github.io/slush-stencil/" target="_new">Learn more</a>
+        </div>
+      </div>
+      <div class="section--hero__logo">
+        {% include "templates/partials/stencil-logo.html" %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <hr />
+  <div class="section">
+    <div class="section--form">
+      <div class="section--form__form">
+        <form id="stats-form" class="form--add">
+          <div class="form--add__group">
+            <label class="form--add__label" for="stat-multiplier">Multiplier</label>
+            <input id="stat-multiplier" class="form--add__input" type="number" value="100"/>
+          </div>
+
+          <div class="form--add__group">
+            <label class="form--add__label" for="stat-heading">Heading</label>
+            <input id="stat-heading" class="form--add__input" type="text" value=""/>
+          </div>
+
+          <div class="form--add__group">
+            <label class="form--add__label" for="stat-description">Description</label>
+            <textarea id="stat-description" class="form--add__input" type="text" value=""></textarea>
+          </div>
+
+          <input type="submit" value="add" class="form--add__input--submit"></input>
+        </form>
+      </div>
+      <div class="section--form__text">
+        <h3 class="section--form__text--heading">Try out the JS app</h3>
+        <p class="section--form__text--lead">As a simple demonstration that the JS build scripts are working, try entering some silly statistics</p>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <div class="section">
+    <div id="stats-items" class="section--stats">
+      <div class="section--stats__item">
+        <h2 class="stat-multiplier">222</h2>
+        <h3 class="stat-heading">Coder Happiness</h3>
+        <p class="stat-description lead">It's just off the charts...</p>
+      </div>
+      <script id="stats-item-template" type="text/template">
+        <div class="section--stats__item">
+          <h2 class="stat-multiplier"><%= multiplier %></h2>
+          <h3 class="stat-heading"><%= heading %></h3>
+          <p class="stat-description lead"><%= description %></p>
+        </div>
+      </script>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  <hr />
+  <div class="section">
+    <div class="section--footer">
+      <a href="http://ronikdesign.com" target="_new">&lt;ronik design /&gt;</a>
+    </div>
+  </div>
+{% endblock %}

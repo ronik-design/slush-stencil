@@ -1,4 +1,3 @@
-import Stats from './collections/Stats';
 import FormView from './views/FormView';
 import StatsView from './views/StatsView';
 
@@ -27,7 +26,7 @@ export default class AppRouter extends Backbone.Router {
             el: $('#stats-items'),
             collection: this.stats,
             template: $('#stats-item-template').html()
-        })
+        });
         this.statsView.render();
     }
 }

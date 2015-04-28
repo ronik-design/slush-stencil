@@ -1,6 +1,3 @@
-var homeTpl = `<div class="content"><h1>Here is something.</h1></div>`;
-var modelTpl = `<li><%= title %></li>`;
-
 export default class StatsView extends Backbone.View {
 
     constructor(options={}) {
@@ -13,15 +10,8 @@ export default class StatsView extends Backbone.View {
     }
 
     onAdd(stat) {
-        this.$el.append(this.template(stat));
+        this.$el.append(this.template(stat.toJSON()));
     }
 
-    render() {
-        // this.$el.html(homeTpl);
-        // this.$el.append('<ul></ul>');
-        // this.collection.each(() => {
-        //     let str = this.template({ title: 'foo' });
-        //     $('ul', this.$el).append(str);
-        // });
-    }
+    render() {}
 }

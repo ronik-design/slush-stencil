@@ -186,8 +186,8 @@ gulp.task('default', function (done) {
                 ];
 
                 gulp.src(paths, { dot: true })
-                    .pipe(conflict(destDir, { logger: util.log }))
-                    .pipe(gulp.dest(destDir))
+                    .pipe(conflict(dest('pages'), { logger: util.log }))
+                    .pipe(gulp.dest(dest('pages')))
                     .on('end', cb);
             }
 

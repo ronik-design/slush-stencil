@@ -4,31 +4,44 @@ export default class FormView extends Backbone.View {
 
     constructor(options={}) {
         super(options);
-
         this.collection = options.collection;
         this.model = new Stat();
-
-        this.$el.on('submit', this.onSubmit.bind(this));
     }
 
     events() {
         return {
             'change #stat-multiplier': 'onChangeMultiplier',
+            'change #stat-heading': 'onChangeHeading',
+            'change #stat-description': 'onChangeDescription',
             'submit': 'onSubmit'
         };
     }
 
     onChangeMultiplier(event) {
-        console.log(event);
+        var val = $(event.currentTarget).val();
+        this.model.set({ 'multiplier': +val });
+    }
+
+    onChangeHeading(event) {
+        var val = $(event.currentTarget).val();
+        this.model.set({ 'heading': val });
+    }
+
+    onChangeDescription(event) {
+        var val = $(event.currentTarget).val();
+        this.model.set({ 'description': val });
     }
 
     onSubmit(event) {
         event.preventDefault();
-        console.log(this.model.toJSON());
-        this.render();
+        this.collection.add(this.model);
+        this.reset();
     }
 
-    render() {
+    reset() {
+        this.model = new Stat();
         this.$el.trigger('reset');
     }
+
+    render() {}
 }
