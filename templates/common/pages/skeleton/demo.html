@@ -1,0 +1,121 @@
+{% extends "templates/partials/base.html" %}
+
+{% block title %}{% parent %}{% endblock %}
+
+{% block head_extra %}
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <style>
+    .hero-text-column {
+      display: flex;
+      align-items: center;
+      height: 30rem;
+    }
+    #stencil-logo svg {
+      height: 30rem;
+    }
+    input, textarea {
+      width: 75%;
+    }
+    .stats .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .stats .stats-item {
+      margin-top: 3rem;
+      width: 25%;
+      border-radius: 6px;
+      padding: 2rem;
+      background: #eee;
+      display: flex-item;
+    }
+    .stat-multiplier:after {
+      content: '%';
+    }
+    .footer {
+      text-align: center;
+    }
+    .footer a {
+      text-decoration: none;
+    }
+  </style>
+
+  <script type="text/javascript">
+    window.DEMO = true;
+  </script>
+{% endblock %}
+
+{% block header %}
+  <div class="section hero">
+    <div class="container">
+      <div class="row">
+        <div class="one-half column hero-text-column">
+          <div class="hero-text">
+            <h2><strong>{{ params.name }}</strong></h2>
+            <h4>{{ _global.welcomeMessage }}</h4>
+            <a class="button button-primary" href="http://ronik-design.github.io/slush-stencil/" target="_new">   Learn more
+            </a>
+          </div>
+        </div>
+        <div class="one-half column">
+          {% include "templates/partials/stencil-logo.html" %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <hr />
+  <div class="section entry">
+    <div class="container">
+      <div class="row">
+        <div class="one-half column">
+          <form id="stats-form">
+            <label for="stat-multiplier">Multiplier</label>
+            <input id="stat-multiplier" type="number" value="100"/>
+            <label for="stat-heading">Heading</label>
+            <input id="stat-heading" type="text" value=""/>
+            <label for="stat-description">Description</label>
+            <textarea id="stat-description" type="text" value=""></textarea>
+            <input type="submit" value="add" class="button button-primary"></input>
+          </form>
+        </div>
+        <div class="one-half column">
+          <h3 class="section-heading">Try out the JS app</h3>
+          <p class="section-description">As a simple demonstration that the JS build scripts are working,
+      try entering some silly statistics</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+  <div class="section stats">
+    <div class="container">
+      <div id="stats-items" class="row">
+        <div class="stats-item">
+          <h2 class="stat-multiplier">222</h2>
+          <h5 class="stat-heading">Coder Happiness</h5>
+          <p class="stat-description">It's just off the charts...</p>
+        </div>
+        <script id="stats-item-template" type="text/template">
+          <div class="stats-item">
+            <h2 class="stat-multiplier"><%= multiplier %></h2>
+            <h5 class="stat-heading"><%= heading %></h5>
+            <p class="stat-description"><%= description %></p>
+          </div>
+        </script>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  <hr />
+  <div class="section footer">
+    <div class="container">
+      <a href="http://ronikdesign.com" target="_new">&lt;ronik design /&gt;</a>
+    </div>
+  </div>
+{% endblock %}

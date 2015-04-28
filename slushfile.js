@@ -7,6 +7,7 @@
  */
 
 var gulp = require('gulp'),
+    path = require('path'),
     fs = require('fs'),
     async = require('async'),
     util = require('gulp-util'),
@@ -22,12 +23,17 @@ var gulp = require('gulp'),
     slugify = require('uslug'),
     inquirer = require('inquirer');
 
+
 function format(string) {
     if(string) {
         var username = string.toLowerCase();
         return username.replace(/\s/g, '');
     }
     return '';
+}
+
+function dest(filepath) {
+    return path.resolve(process.cwd(), filepath || './');
 }
 
 var defaults = (function () {
@@ -158,42 +164,63 @@ gulp.task('default', function (done) {
 
             var commonPath = __dirname + '/templates/common';
             var platformPath = __dirname + '/templates/platforms/' + platform;
+            var destDir = dest();
 
             function installCommonFiles(cb) {
 
                 var ignorePaths = [
                     commonPath + '/{styles,styles/**,styles/**/.*}',
                     commonPath + '/{scripts,scripts/**,scripts/**/.*}',
+                    commonPath + '/{pages,pages/**,pages/**/.*}',
                     commonPath + '/package.json'
                 ];
 
                 gulp.src(commonPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
-                    .pipe(conflict('./', { logger: util.log }))
-                    .pipe(gulp.dest('./'))
+                    .pipe(conflict(destDir, { logger: util.log }))
+                    .pipe(gulp.dest(destDir))
+                    .on('end', cb);
+            }
+
+            function installCommonPages(cb) {
+
+                var paths = [
+                    commonPath + '/pages/' + config.cssFramework + '/**/*'
+                ];
+
+                gulp.src(commonPath + '/**/!(*.slush)', { dot: true })
+                    .pipe(conflict(destDir, { logger: util.log }))
+                    .pipe(gulp.dest(destDir))
                     .on('end', cb);
             }
 
             function installJsFramework(cb) {
-                gulp.src(commonPath + '/scripts/' + answers.jsFramework + '/**/*', { dot: true })
-                    .pipe(conflict('./scripts', { logger: util.log }))
-                    .pipe(gulp.dest('./scripts'))
+
+                var paths = [
+                    commonPath + '/scripts/common/**/*',
+                    commonPath + '/scripts/' + config.jsFramework + '/**/*'
+                ];
+
+                gulp.src(paths, { dot: true })
+                    .pipe(conflict(dest('scripts'), { logger: util.log }))
+                    .pipe(gulp.dest(dest('scripts')))
                     .on('end', cb);
             }
 
             function installCssFramework(cb) {
+
                 var paths = [
                     commonPath + '/styles/common/**/*',
-                    commonPath + '/styles/' + answers.cssFramework + '/**/*'
+                    commonPath + '/styles/' + config.cssFramework + '/**/*'
                 ];
 
                 gulp.src(paths, { dot: true })
-                    .pipe(conflict('./styles', { logger: util.log }))
-                    .pipe(gulp.dest('./styles'))
+                    .pipe(conflict(dest('styles'), { logger: util.log }))
+                    .pipe(gulp.dest(dest('styles')))
                     .on('end', cb);
             }
 
-            function installFrameworkFiles(cb) {
+            function installPlatformFiles(cb) {
 
                 var ignorePaths = [
                     platformPath + '/package.json'
@@ -201,8 +228,8 @@ gulp.task('default', function (done) {
 
                 gulp.src(platformPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
-                    .pipe(conflict('./', { logger: util.log }))
-                    .pipe(gulp.dest('./'))
+                    .pipe(conflict(destDir, { logger: util.log }))
+                    .pipe(gulp.dest(destDir))
                     .on('end', cb);
             }
 
@@ -216,16 +243,16 @@ gulp.task('default', function (done) {
                 gulp.src(templateGlobs, { dot: true })
                     .pipe(template(config))
                     .pipe(rename({ extname: '' }))
-                    .pipe(conflict('./', { logger: util.log }))
-                    .pipe(gulp.dest('./'))
+                    .pipe(conflict(destDir, { logger: util.log }))
+                    .pipe(gulp.dest(destDir))
                     .on('end', cb);
             }
 
             function writeConfig(cb) {
 
-                gulp.src(commonPath + '/stencil-params.json')
+                gulp.src(commonPath + '/params.json')
                     .pipe(jeditor(config, { 'indent_char': ' ', 'indent_size': 2 }))
-                    .pipe(gulp.dest('./'))
+                    .pipe(gulp.dest(destDir))
                     .on('end', cb);
             }
 
@@ -235,8 +262,8 @@ gulp.task('default', function (done) {
 
                     var platformPkg, existingPkg;
                     platformPkg = require(platformPath + '/package.json');
-                    if (fs.existsSync('./package.json')) {
-                        existingPkg = require('./package.json');
+                    if (fs.existsSync(dest('package.json'))) {
+                        existingPkg = require(dest('package.json'));
                     }
 
                     return merge(commonPkg, platformPkg, existingPkg || {});
@@ -245,16 +272,17 @@ gulp.task('default', function (done) {
                 gulp.src(commonPath + '/package.json')
                     .pipe(template(config))
                     .pipe(jeditor(pkgMerge, { 'indent_char': ' ', 'indent_size': 2 }))
-                    .pipe(gulp.dest('./'))
+                    .pipe(gulp.dest(destDir))
                     .pipe(install())
                     .on('end', cb);
             }
 
             async.series([
                 installCommonFiles,
+                installCommonPages,
                 installJsFramework,
                 installCssFramework,
-                installFrameworkFiles,
+                installPlatformFiles,
                 installTemplatedFiles,
                 writeConfig,
                 extendPackageAndInstall

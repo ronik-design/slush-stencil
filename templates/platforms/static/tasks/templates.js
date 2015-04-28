@@ -1,4 +1,5 @@
 var path = require('path');
+var fs = require('fs');
 var gulp = require('gulp');
 var util = require('gulp-util');
 var notify = require('gulp-notify');
@@ -6,7 +7,6 @@ var size = require('gulp-size');
 var swig = require('gulp-swig');
 var data = require('gulp-data');
 var glob = require('glob');
-var assign = require('101/assign');
 var prettify = require('gulp-prettify');
 
 
@@ -15,7 +15,8 @@ var getJsonData = function(dataDir) {
         var jsonData;
         try {
             var basename = path.basename(file.path, path.extname(file.path));
-            jsonData = require(dataDir + '/' + basename + '.json');
+            var dataStr = fs.readFileSync(dataDir + '/' + basename + '.json', { encoding: 'utf-8' });
+            jsonData = JSON.parse(dataStr);
         } catch(e) {
             jsonData = null;
         }
@@ -25,16 +26,13 @@ var getJsonData = function(dataDir) {
 
 var getJsonGlobals = function (dataDir) {
 
-    var globals = {
-        package: require(baseDir + '/package.json')
-        params:
-    };
+    var globals = {};
 
-    var fileGlobs = glob.sync(dataDir + '/**/_*.json');
-    fileGlobs.forEach(function(fileGlob) {
+    glob.sync(dataDir + '/**/_*.json').forEach(function(fileGlob) {
         var prop = path.basename(fileGlob).replace('.json', '');
         globals[prop] = getJsonData(dataDir)({ path: fileGlob });
     });
+
     return globals;
 };
 

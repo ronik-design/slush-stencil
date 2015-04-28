@@ -1,6 +1,5 @@
-import Example from './modules/example';
+import Demo from './modules/Demo';
 
 $(() => {
-    let example = new Example({ el: '#content' });
-    example.render({ msg: 'READY' });
+    Demo.start();
 });
