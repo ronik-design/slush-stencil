@@ -149,6 +149,7 @@ gulp.task('default', function (done) {
 
             var config = clone(answers);
             var platform = config.platform;
+
             config.buildDir = (platform === 'webhook') ? './static' : './public';
 
             config.styles = {
@@ -157,10 +158,6 @@ gulp.task('default', function (done) {
             };
 
             config.browserSync = (platform !== 'webhook');
-
-            // config.stylusLibrary.forEach(function (lib) {
-            //     config.styles[lib] = true;
-            // });
 
             var commonPath = __dirname + '/templates/common';
             var platformPath = __dirname + '/templates/platforms/' + platform;
@@ -188,7 +185,7 @@ gulp.task('default', function (done) {
                     commonPath + '/pages/' + config.cssFramework + '/**/*'
                 ];
 
-                gulp.src(commonPath + '/**/!(*.slush)', { dot: true })
+                gulp.src(paths, { dot: true })
                     .pipe(conflict(destDir, { logger: util.log }))
                     .pipe(gulp.dest(destDir))
                     .on('end', cb);

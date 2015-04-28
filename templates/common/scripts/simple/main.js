@@ -1,5 +1,7 @@
 import Demo from './modules/Demo';
 
 $(() => {
-    Demo.start();
+    if (window.IS_DEMO) {
+        Demo.start();
+    }
 });

@@ -1,7 +1,8 @@
 import App from './App';
 
 $(() => {
-    var app = new App();
-    Backbone.history.start();
-    console.log(app.message);
+    if (window.IS_DEMO) {
+        var app = new App();
+        app.start();
+    }
 });

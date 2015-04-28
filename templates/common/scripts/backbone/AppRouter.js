@@ -1,7 +1,6 @@
-import Models from './collections/Models';
-import HeaderView from './views/HeaderView';
-import FooterView from './views/FooterView';
-import HomeView from './views/HomeView';
+import Stats from './collections/Stats';
+import FormView from './views/FormView';
+import StatsView from './views/StatsView';
 
 export default class AppRouter extends Backbone.Router {
 
@@ -14,19 +13,21 @@ export default class AppRouter extends Backbone.Router {
         options = _.extend(options, { routes: routes });
         super(options);
 
-        this.collection = new Models();
-        this.collection.add({ title: 'The Model' });
-
-        this.headerView = new HeaderView();
-        this.headerView.render();
-        this.footerView = new FooterView();
-        this.footerView.render();
+        this.stats = options.stats;
     }
 
     home() {
-        this.homeView = new HomeView({
-            collection: this.collection
+        this.formView = new FormView({
+            el: $('#stats-form'),
+            collection: this.stats
         });
-        this.homeView.render();
+        this.formView.render();
+
+        this.statsView = new StatsView({
+            el: $('#stats-items'),
+            collection: this.stats,
+            template: $('#stats-item-template').html()
+        })
+        this.statsView.render();
     }
 }

@@ -1,11 +1,15 @@
-var AppRouter = require('./AppRouter');
+import AppRouter from './AppRouter';
 
-class App {
+export default class App {
 
     constructor() {
-        this.router = new AppRouter();
-        this.message = 'App started...';
+        this.stats = new Stats();
+        this.router = new AppRouter({
+            stats: this.stats
+        });
     }
-}
 
-module.exports = App;
+    start() {
+        Backbone.history.start();
+    }
+};
