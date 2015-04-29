@@ -46,7 +46,7 @@ gulp.task('s3-deploy-config', function (cb) {
     if (spa) {
         s3Config.routes = [{
             Condition: {
-                HttpErrorCodeReturnedEquals: 404
+                HttpErrorCodeReturnedEquals: '404'
             },
             Redirect: {
                 HostName: bucketName
@@ -60,7 +60,7 @@ gulp.task('s3-deploy-config', function (cb) {
             notify.onError(err);
         }
 
-        if (website.modified) {
+        if (website && website.modified) {
             util.log(
                 'deploy-s3-config:',
                 'Site configuration updated %s', website.url
