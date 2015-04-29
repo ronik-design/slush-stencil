@@ -25,7 +25,7 @@ gulp.task('browser-sync', function () {
     var buildDir = util.env.buildDir;
 
     var host = util.env.host || 'localhost';
-    var port = util.env.port || 8080;
+    var port = util.env.port || 2002;
     var spa = util.env.spa;
 
     var serverOptions = {

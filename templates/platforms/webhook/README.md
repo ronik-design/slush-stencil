@@ -2,6 +2,9 @@
 
 > {SLUSH{=description}}
 
+> To launch a simple demo, utilizing your selections and providing some code
+  to get started, run `gulp serve` and then visit `localhost:2002/demo`
+
 ## Useful commands
 
 Prints all available top-level gulp tasks / commands.
