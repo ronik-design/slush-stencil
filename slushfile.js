@@ -275,7 +275,7 @@ gulp.task('default', function (done) {
                     .pipe(template(config, TEMPLATE_SETTINGS))
                     .pipe(jeditor(pkgMerge, { 'indent_char': ' ', 'indent_size': 2 }))
                     .pipe(gulp.dest(destDir))
-                    // .pipe(install())
+                    .pipe(install())
                     .on('end', cb);
             }
 
