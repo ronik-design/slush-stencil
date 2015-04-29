@@ -6,22 +6,22 @@
  * Licensed under the ISC license.
  */
 
-var gulp = require('gulp'),
-    path = require('path'),
-    fs = require('fs'),
-    async = require('async'),
-    util = require('gulp-util'),
-    install = require('gulp-install'),
-    conflict = require('gulp-conflict'),
-    template = require('gulp-template'),
-    jeditor = require('gulp-json-editor'),
-    rename = require('gulp-rename'),
-    ignore = require('gulp-ignore'),
-    gulpif = require('gulp-if'),
-    clone = require('lodash.clone'),
-    merge = require('lodash.merge'),
-    slugify = require('uslug'),
-    inquirer = require('inquirer');
+var gulp = require('gulp');
+var path = require('path');
+var fs = require('fs');
+var async = require('async');
+var util = require('gulp-util');
+var install = require('gulp-install');
+var conflict = require('gulp-conflict');
+var template = require('gulp-template');
+var jeditor = require('gulp-json-editor');
+var rename = require('gulp-rename');
+var ignore = require('gulp-ignore');
+var gulpif = require('gulp-if');
+var clone = require('lodash.clone');
+var merge = require('lodash.merge');
+var slugify = require('uslug');
+var inquirer = require('inquirer');
 
 
 function format(string) {
@@ -155,19 +155,25 @@ gulp.task('default', function (done) {
             }
 
             var config = clone(answers);
-            var platform = config.platform;
 
-            config.buildDir = (platform === 'webhook') ? './static' : './public';
+            if (answers.github) {
+                var githubRe = /(?:https?:\/\/github.com)?\/?([^\/.]+\/[^\/.]+)(?:\.git)?$/i;
+                var match = answers.github.match(githubRe);
+                if (match && match[1]) {
+                    config.github = match[1];
+                } else {
+                    config.github = null;
+                }
+            }
 
+            config.buildDir = (config.platform === 'webhook') ? './static' : './public';
+            config.browserSync = (config.platform !== 'webhook');
             config.styles = {
-                minifyCss: (platform !== 'webhook'),
-                revisionCss: (platform !== 'webhook')
+                minifyCss: (config.platform !== 'webhook')
             };
 
-            config.browserSync = (platform !== 'webhook');
-
             var commonPath = __dirname + '/templates/common';
-            var platformPath = __dirname + '/templates/platforms/' + platform;
+            var platformPath = __dirname + '/templates/platforms/' + config.platform;
             var destDir = dest();
 
             function installCommonFiles(cb) {
@@ -192,9 +198,12 @@ gulp.task('default', function (done) {
                     commonPath + '/pages/' + config.cssFramework + '/**/*'
                 ];
 
+                // TODO: Need to sort out template tag exclusions here
+                // Need to support: Slush templating, Swig templating, JS underscore template
+
                 gulp.src(paths, { dot: true })
-                    .pipe(template(config))
-                    .pipe(rename({ extname: '' }))
+                    // .pipe(template(config))
+                    // .pipe(rename({ extname: '' }))
                     .pipe(conflict(dest('pages'), { logger: console.log }))
                     .pipe(gulp.dest(dest('pages')))
                     .on('end', cb);

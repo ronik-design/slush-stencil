@@ -4,6 +4,12 @@
 
 ## Useful commands
 
+Prints all available top-level gulp tasks / commands.
+
+```shell
+$ gulp
+```
+
 Builds, starts watch tasks, and launches the dev server.
 
 ```shell
@@ -16,17 +22,21 @@ Builds all files, as for a release
 $ gulp build
 ```
 
-Lint your client-side js, also happens automatically before a build.
+Lint your js (gulp stuff mostly, optionally client-side JS),
+also happens automatically before a build.
 
 ```shell
-$ gulp lint
+$ gulp lint [--scripts]
 ```
 
-Put your website somewhere people can see it!
+Put your website somewhere people can see it!*
 
 ```shell
 $ gulp deploy
 ```
+
+> *This uses the Webhook deploy process -- you should have already created
+  a site in this folder.
 
 ## Directory structure
 
@@ -42,10 +52,15 @@ $ gulp deploy
   use of ES6 (all files are transpiled using babel) and the `jsx` extension
   when appropriate.
 
-* `styles` all site styles, written in Stylus. `jeet`, `nib`, and `rupture`
-  available.
+* `styles` all site styles, written in Stylus. `nib`, and `rupture` available,
+  along with your chosen framework (Basic, Bootstrap, Skeleton)
 
-* `templates` will overwrite a few webhook templates.
+* `pages` where your page templates live. These get converted into site pages.
+  Uses Webhook-flavored swig.
+
+* `templates` supporting template files -- some Webhook templates may conflict
+
+* `tasks` are all the gulp tasks for the project. caveat lector
 
 ### This site was made using slush-stencil
 

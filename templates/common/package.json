@@ -3,22 +3,28 @@
   "name": "<%= slug %>",
   "version": "<%= version %>",
   "description": "<%= description %>",
+  <% if (github) { %>
   "repository": {
     "type": "git",
     "url": "git://github.com/<%= github %>.git"
   },
+  <% } %>
   "author": "Webhook",
   "license": "MIT",
+  <% if (github) { %>
   "bugs": {
     "url": "https://github.com/<%= github %>/issues"
   },
+  <% } %>
   "scripts": {
     "lint": "eslint *.js tasks",
     "build": "npm run lint && gulp build",
     "test": "lab -t 100",
     "test-cov-html": "lab -r html -o coverage.html"
   },
+  <% if (github) { %>
   "homepage": "https://github.com/<%= github %>",
+  <% } %>
   "devDependencies": {
       "101": "^0.16.1"
     , "babel-core": "^5.0.12"

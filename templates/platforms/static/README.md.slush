@@ -55,8 +55,8 @@ $ gulp deploy
   use of ES6 (all files are transpiled using babel) and the `jsx` extension
   when appropriate.
 
-* `styles` all site styles, written in Stylus. `jeet`, `nib`, and `rupture`
-  available.
+* `styles` all site styles, written in Stylus. `nib`, and `rupture` available,
+  along with your chosen framework (Basic, Bootstrap, Skeleton)
 
 * `data` json files that can store page data for swig templates
 
