@@ -64,7 +64,7 @@ gulp.task('default', function (done) {
                 value: 'static'
             },
             {
-                name: 'WebHook',
+                name: 'Webhook',
                 value: 'webhook'
             }
         ]
@@ -74,7 +74,7 @@ gulp.task('default', function (done) {
         default: defaults.name
     }, {
         name: 'slug',
-        message: 'What is the SLUGLY name of your site? (WebHook: sitename)',
+        message: 'What is the name SLUG for your site?',
         default: defaults.slug,
         validate: function (slug) {
             return (slug === slugify(slug));
@@ -82,7 +82,12 @@ gulp.task('default', function (done) {
     }, {
         name: 'domain',
         message: 'What is the domain for your site?',
-        default: defaults.slug + '.com'
+        default: function (answers) {
+            if (answers.platform === 'webhook') {
+                return defaults.slug + '.webhook.org'
+            }
+            return defaults.slug + '.com';
+        }
     }, {
         name: 'description',
         message: 'Please describe your site?'
@@ -92,8 +97,7 @@ gulp.task('default', function (done) {
         default: '0.1.0'
     }, {
         name: 'github',
-        message: 'GitHub repo name?',
-        default: 'ronik-design/' + defaults.slug + '.com'
+        message: 'GitHub repo name?'
     }, {
         name: 'jsFramework',
         type: 'list',
@@ -133,7 +137,10 @@ gulp.task('default', function (done) {
     }, {
         type: 'confirm',
         name: 'singlePageApplication',
-        message: 'Single Page Application? (Unknown routes are handled by index.html)'
+        message: 'Single Page Application? (Unknown routes are handled by index.html)',
+        when: function (answers) {
+            return (answers.platform === 'static');
+        }
     }, {
         type: 'confirm',
         name: 'moveon',
@@ -174,7 +181,7 @@ gulp.task('default', function (done) {
 
                 gulp.src(commonPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
-                    .pipe(conflict(destDir, { logger: util.log }))
+                    .pipe(conflict(destDir, { logger: console.log }))
                     .pipe(gulp.dest(destDir))
                     .on('end', cb);
             }
@@ -186,7 +193,9 @@ gulp.task('default', function (done) {
                 ];
 
                 gulp.src(paths, { dot: true })
-                    .pipe(conflict(dest('pages'), { logger: util.log }))
+                    .pipe(template(config))
+                    .pipe(rename({ extname: '' }))
+                    .pipe(conflict(dest('pages'), { logger: console.log }))
                     .pipe(gulp.dest(dest('pages')))
                     .on('end', cb);
             }
@@ -199,7 +208,7 @@ gulp.task('default', function (done) {
                 ];
 
                 gulp.src(paths, { dot: true })
-                    .pipe(conflict(dest('scripts'), { logger: util.log }))
+                    .pipe(conflict(dest('scripts'), { logger: console.log }))
                     .pipe(gulp.dest(dest('scripts')))
                     .on('end', cb);
             }
@@ -212,7 +221,7 @@ gulp.task('default', function (done) {
                 ];
 
                 gulp.src(paths, { dot: true })
-                    .pipe(conflict(dest('styles'), { logger: util.log }))
+                    .pipe(conflict(dest('styles'), { logger: console.log }))
                     .pipe(gulp.dest(dest('styles')))
                     .on('end', cb);
             }
@@ -225,7 +234,7 @@ gulp.task('default', function (done) {
 
                 gulp.src(platformPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
-                    .pipe(conflict(destDir, { logger: util.log }))
+                    .pipe(conflict(destDir, { logger: console.log }))
                     .pipe(gulp.dest(destDir))
                     .on('end', cb);
             }
@@ -237,10 +246,15 @@ gulp.task('default', function (done) {
                     platformPath + '/**/*.slush'
                 ];
 
+                var ignoreGlobs = [
+                    commonPath + '/pages/**/*.slush'
+                ];
+
                 gulp.src(templateGlobs, { dot: true })
+                    .pipe(ignore(ignoreGlobs))
                     .pipe(template(config))
                     .pipe(rename({ extname: '' }))
-                    .pipe(conflict(destDir, { logger: util.log }))
+                    .pipe(conflict(destDir, { logger: console.log }))
                     .pipe(gulp.dest(destDir))
                     .on('end', cb);
             }
