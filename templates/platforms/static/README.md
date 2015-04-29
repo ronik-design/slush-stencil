@@ -69,3 +69,9 @@ $ gulp deploy
 ### This site was made using slush-stencil
 
 You can find it here: [slush-stencil](http://ronik-design.github.io/slush-stencil/)
+
+{SLUSH{ if (cssFramework === 'bootstrap') { }}}
+> Boostrap Note
+  Bootstrap component JS is made available in `scripts` via a webpack alias.
+  You can import components individually like, e.g. `import 'bootstrap/alert'`
+{SLUSH{ } }}

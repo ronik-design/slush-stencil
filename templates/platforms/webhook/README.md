@@ -72,3 +72,9 @@ This is the boilerplate readme installed whenever you create a [Webhook CMS](htt
 
 * [Documentation for users found here.](http://webhook.com/docs/)
 * [Documentation for code contributors found here.](https://github.com/webhook/webhook-generate/blob/master/CONTRIBUTING.md)
+
+{SLUSH{ if (cssFramework === 'bootstrap') { }}}
+> Boostrap Note
+  Bootstrap component JS is made available in `scripts` via a webpack alias.
+  You can import components individually like, e.g. `import 'bootstrap/alert'`
+{SLUSH{ } }}
