@@ -1,6 +1,6 @@
-# <%= name %> (<%= domain %>)
+# {SLUSH{=name}} ({SLUSH{=domain}})
 
-> <%= description %>
+> {SLUSH{=description}}
 
 ## Useful commands
 

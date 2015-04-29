@@ -1,3 +1,4 @@
+var path = require('path');
 var webpack = require('webpack');
 var PARAMS = require('./params');
 
@@ -14,6 +15,12 @@ if (PARAMS.jsFramework === 'simple' || PARAMS.jsFramework === 'backbone') {
 
 if (PARAMS.jsFramework === 'backbone') {
     providePlugins.Backbone = 'backbone';
+}
+
+var aliases = {};
+
+if (PARAMS.cssFramework === 'bootstrap') {
+    aliases.bootstrap = path.resolve(__dirname, 'node_modules/bootstrap-styl/js');
 }
 
 var LOADERS = [{
@@ -47,6 +54,7 @@ module.exports = {
     ],
 
     resolve: {
+        aliases: aliases,
         modulesDirectories: ['local_modules', 'node_modules'],
         extensions: ['', '.js', '.jsx']
     },

@@ -16,7 +16,7 @@
     <div class="section--hero">
       <div class="section--hero__text">
         <div>
-          <h2 class="section--hero__text--heading"><%= name %></h2>
+          <h2 class="section--hero__text--heading">{SLUSH{=name}}</h2>
           <h4>Welcome to a Stencil-generated website</h4>
           <a href="http://ronik-design.github.io/slush-stencil/" target="_new">Learn more</a>
         </div>
@@ -60,6 +60,7 @@
   </div>
 
   <hr />
+
   <div class="section">
     <div id="stats-items" class="section--stats">
       <div class="section--stats__item">
@@ -67,15 +68,17 @@
         <h3 class="stat-heading">Coder Happiness</h3>
         <p class="stat-description lead">It's just off the charts...</p>
       </div>
-      <script id="stats-item-template" type="text/template">
-        <div class="section--stats__item">
-          <h2 class="stat-multiplier"><%= multiplier %></h2>
-          <h3 class="stat-heading"><%= heading %></h3>
-          <p class="stat-description lead"><%= description %></p>
-        </div>
-      </script>
     </div>
   </div>
+
+  <script id="stats-item-template" type="text/template">
+    <div class="section--stats__item">
+      <h2 class="stat-multiplier"><%= multiplier %></h2>
+      <h3 class="stat-heading"><%= heading %></h3>
+      <p class="stat-description lead"><%= description %></p>
+    </div>
+  </script>
+
 {% endblock %}
 
 {% block footer %}

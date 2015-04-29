@@ -24,6 +24,12 @@ var slugify = require('uslug');
 var inquirer = require('inquirer');
 
 
+var TEMPLATE_SETTINGS = {
+    evaluate:    /\{SLUSH\{(.+?)\}\}/g,
+    interpolate: /\{SLUSH\{=(.+?)\}\}/g,
+    escape:      /\{SLUSH\{-(.+?)\}\}/g
+};
+
 function format(string) {
     if(string) {
         var username = string.toLowerCase();
@@ -168,9 +174,7 @@ gulp.task('default', function (done) {
 
             config.buildDir = (config.platform === 'webhook') ? './static' : './public';
             config.browserSync = (config.platform !== 'webhook');
-            config.styles = {
-                minifyCss: (config.platform !== 'webhook')
-            };
+            config.minifyCss = (config.platform !== 'webhook');
 
             var commonPath = __dirname + '/templates/common';
             var platformPath = __dirname + '/templates/platforms/' + config.platform;
@@ -185,7 +189,8 @@ gulp.task('default', function (done) {
                     commonPath + '/package.json'
                 ];
 
-                gulp.src(commonPath + '/**/!(*.slush)', { dot: true })
+                gulp.src(commonPath + '/**/*', { dot: true })
+                    .pipe(template(config, TEMPLATE_SETTINGS))
                     .pipe(ignore(ignorePaths))
                     .pipe(conflict(destDir, { logger: console.log }))
                     .pipe(gulp.dest(destDir))
@@ -198,12 +203,8 @@ gulp.task('default', function (done) {
                     commonPath + '/pages/' + config.cssFramework + '/**/*'
                 ];
 
-                // TODO: Need to sort out template tag exclusions here
-                // Need to support: Slush templating, Swig templating, JS underscore template
-
                 gulp.src(paths, { dot: true })
-                    // .pipe(template(config))
-                    // .pipe(rename({ extname: '' }))
+                    .pipe(template(config, TEMPLATE_SETTINGS))
                     .pipe(conflict(dest('pages'), { logger: console.log }))
                     .pipe(gulp.dest(dest('pages')))
                     .on('end', cb);
@@ -243,26 +244,7 @@ gulp.task('default', function (done) {
 
                 gulp.src(platformPath + '/**/!(*.slush)', { dot: true })
                     .pipe(ignore(ignorePaths))
-                    .pipe(conflict(destDir, { logger: console.log }))
-                    .pipe(gulp.dest(destDir))
-                    .on('end', cb);
-            }
-
-            function installTemplatedFiles(cb) {
-
-                var templateGlobs = [
-                    commonPath + '/**/*.slush',
-                    platformPath + '/**/*.slush'
-                ];
-
-                var ignoreGlobs = [
-                    commonPath + '/pages/**/*.slush'
-                ];
-
-                gulp.src(templateGlobs, { dot: true })
-                    .pipe(ignore(ignoreGlobs))
-                    .pipe(template(config))
-                    .pipe(rename({ extname: '' }))
+                    .pipe(template(config, TEMPLATE_SETTINGS))
                     .pipe(conflict(destDir, { logger: console.log }))
                     .pipe(gulp.dest(destDir))
                     .on('end', cb);
@@ -290,10 +272,10 @@ gulp.task('default', function (done) {
                 };
 
                 gulp.src(commonPath + '/package.json')
-                    .pipe(template(config))
+                    .pipe(template(config, TEMPLATE_SETTINGS))
                     .pipe(jeditor(pkgMerge, { 'indent_char': ' ', 'indent_size': 2 }))
                     .pipe(gulp.dest(destDir))
-                    .pipe(install())
+                    // .pipe(install())
                     .on('end', cb);
             }
 
@@ -303,7 +285,6 @@ gulp.task('default', function (done) {
                 installJsFramework,
                 installCssFramework,
                 installPlatformFiles,
-                installTemplatedFiles,
                 writeConfig,
                 extendPackageAndInstall
             ], done);
