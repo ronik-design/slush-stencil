@@ -29,6 +29,8 @@ gulp.task('styles', function () {
 
     if (fs.existsSync(iconfontEmbedded)) {
         imports.push(iconfontEmbedded);
+    } else {
+        imports.push('icons/_iconfont_fontface.styl');
     }
 
     iconStyles = tmpDir + '/icons.styl';
@@ -36,7 +38,7 @@ gulp.task('styles', function () {
     if (fs.existsSync(iconStyles)) {
         imports.push(iconStyles);
     } else {
-        imports.push('icons/_defaults.styl');
+        imports.push('icons/_icons.styl');
     }
 
     var use = [nib(), rupture()];

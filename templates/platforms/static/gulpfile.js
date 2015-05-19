@@ -25,7 +25,7 @@ util.env.spa = PARAMS.singlePageApplication;
 // Build directory
 util.env.buildDir = dirPath(PARAMS.buildDir);
 util.env.baseDir = dirPath('./');
-util.env.tmpDir = dirPath('.tmp');
+util.env.tmpDir = dirPath(PARAMS.buildDir + '/.tmp');
 
 // Various process sub-dirs
 util.env.assetsDir = dirPath('assets');
@@ -64,7 +64,7 @@ gulp.task('watch', function (cb) {
             gulp.start('images');
         });
         watch('icons/**/*.svg', function() {
-            gulp.start('icons');
+            runSequence('icons', 'styles');
         });
         watch(['templates/**/*', 'pages/**/*', 'data/**/*'], function() {
             gulp.start('templates');

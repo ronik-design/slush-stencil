@@ -8,9 +8,14 @@ var ENTRY = { 'main.js': './scripts/main.js' };
 
 var providePlugins = {};
 
-if (PARAMS.jsFramework === 'simple' || PARAMS.jsFramework === 'backbone') {
+if (PARAMS.jsFramework === 'basic' || PARAMS.jsFramework === 'backbone') {
     providePlugins.$ = 'jquery';
     providePlugins._ = 'lodash';
+}
+
+if (PARAMS.jsFramework === 'basic') {
+    providePlugins.ko = 'knockout';
+    providePlugins.postal = 'postal';
 }
 
 if (PARAMS.jsFramework === 'backbone') {

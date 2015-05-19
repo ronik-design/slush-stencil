@@ -110,8 +110,8 @@ gulp.task('default', function (done) {
         message: 'Which client-side framework would you like to use?',
         choices: [
             {
-                name: 'Simple Modules (ES6, jQuery, lodash)',
-                value: 'simple'
+                name: 'Basic (ES6, jQuery, lodash, knockout.js)',
+                value: 'basic'
             },
             {
                 name: 'Backbone (ES6, jQuery, lodash, Backbone)',

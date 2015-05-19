@@ -1,3 +1,5 @@
+/* Not really a good demo of the knockout setup yet... */
+
 class Demo {
 
     constructor(options) {

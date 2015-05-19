@@ -28,12 +28,37 @@ var getJsonGlobals = function (dataDir) {
 
     var globals = {};
 
+    try {
+        globals = getJsonData(dataDir)({ path: '_globals.json' });
+    } catch(err) {
+        globals = {};
+    }
+
     glob.sync(dataDir + '/**/_*.json').forEach(function(fileGlob) {
-        var prop = path.basename(fileGlob).replace('.json', '');
-        globals[prop] = getJsonData(dataDir)({ path: fileGlob });
+        var prop = path.basename(fileGlob).substr(1).replace('.json', '');
+        if (prop !== 'globals') {
+            globals[prop] = getJsonData(dataDir)({ path: fileGlob });
+        }
     });
 
     return globals;
+};
+
+var loadTags = function (baseDir) {
+
+    var tags = {};
+
+    glob.sync(baseDir + '/templates/tags/*.js').forEach(function(fileGlob) {
+        var prop = path.basename(fileGlob).replace('.js', '');
+
+        try {
+            tags[prop] = require(fileGlob);
+        } catch (err) {
+            util.log('templates', 'Could not load custom tag ' + prop);
+        }
+    });
+
+    return tags;
 };
 
 gulp.task('templates', function() {
@@ -49,10 +74,18 @@ gulp.task('templates', function() {
     globals.params = util.env.PARAMS;
     globals['__DEV__'] = util.env.watching;
 
+    var tags = loadTags(baseDir);
+
     var opts = {
         setup: function(swigInstance) {
+
             swigInstance.setDefaults({
                 loader: swigInstance.loaders.fs(baseDir)
+            });
+
+            Object.keys(tags).forEach(function (tagName) {
+                var tag = tags[tagName];
+                swigInstance.setTag(tagName, tag.parse, tag.compile, tag.ends, tag.blockLevel);
             });
         },
         defaults: {

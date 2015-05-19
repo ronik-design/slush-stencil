@@ -27,14 +27,13 @@ gulp.task('iconfont', function() {
         iconsDir = util.env.iconsDir,
         stylesDir = util.env.stylesDir;
 
-    del.sync([buildDir + '/fonts/**/*', tmpDir + '/icons.styl']);
+    del.sync([buildDir + '/fonts/iconfont.*', tmpDir + '/icons.styl']);
 
     return gulp.src(iconsDir + '/*.svg')
         .pipe(iconfont({ fontName: 'iconfont', appendCodepoints: true }))
-        .on('error', notify.onError())
-        .pipe(size({ title: 'icons' }))
         .on('codepoints', writeCodepoints(stylesDir, tmpDir))
         .on('error', notify.onError())
+        .pipe(size({ title: 'icons' }))
         .pipe(gulp.dest(buildDir + '/fonts'));
 });
 
