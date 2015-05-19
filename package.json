@@ -1,7 +1,7 @@
 {
   "name": "slush-stencil",
   "description": "Webhook or static S3-powered sites with JS framework selection, powerful Gulp tasks and more...",
-  "version": "0.9.16",
+  "version": "0.10.0",
   "homepage": "https://github.com/ronik-design/slush-stencil",
   "author": {
     "name": "Michael Shick",
@@ -29,8 +29,8 @@
     "test": "echo \"No tests\""
   },
   "dependencies": {
-    "101": "^0.16.1",
-    "async": "^0.9.0",
+    "101": "^0.18.0",
+    "async": "^0.9.2",
     "gulp": "^3.6.2",
     "gulp-conflict": "^0.4.0",
     "gulp-if": "^1.2.5",
@@ -41,9 +41,9 @@
     "gulp-template": "^3.0.0",
     "gulp-util": "^3.0.4",
     "iniparser": "^1.0.5",
-    "inquirer": "^0.8.2",
+    "inquirer": "^0.8.4",
     "lodash.clone": "^3.0.1",
-    "lodash.merge": "^3.2.0",
+    "lodash.merge": "^3.2.1",
     "slush": ">=1.0.0",
     "uslug": "^1.0.3"
   },
