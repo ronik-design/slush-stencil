@@ -1,9 +1,8 @@
 var webpack = require('webpack');
 var config = require('./webpack.config.js');
-var SaveHashes = require('assets-webpack-plugin');
+
 
 var PLUGINS = [
-    new SaveHashes({ path: config.output.path, filename: 'rev-manifest.json' }),
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': '"production"',
         '__DEV__': false
@@ -14,7 +13,8 @@ var PLUGINS = [
         compress: {
             'screw_ie8': true,
             'properties': true,
-            'dead_code': true,
+            'dead_code': false,
+            'unused': false,
             'drop_debugger': true,
             'warnings': true,
             'keep_fargs': true
@@ -23,7 +23,7 @@ var PLUGINS = [
     new webpack.optimize.AggressiveMergingPlugin()
 ];
 
-config.output.filename = 'main-[hash].js';
+config.output.filename = 'main.js';
 config.cache = false;
 config.debug = false;
 config.devtool = false;

@@ -6,15 +6,15 @@
         "jquery": true
     },
     "rules": {
-        "no-underscore-dangle": false,
+        "no-underscore-dangle": 0,
         "quotes": [1, "single"],
         "strict": [2, "global"],
         "semi": [1, "always"],
-        "new-cap": false,
-        "dot-notation": false,
+        "new-cap": 0,
+        "dot-notation": 0,
         "max-len": [1, 120, 4],
         "no-unused-vars": [1, {"vars": "all", "args": "after-used"}],
-        "no-alert": false
+        "no-alert": 0
     },
     "ecmaFeatures": {
         "modules": true
@@ -22,6 +22,8 @@
     "globals": {
         "__DEV__": true,
         "File": true,
-        "_": true
+        "_": true,
+        "ko": true,
+        "postal": true
     }
 }

@@ -1,15 +1,16 @@
 var path = require('path');
 var webpack = require('webpack');
-var PARAMS = require('./params');
+var PARAMS = require('./stencil/params');
 
 var DEST = PARAMS.buildDir;
 
-var ENTRY = { 'main.js': './scripts/main.js' };
+var ENTRY = { 'main.js': [ 'babel-core/polyfill', './scripts/main.js'] };
 
 var providePlugins = {};
 
 if (PARAMS.jsFramework === 'basic' || PARAMS.jsFramework === 'backbone') {
     providePlugins.$ = 'jquery';
+    providePlugins.jQuery = 'jquery';
     providePlugins._ = 'lodash';
 }
 
@@ -35,7 +36,7 @@ var LOADERS = [{
     test: /\.jsx?$/,
     exclude: /node_modules|scripts\/vendor/,
     loaders: [
-        'babel?stage=0&optional=runtime',
+        'babel?stage=0',
         'eslint'
         ]
 }];

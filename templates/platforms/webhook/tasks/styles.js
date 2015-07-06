@@ -19,6 +19,7 @@ gulp.task('styles', function () {
     var buildDir = util.env.buildDir;
     var tmpDir = util.env.tmpDir;
     var stylesDir = util.env.stylesDir;
+    var stencilDir = util.env.stencilDir;
 
     var imports = [],
         iconfontEmbedded, iconStyles;
@@ -28,7 +29,7 @@ gulp.task('styles', function () {
     if (fs.existsSync(iconfontEmbedded)) {
         imports.push(iconfontEmbedded);
     } else {
-        imports.push('icons/_iconfont_fontface.styl');
+        imports.push(stencilDir + '/icons/iconfont_fontface.styl');
     }
 
     iconStyles = tmpDir + '/icons.styl';
@@ -36,7 +37,7 @@ gulp.task('styles', function () {
     if (fs.existsSync(iconStyles)) {
         imports.push(iconStyles);
     } else {
-        imports.push('icons/_icons.styl');
+        imports.push(stencilDir + '/icons/icons.styl');
     }
 
     var use = [nib(), rupture()];

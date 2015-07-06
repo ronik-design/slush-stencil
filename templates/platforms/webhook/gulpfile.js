@@ -1,5 +1,5 @@
 var PACKAGE = require('./package');
-var PARAMS = require('./params');
+var PARAMS = require('./stencil/params');
 
 var path = require('path');
 var gulp = require('gulp');
@@ -21,6 +21,7 @@ util.env.PARAMS = PARAMS;
 util.env.domain = PARAMS.domain;
 
 // Build directory
+util.env.stencilDir = dirPath('stencil');
 util.env.buildDir = dirPath(PARAMS.buildDir);
 util.env.baseDir = dirPath('./');
 util.env.tmpDir = dirPath(PARAMS.buildDir + '/.tmp');
@@ -59,7 +60,7 @@ gulp.task('watch', function (cb) {
             gulp.start('images');
         });
         watch('icons/**/*.svg', function() {
-            runSequence('icons', 'styles');
+            gulp.start('styles');
         });
 
         cb();

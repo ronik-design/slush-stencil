@@ -1,6 +1,14 @@
+function isUninitialized(val) {
+    return (val === null || val === undefined || (Array.isArray(val) && val.length === 0));
+}
+
 export default class ViewModel {
 
-    constructor() {
+    constructor(options={}) {
+        Object.getOwnPropertyNames(options)
+            .filter(name => name.charAt(0) === '$')
+            .forEach(name => this[name] = options[name]);
+
         this._channel = postal.channel();
         this._subscriptions = [];
     }
@@ -12,12 +20,42 @@ export default class ViewModel {
             } else {
                 this[p] = ko.observable(v);
             }
+
+            this[p]._firstValue = v;
+
+            this[p]._dirty = ko.observable(false);
+
+            this[p].isDirty = ko.computed(() => {
+                return this[p]._dirty();
+            });
+
+            this[p].subscribe(vi => {
+
+                if (isUninitialized(this[p]._firstValue)) {
+                    if (Array.isArray(vi)) {
+                        // clone array for initial value
+                        this[p]._firstValue = [].concat(vi);
+                    } else {
+                        this[p]._firstValue = vi;
+                    }
+                }
+
+                this[p]._dirty(!(this[p]._firstValue === vi));
+            });
+
+            this[p].reset = () => {
+                return this[p](this[p]._firstValue);
+            };
+
+            return this[p];
         };
 
         if (prop instanceof Object) {
-            Object.keys(prop).forEach(p => observe(p, prop[p]));
+            let observables = {};
+            Object.keys(prop).forEach(p => observables[p] = observe(p, prop[p]));
+            return observables;
         } else {
-            observe(prop, val);
+            return observe(prop, val);
         }
     }
 

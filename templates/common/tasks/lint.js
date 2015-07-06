@@ -23,7 +23,7 @@ gulp.task('lint', function() {
 
     return gulp.src(globs)
         .pipe(eslint(options))
+        .on('error', notify.onError())
         .pipe(eslint.format())
-        .pipe(eslint.failAfterError())
-        .on('error', notify.onError());
+        .pipe(eslint.failAfterError());
 });

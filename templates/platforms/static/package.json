@@ -9,13 +9,12 @@
     "hapi": "^8.4.0"
   },
   "devDependencies": {
-    "assets-webpack-plugin": "^0.3.0",
+    "assets-webpack-plugin": "^2.2.0",
     "glob": "^5.0.5",
-    "gulp-awspublish": "^1.0.0",
+    "gulp-awspublish": "^2.0.2",
     "gulp-data": "^1.2.0",
     "gulp-prettify": "^0.3.0",
-    "gulp-rev-collector": "^0.1.4",
-    "gulp-rev": "^3.0.1",
+    "gulp-rev-all": "^0.8.21",
     "lodash": "^3.7.0",
     "mkdirp": "^0.5.0",
     "run-sequence": "^1.0.2",

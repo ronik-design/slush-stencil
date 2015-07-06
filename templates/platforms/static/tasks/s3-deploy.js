@@ -9,7 +9,7 @@ gulp.task('s3-deploy', ['s3-deploy-config'], function () {
 
     var production = util.env.production;
     var domain = util.env.domain;
-    var buildDir = util.env.buildDir;
+    var deployDir = util.env.deployDir;
 
     var bucketName = production ? domain : 'stage.' + domain;
     var publisher = awsPublish.create({ bucket: bucketName });
@@ -18,7 +18,7 @@ gulp.task('s3-deploy', ['s3-deploy-config'], function () {
         'Cache-Control': 'max-age=315360000, no-transform, public'
     };
 
-    return gulp.src(buildDir + '/**/*')
+    return gulp.src(deployDir + '/**/*')
         .pipe(awsPublish.gzip())
         .pipe(publisher.publish(headers))
         .on('error', notify.onError())

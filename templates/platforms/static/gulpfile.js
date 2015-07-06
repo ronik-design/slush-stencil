@@ -1,5 +1,5 @@
 var PACKAGE = require('./package');
-var PARAMS = require('./params');
+var PARAMS = require('./stencil/params');
 
 var path = require('path');
 var gulp = require('gulp');
@@ -23,7 +23,9 @@ util.env.domain = PARAMS.domain;
 util.env.spa = PARAMS.singlePageApplication;
 
 // Build directory
+util.env.stencilDir = dirPath('stencil');
 util.env.buildDir = dirPath(PARAMS.buildDir);
+util.env.deployDir = dirPath(PARAMS.deployDir);
 util.env.baseDir = dirPath('./');
 util.env.tmpDir = dirPath(PARAMS.buildDir + '/.tmp');
 
@@ -41,8 +43,8 @@ gulp.task('build', function(cb) {
     runSequence(
         'clean',
         'lint',
-        ['icons', 'images', 'assets'],
-        ['styles', 'webpack', 'templates'],
+        ['images', 'assets', 'webpack', 'templates'],
+        ['styles'],
         'revisions',
         cb
         );
@@ -64,7 +66,7 @@ gulp.task('watch', function (cb) {
             gulp.start('images');
         });
         watch('icons/**/*.svg', function() {
-            runSequence('icons', 'styles');
+            gulp.start('styles');
         });
         watch(['templates/**/*', 'pages/**/*', 'data/**/*'], function() {
             gulp.start('templates');
@@ -76,7 +78,7 @@ gulp.task('watch', function (cb) {
     runSequence(
         'clean',
         'lint',
-        ['icons', 'images', 'assets', 'webpack', 'templates'],
+        ['images', 'assets', 'webpack', 'templates'],
         ['styles'],
         watchStart
         );

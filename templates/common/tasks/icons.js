@@ -9,12 +9,21 @@ var cssfont64 = require('gulp-cssfont64');
 var del = require('del');
 
 
-function writeCodepoints(stylesDir, tmpDir) {
+function cleanGlyph(glyph) {
+    return {
+        name: glyph.name,
+        unicode: glyph.unicode[0].charCodeAt(0).toString(16).toUpperCase()
+    };
+}
 
-    return function(codepoints) {
+function writeGlyphs(stencilDir, tmpDir) {
 
-        return gulp.src(stylesDir + '/icons/icons.swig')
-            .pipe(swig({ data: { icons: codepoints }}))
+    return function(glyphs) {
+
+        var cleanGlyphs = glyphs.map(cleanGlyph);
+
+        return gulp.src(stencilDir + '/icons/icons.swig')
+            .pipe(swig({ data: { glyphs: cleanGlyphs }}))
             .pipe(rename('icons.styl'))
             .pipe(gulp.dest(tmpDir));
     };
@@ -25,13 +34,13 @@ gulp.task('iconfont', function() {
     var buildDir = util.env.buildDir,
         tmpDir = util.env.tmpDir,
         iconsDir = util.env.iconsDir,
-        stylesDir = util.env.stylesDir;
+        stencilDir = util.env.stencilDir;
 
     del.sync([buildDir + '/fonts/iconfont.*', tmpDir + '/icons.styl']);
 
     return gulp.src(iconsDir + '/*.svg')
-        .pipe(iconfont({ fontName: 'iconfont', appendCodepoints: true }))
-        .on('codepoints', writeCodepoints(stylesDir, tmpDir))
+        .pipe(iconfont({ fontName: 'iconfont', appendUnicode: true }))
+        .on('glyphs', writeGlyphs(stencilDir, tmpDir))
         .on('error', notify.onError())
         .pipe(size({ title: 'icons' }))
         .pipe(gulp.dest(buildDir + '/fonts'));

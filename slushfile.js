@@ -172,7 +172,9 @@ gulp.task('default', function (done) {
                 }
             }
 
-            config.buildDir = (config.platform === 'webhook') ? './static' : './public';
+            config.buildDir = (config.platform === 'webhook') ? './static' : './.build';
+            config.deployDir = (config.platform === 'webhook') ? '' : './public';
+
             config.browserSync = (config.platform !== 'webhook');
             config.minifyCss = (config.platform !== 'webhook');
 
@@ -252,9 +254,9 @@ gulp.task('default', function (done) {
 
             function writeConfig(cb) {
 
-                gulp.src(commonPath + '/params.json')
+                gulp.src(commonPath + '/stencil/params.json')
                     .pipe(jeditor(config, { 'indent_char': ' ', 'indent_size': 2 }))
-                    .pipe(gulp.dest(destDir))
+                    .pipe(gulp.dest(dest('stencil')))
                     .on('end', cb);
             }
 

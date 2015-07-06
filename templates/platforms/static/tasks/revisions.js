@@ -1,22 +1,21 @@
 var gulp = require('gulp');
 var util = require('gulp-util');
-var revCollector = require('gulp-rev-collector');
+var RevAll = require('gulp-rev-all');
 var notify = require('gulp-notify');
+
 
 gulp.task('revisions', function () {
 
+    var revAll = new RevAll({
+        dontGlobal: [/\/favicon\.ico$/],
+        dontRenameFile: [/\.(html|txt)$/]
+    });
+
     var buildDir = util.env.buildDir;
+    var deployDir = util.env.deployDir;
 
-    var revCollectorConfig = {
-        revSuffix: '-[0-9a-f]{8,20}',
-        dirReplacements: {
-            '/javascript/': '',
-            '/css/': '/css/'
-        }
-    };
-
-    return gulp.src([buildDir + '/**/rev-manifest.json', buildDir + '/**/*.html'])
-        .pipe(revCollector(revCollectorConfig))
+    gulp.src(buildDir + '/**')
+        .pipe(revAll.revision())
         .on('error', notify.onError())
-        .pipe(gulp.dest(buildDir));
+        .pipe(gulp.dest(deployDir));
 });

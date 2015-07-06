@@ -1,7 +1,8 @@
 /* $lab:coverage:off$ */
-var PARAMS = require('./params.json');
+var PARAMS = require('./stencil/params.json');
 var HOST = process.env.HOST || '0.0.0.0';
 var PORT = process.env.PORT || 8080;
+var STATIC_DIR = process.env.WATCHING ? PARAMS.buildDir : PARAMS.deployDir;
 /* $lab:coverage:on$ */
 
 var path = require('path');
@@ -18,7 +19,7 @@ bole.output({
 
 var server = new hapi.Server();
 
-var buildDir = path.join(__dirname, PARAMS.buildDir);
+var staticDir = path.join(__dirname, STATIC_DIR);
 
 server.connection({
     host: HOST,
@@ -29,14 +30,14 @@ server.route([{
     method: 'GET',
     path: '/',
     handler: {
-        file: path.join(buildDir, 'index.html')
+        file: path.join(staticDir, 'index.html')
     }
 }, {
     method: 'GET',
     path: '/{param*}',
     handler: {
         directory: {
-            path: buildDir
+            path: staticDir
         }
     },
     config: {
@@ -51,7 +52,7 @@ if (PARAMS.singlePageApplication) {
 
         if (request.response.isBoom) {
             if (request.response.output.statusCode === 404) {
-                return reply.file(path.join(buildDir, 'index.html'));
+                return reply.file(path.join(staticDir, 'index.html'));
             }
         }
 

@@ -4,9 +4,6 @@
 
 {% block head_extra %}
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-  <script type="text/javascript">
-    window.IS_DEMO = true;
-  </script>
 {% endblock %}
 
 {% block body_attributes %}class="demo"{% endblock %}
@@ -33,7 +30,7 @@
   <div class="section">
     <div class="section--form">
       <div class="section--form__form">
-        <form id="stats-form" class="form--add">
+        <form id="stats-form" class="form--add" data-bind="submit: onSubmit">
           <div class="form--add__group">
             <label class="form--add__label" for="stat-multiplier">Multiplier</label>
             <input id="stat-multiplier" class="form--add__input" type="number" value="100"/>
@@ -62,22 +59,19 @@
   <hr />
 
   <div class="section">
-    <div id="stats-items" class="section--stats">
+    <div id="stats-items" class="section--stats" data-bind="foreachInit: stats">
+      <div data-template class="section--stats__item">
+        <h2 class="stat-multiplier" data-bind="text: multiplier"></h2>
+        <h3 class="stat-heading" data-bind="text: heading"></h3>
+        <p class="stat-description lead" data-bind="text: description"></p>
+      </div>
       <div class="section--stats__item">
-        <h2 class="stat-multiplier">222</h2>
-        <h3 class="stat-heading">Coder Happiness</h3>
-        <p class="stat-description lead">It's just off the charts...</p>
+        <h2 class="stat-multiplier" data-bind="init, text: multiplier">222</h2>
+        <h3 class="stat-heading" data-bind="init, text: heading">Coder Happiness</h3>
+        <p class="stat-description lead" data-bind="init, text: description">It's just off the charts...</p>
       </div>
     </div>
   </div>
-
-  <script id="stats-item-template" type="text/template">
-    <div class="section--stats__item">
-      <h2 class="stat-multiplier"><%= multiplier %></h2>
-      <h3 class="stat-heading"><%= heading %></h3>
-      <p class="stat-description lead"><%= description %></p>
-    </div>
-  </script>
 
 {% endblock %}
 
@@ -88,4 +82,10 @@
       <a href="http://ronikdesign.com" target="_new">&lt;ronik design /&gt;</a>
     </div>
   </div>
+{% endblock %}
+
+{% block scripts_extra %}
+  <script type="text/javascript">
+    window.App.setPage('demo');
+  </script>
 {% endblock %}
