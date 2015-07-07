@@ -11,7 +11,6 @@ var providePlugins = {};
 if (PARAMS.jsFramework === 'basic' || PARAMS.jsFramework === 'backbone') {
     providePlugins.$ = 'jquery';
     providePlugins.jQuery = 'jquery';
-    providePlugins._ = 'lodash';
 }
 
 if (PARAMS.jsFramework === 'basic') {
@@ -21,6 +20,7 @@ if (PARAMS.jsFramework === 'basic') {
 
 if (PARAMS.jsFramework === 'backbone') {
     providePlugins.Backbone = 'backbone';
+    providePlugins._ = 'lodash';
 }
 
 var aliases = {};
