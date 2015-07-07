@@ -22,7 +22,6 @@
     "globals": {
         "__DEV__": true,
         "File": true,
-        "_": true,
         "ko": true,
         "postal": true
     }
