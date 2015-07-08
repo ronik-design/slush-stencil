@@ -4,6 +4,7 @@ var awsPublish = require('gulp-awspublish');
 var s3Website = require('s3-website');
 var notify = require('gulp-notify');
 var cyan = util.colors.cyan;
+var green = util.colors.green;
 var logName = '\'' + cyan('s3-deploy') + '\'';
 
 gulp.task('s3-deploy', ['s3-deploy-config'], function () {
@@ -64,7 +65,7 @@ gulp.task('s3-deploy-config', function (cb) {
         if (website && website.modified) {
             util.log(logName, 'Site configuration updated');
             util.log(logName, '--------------------------');
-            util.log(logName, 'S3 URL: ', util.color.green(website.url));
+            util.log(logName, 'S3 URL: ', green(website.url));
         }
 
         cb(err);
