@@ -74,7 +74,7 @@ gulp.task('deploy', function (cb) {
     runSequence('build', 'webhook-deploy', cb);
 });
 
-gulp.task('serve', function (cb) {
+gulp.task('develop', function (cb) {
 
     runSequence('watch', 'webhook-serve', cb);
 });
@@ -90,10 +90,10 @@ gulp.task('default', function (cb) {
         '',
         'gulp clean',
         'gulp lint [--scripts]',
+        'gulp watch',
+        'gulp develop',
         'gulp build',
         'gulp deploy',
-        'gulp serve',
-        'gulp watch',
         ''
     ];
 

@@ -98,7 +98,7 @@ gulp.task('deploy', function (cb) {
     });
 });
 
-gulp.task('serve', function (cb) {
+gulp.task('develop', function (cb) {
 
     runSequence('watch', 'browser-sync', cb);
 });
@@ -114,10 +114,10 @@ gulp.task('default', function (cb) {
         '',
         'gulp clean',
         'gulp lint [--scripts]',
+        'gulp watch',
+        'gulp develop [--host, --port]',
         'gulp build',
         'gulp deploy [--production]',
-        'gulp serve [--host, --port]',
-        'gulp watch',
         ''
     ];
 
