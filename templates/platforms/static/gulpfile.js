@@ -86,7 +86,16 @@ gulp.task('watch', function (cb) {
 
 gulp.task('deploy', function (cb) {
 
-    runSequence('build', 's3-deploy', cb);
+    runSequence('build', 's3-deploy', function () {
+
+        if (util.env.website) {
+            util.log('Your site has been deployed to S3');
+            util.log('---------------------------------');
+            util.log(util.colors.green(util.env.website.url));
+        }
+
+        cb();
+    });
 });
 
 gulp.task('serve', function (cb) {
