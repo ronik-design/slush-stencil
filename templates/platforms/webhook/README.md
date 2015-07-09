@@ -16,7 +16,7 @@ $ gulp
 Builds, starts watch tasks, and launches the dev server.
 
 ```shell
-$ gulp serve
+$ gulp develop
 ```
 
 Builds all files, as for a release
