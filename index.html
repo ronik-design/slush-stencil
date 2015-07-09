@@ -103,22 +103,22 @@
 <!--     <mask id="diagonal-mask">
  <rect id="diamond" transform="rotate(45 50 50)" x="0" y="0" fill="#ffffff" width="159.2" height="159.2">
 
- <animate 
+ <animate
         xlink:href="#diamond"
         attributeName="x"
         from="80"
-        to="0" 
+        to="0"
         dur="1s"
         begin="0s"
-        fill="freeze" />      
-        <animate 
+        fill="freeze" />
+        <animate
         xlink:href="#diamond"
         attributeName="y"
         from="-80"
-        to="0" 
+        to="0"
         dur="1s"
         begin="0s"
-        fill="freeze" /> 
+        fill="freeze" />
 </mask> -->
 </defs>
     <path class="spray1" fill="none" stroke="#000000" style="mask:url(#logo-mask);" stroke-width="6" stroke-linejoin="round"  stroke-miterlimit="10" d="M26.9,13.5
@@ -149,22 +149,27 @@
       <div class="background">
 
         <p class="copy--dek">A slush generator for webhook-based projects.</p>
-        <p class="copy">Bootstrapping websites of all shapes and sizes projects. Build tools, and platform selection, supporting static sites with S3 deployment, <a href="http://webhook.com">Webhook</a>-powered sites, and a choice of three client-side JS frameworks (jQuery, Backbone, React/Flux/alt).</p>
+        <p class="copy">Bootstrapping websites of all shapes and sizes projects. Build tools, and platform selection, supporting static sites with S3 deployment, Webhook CMS- powered sites, and a choice of three client-side JS frameworks (Knockout, Backbone, React/Flux/alt).</p>
 
         <h3 class="heading">Features</h3>
         <div class="copy">
         <ul class="task-list">
-          <li>Scaffold <a href="http://webhook.com">Webhook</a> projects</li>
-          <li>Scaffold simple static (swig-templated) projects and deploy easily to S3 (requires a properly configured AWS account. The easiest approach here is probabl <code>brew install awscli</code> then <code>aws configure</code>)</li>
+          <li>Scaffold static sites and <a href="http://webhook.com">Webhook</a> projects</li>
+          <li>Deploy easily to S3 (requires a properly configured AWS account. The easiest approach here is probably <code>brew install awscli</code> then <code>aws configure</code>)</li>
           <li>Choose from one of three JS approach, all using <a href="http://6to5.org">ES6</a> and <a href="http://webpack.github.io">webpack</a>
             <ul class="task-list">
-              <li>• jQuery (Simple module folder scaffolding, plus underscore/lodash)</li>
+              <li>• Knockout (The most basic setup, for enhancing your static site with some client-side magic)</li>
               <li>• Backbone</li>
-              <li>• React w/ <a href="https://github.com/goatslacker/alt">alt</a>, react-router &amp; <a href="https://github.com/gaearon/react-hot-loader">react-hot-loader</a>
+              <li>• React w/ <a href="https://github.com/goatslacker/alt">alt</a> & React Router
               </li>
             </ul>
           </li>
-          <li>Stylus styles, with documentation on best practices including <a href="http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/">BEM</a>
+          <li>Choose from one of three CSS approaches, all using Stylus
+            <ul class="task-list">
+              <li>• Basic setup, using custom utils, project structure and <a href="http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/">BEM</a>
+              <li>• Bootstrap, using bootstrap-stylus</li>
+              <li>• Skeleton.css
+              </li>
           </li>
           <li>Iconfont folder and auto compilation through Gulp (creates iconfonts automatically from SVG files and generates classes)</li>
           <li>Image optimization</li>
@@ -176,20 +181,51 @@
         <h3 class="heading">Getting Started</h3>
         <p class="copy">Install your global dependencies.</p>
         <div class="highlight highlight-bash"><pre>$ npm install -g slush slush-stencil</pre></div>
-        <p class="copy">and for Webhook</p>
-        <div class="highlight highlight-shell"><pre>$ npm install -g wh grunt-cli</pre></div>
+        <p class="copy">Deployment is optional, you can use Stencil as a simple static site generator and collection of build tools, but hook into your own publishing process.</p>
 
-        <h3  class="heading">Usage</h3>
-        <p class="copy">If this is a totally new Webhook project, you'll first need to create your Webhook site.</p>
-        <div class="highlight highlight-shell"><pre>$ wh create [my-site]</pre></div>
-        <p class="copy">Otherwise, make a new directory</p>
-        <div class="highlight highlight-shell"><pre>$ mkdir [my-site]</pre></div>
-        <p class="copy">Run the generator from within the new [my-site] folder:</p>
+        <h3  class="heading">Static platform</h3>
+        <div class="highlight highlight-shell">
+          <pre>$ mkdir [sitename]</pre>
+          <pre>$ cd [sitename]</pre>
+          <pre>$ slush stencil</pre>
+        </div>
+
+        <p class="copy">To develop:</p>
+        <div class="highlight highlight-shell">
+          <pre>$ gulp develop</pre>
+        </div>
+
+        <p class="copy">And when you're ready to deploy to S3 (and you have your AWS credentials configured):</p>
+        <div class="highlight highlight-shell">
+          <pre>$ gulp deploy [--production]</pre>
+        </div>
+
+        <h3  class="heading">Webhook platform</h3>
+        <div class="highlight highlight-shell">
+          <pre>npm install -g wh grunt-cli</pre>
+        </div>
+
+        <p class="copy">If this is a totally new Webhook project, create your Webhook site, then run Stencil:</p>
 
         <div class="highlight highlight-shell">
-          <pre>$ <span class="pl-s3">cd</span> [my-site]
-$ slush website</pre></div>
+          <pre>$ mkdir [sitename]</pre>
+          <pre>$ cd [sitename]</pre>
+          <pre>$ slush stencil</pre>
+        </div>
 
+        <p class="copy">Warning! Stencil uses conflict resolution and allows you to reject overwriting files, BUT you could very easily overwrite something you care about as it spews a bunch of files and folders into your current directory and merges with your package.json. Be careful, try it out first on something you don't care about, commit or backup first. But also, feel free to run it again and again.</p>
+
+        <p class="copy">To develop:</p>
+        <div class="highlight highlight-shell">
+          <pre>$ gulp develop</pre>
+        </div>
+
+        <p class="copy">And when you're ready to deploy to S3 (and you have your AWS credentials configured):</p>
+        <div class="highlight highlight-shell">
+          <pre>$ gulp deploy</pre>
+        </div>
+
+        
         <h3 class="heading">Collaborating with git</h3>
 
         <p class="copy">Create your git repository in github. Don't add any default files.</p>
