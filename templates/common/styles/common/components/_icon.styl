@@ -1,0 +1,11 @@
+.icon
+    display: inline-block
+    font: normal normal normal 14px/1 iconfont
+    font-size: inherit
+    text-rendering: auto
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+
+for $icon, $codepoint in $icons
+    .icon-{$icon}:before
+        content: $codepoint
