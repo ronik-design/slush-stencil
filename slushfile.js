@@ -45,6 +45,7 @@ function dest(filepath) {
 var defaults = (function () {
     var homeDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE,
         workingDirName = process.cwd().split('/').pop().split('\\').pop(),
+        workingDirNoExt = workingDirName.replace(/\.[a-z]{2,3}$/, ''),
         osUserName = homeDir && homeDir.split('/').pop() || 'root',
         configFile = homeDir + '/.gitconfig',
         user = {};
@@ -53,7 +54,7 @@ var defaults = (function () {
     }
     return {
         name: workingDirName,
-        slug: slugify(workingDirName),
+        slug: slugify(workingDirNoExt),
         userName: format(user.name) || osUserName,
         authorEmail: user.email || ''
     };
@@ -110,7 +111,7 @@ gulp.task('default', function (done) {
         message: 'Which client-side framework would you like to use?',
         choices: [
             {
-                name: 'Basic (ES6, jQuery, lodash, knockout.js)',
+                name: 'Basic (ES6, jQuery, knockout.js)',
                 value: 'basic'
             },
             {
