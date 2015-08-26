@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var util = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
 var stylus = require('gulp-stylus');
+var stylint = require('gulp-stylint');
 var notify = require('gulp-notify');
 var size = require('gulp-size');
 var del = require('del');
@@ -55,6 +56,8 @@ gulp.task('styles', ['icons'], function () {
 
     return gulp.src(stylesDir + '/**/[!_]*.{css,styl}')
         .pipe(gulpIf(watching, sourcemaps.init()))
+        .pipe(stylint({config: '.stylintrc'}))
+        .on('error', notify.onError())
         .pipe(stylus({ use: use, import: imports, 'include css': true }))
         .on('error', notify.onError())
         .pipe(gulpIf(watching, sourcemaps.write('./')))

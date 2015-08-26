@@ -45,6 +45,7 @@
     , "gulp-size": "^1.2.0"
     , "gulp-sourcemaps": "^1.5.1"
     , "gulp-stylus": "^2.0.0"
+    , "gulp-stylint": "^2.0.0"
     , "gulp-swig": "^0.7.4"
     , "gulp-util": "^3.0.3"
     , "gulp-watch": "^4.2.2"
