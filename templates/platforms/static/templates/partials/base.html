@@ -9,8 +9,9 @@
 
 <html>
 
-  {% set site_title = params.name %}
-  {% set site_description = params.description %}
+  {% set site_title = stencil.name %}
+  {% set site_description = stencil.description %}
+  {% set analytics_id = stencil.analytics_id %}
 
   <head>
     <meta charset="utf-8">
@@ -30,28 +31,41 @@
   <body {% block body_attributes %}{% endblock %}>
     {% block body %}
 
-      {% block header %}
-        {% include "templates/partials/header.html" %}
-      {% endblock %}
+      <div class="page__wrapper">
+        <div id="header" class="page__header">
+        {% block header %}
+          {% include "templates/partials/header.html" %}
+        {% endblock %}
+        </div>
 
-      {# By default, your inner pages will load into this block. #}
-      {% block content %}{% endblock %}
+        {# By default, your inner pages will load into this block. #}
+        <div id="content" class="page__content">
+          {% block content %}{% endblock %}
+        </div>
 
-      {% block footer %}
-        {% include "templates/partials/footer.html" %}
-      {% endblock %}
+        <div id="footer" class="page__footer">
+        {% block footer %}
+          {% include "templates/partials/footer.html" %}
+        {% endblock %}
+        </div>
+      </div>
+
+      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
       <script src="/javascript/main.js"></script>
 
       {% block scripts_extra %}{% endblock %}
 
       {# Google Analytics code. Feel free to remove. #}
+      {% if analytics_id %}
       <script>
         var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
         (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
         g.src='//www.google-analytics.com/ga.js';
         s.parentNode.insertBefore(g,s)}(document,'script'));
       </script>
+      {% endif %}
+
     {% endblock %}
   </body>
 </html>

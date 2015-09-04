@@ -1,8 +1,8 @@
-import DefaultPage from './DefaultPage';
-import DemoPage from './DemoPage';
+import DefaultPage from "./default-page";
+import DemoPage from "./demo-page";
 
 
 export default {
-    default: DefaultPage,
-    demo: DemoPage
+  default: DefaultPage,
+  demo: DemoPage
 };

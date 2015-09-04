@@ -1,12 +1,17 @@
-var gulp = require('gulp'),
-    util = require('gulp-util'),
-    size = require('gulp-size');
+"use strict";
 
-gulp.task('assets', function() {
-    var buildDir = util.env.buildDir;
-    var assetsDir = util.env.assetsDir;
+var gulp = require("gulp");
+var util = require("gulp-util");
+var size = require("gulp-size");
 
-    return gulp.src(assetsDir + '/**/*')
-        .pipe(size({ title: 'assets' }))
-        .pipe(gulp.dest(buildDir + '/'));
+gulp.task("assets", function () {
+
+  var buildDir = util.env.buildDir;
+  var assetsDir = util.env.assetsDir;
+
+  return gulp.src(assetsDir + "/**/*")
+    .pipe(size({
+      title: "assets"
+    }))
+    .pipe(gulp.dest(buildDir + "/"));
 });

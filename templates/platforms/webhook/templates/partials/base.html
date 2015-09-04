@@ -47,25 +47,29 @@
         <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
       <![endif]-->
 
-      <div id="header">
-          {% block header %}
-            {% include "templates/partials/header.html" %}
-          {% endblock %}
-      </div>
+      <div class="page__wrapper">
+        <div id="header" class="page__header">
+            {% block header %}
+              {% include "templates/partials/header.html" %}
+            {% endblock %}
+        </div>
 
-      {# By default, your inner pages will load into this block. #}
-      <div id="content">
-        {% block content %}{% endblock %}
-      </div>
+        {# By default, your inner pages will load into this block. #}
+        <div id="content" class="page__content">
+          {% block content %}{% endblock %}
+        </div>
 
-      <div id="footer">
-          {% block footer %}
-            {% include "templates/partials/footer.html" %}
-          {% endblock %}
+        <div id="footer" class="page__footer">
+            {% block footer %}
+              {% include "templates/partials/footer.html" %}
+            {% endblock %}
+        </div>
       </div>
 
       {# Put your JS in here and we'll minify it into one file. No CDN scripts. More info: #}
       {# http://www.webhook.com/docs/minify-your-js-and-css/ #}
+
+      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
       <!-- build:js /static/javascript/minified.js -->
       <script src="/static/javascript/main.js"></script>

@@ -1,29 +1,31 @@
-var gulp = require('gulp');
-var util = require('gulp-util');
-var eslint = require('gulp-eslint');
-var notify = require('gulp-notify');
+"use strict";
 
-gulp.task('lint', function() {
+var gulp = require("gulp");
+var util = require("gulp-util");
+var eslint = require("gulp-eslint");
+var notify = require("gulp-notify");
 
-    var scripts = util.env.scripts;
+gulp.task("lint", function () {
 
-    var globs = [
-        'webpack.config.js',
-        'webpack.production.config.js',
-        'tasks/*'
-    ];
+  var scripts = util.env.scripts;
 
-    var options = {
-        useEslintrc: true
-    };
+  var globs = [
+    "webpack.config.js",
+    "webpack.production.config.js",
+    "tasks/*"
+  ];
 
-    if (scripts) {
-        globs.push('scripts/**/*.{js,jsx}');
-    }
+  var options = {
+    useEslintrc: true
+  };
 
-    return gulp.src(globs)
-        .pipe(eslint(options))
-        .on('error', notify.onError())
-        .pipe(eslint.format())
-        .pipe(eslint.failAfterError());
+  if (scripts) {
+    globs.push("scripts/**/*.{js,jsx}");
+  }
+
+  return gulp.src(globs)
+    .pipe(eslint(options))
+    .on("error", notify.onError())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });

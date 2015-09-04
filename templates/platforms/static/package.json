@@ -11,7 +11,7 @@
   "devDependencies": {
     "assets-webpack-plugin": "^2.2.0",
     "glob": "^5.0.5",
-    "gulp-awspublish": "^2.0.2",
+    "gulp-awspublish": "^3.0.0",
     "gulp-data": "^1.2.0",
     "gulp-prettify": "^0.3.0",
     "gulp-rev-all": "^0.8.21",
