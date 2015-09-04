@@ -13,6 +13,7 @@ var del = require("del");
 var rupture = require("rupture");
 var gulpIf = require("gulp-if");
 var nib = require("nib");
+var minify = require("gulp-minify-css");
 
 
 var getImports = function () {
@@ -79,8 +80,9 @@ gulp.task("styles", function () {
     .on("error", notify.onError())
     .pipe(gulpIf(watching, sourcemaps.write("./")))
     .on("error", notify.onError())
-    .pipe(size({
-      title: "styles"
-    }))
+    .pipe(gulpIf(!watching, minify()))
+    .on("error", notify.onError())
+    .pipe(size({ title: "styles" }))
     .pipe(gulp.dest(buildDir + "/css/"));
 });
+
