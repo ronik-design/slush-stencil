@@ -46,7 +46,7 @@ gulp.task("build", function (cb) {
   runSequence(
     "clean",
     "lint",
-    ["images", "assets", "webpack", "templates"],
+    ["images", "assets", "webpack", "templates", "icons"],
     ["styles"],
     "revisions",
     cb
@@ -69,7 +69,7 @@ gulp.task("watch", function (cb) {
       gulp.start("images");
     });
     watch("icons/**/*.svg", function () {
-      gulp.start("styles");
+      gulp.start("icons");
     });
     watch(["templates/**/*", "pages/**/*", "data/**/*"], function () {
       gulp.start("templates");
@@ -81,7 +81,7 @@ gulp.task("watch", function (cb) {
   runSequence(
     "clean",
     "lint",
-    ["images", "assets", "webpack", "templates"],
+    ["images", "assets", "webpack", "templates", "icons"],
     ["styles"],
     watchStart
   );

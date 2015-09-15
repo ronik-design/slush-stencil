@@ -1,3 +1,5 @@
+"use strict";
+
 /* $lab:coverage:off$ */
 var PARAMS = require("./stencil/params.json");
 var HOST = process.env.HOST || "0.0.0.0";
