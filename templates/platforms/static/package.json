@@ -9,7 +9,6 @@
     "hapi": "^8.4.0"
   },
   "devDependencies": {
-    "assets-webpack-plugin": "^2.2.0",
     "glob": "^5.0.5",
     "gulp-awspublish": "^3.0.0",
     "gulp-data": "^1.2.0",

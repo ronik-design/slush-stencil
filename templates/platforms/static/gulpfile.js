@@ -16,7 +16,6 @@ var dirPath = function (dir) {
 
 // Params
 util.env.PACKAGE = PACKAGE;
-util.env.PARAMS = STENCIL;
 util.env.STENCIL = STENCIL;
 
 // Domain, for S3 deployment
@@ -33,6 +32,7 @@ util.env.baseDir = dirPath("./");
 util.env.tmpDir = dirPath(STENCIL.buildDir + "/.tmp");
 
 // Various process sub-dirs
+util.env.spritesDir = dirPath("sprites");
 util.env.assetsDir = dirPath("assets");
 util.env.imagesDir = dirPath("images");
 util.env.scriptsDir = dirPath("scripts");
@@ -44,10 +44,9 @@ util.env.templateDataDir = dirPath("data");
 gulp.task("build", function (cb) {
 
   runSequence(
-    "clean",
     "lint",
-    ["images", "assets", "webpack", "templates", "icons"],
-    ["styles"],
+    "clean",
+    ["images", "assets", "webpack", "templates", "sprites", "styles"],
     "revisions",
     cb
   );
@@ -68,8 +67,8 @@ gulp.task("watch", function (cb) {
     watch("images/**/*", function () {
       gulp.start("images");
     });
-    watch("icons/**/*.svg", function () {
-      gulp.start("icons");
+    watch("sprites/**/*.svg", function () {
+      gulp.start("sprites");
     });
     watch(["templates/**/*", "pages/**/*", "data/**/*"], function () {
       gulp.start("templates");
@@ -78,13 +77,7 @@ gulp.task("watch", function (cb) {
     cb();
   };
 
-  runSequence(
-    "clean",
-    "lint",
-    ["images", "assets", "webpack", "templates", "icons"],
-    ["styles"],
-    watchStart
-  );
+  runSequence("build", watchStart);
 });
 
 gulp.task("deploy", function (cb) {

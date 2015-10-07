@@ -1,5 +1,6 @@
 /* eslint max-statements:0 */
 /* eslint no-console:0 */
+/* eslint global-require:0 */
 
 /*
  * slush-stencil
@@ -24,6 +25,8 @@ var clone = require("lodash.clone");
 var merge = require("lodash.merge");
 var slugify = require("uslug");
 var inquirer = require("inquirer");
+
+var pkg = require("./package.json");
 
 
 var TEMPLATE_SETTINGS = {
@@ -100,7 +103,7 @@ gulp.task("default", function (done) {
     name: "description",
     message: "Please describe your site?"
   }, {
-    name: "version",
+    name: "pkgVersion",
     message: "What is the version of your site?",
     default: "0.1.0"
   }, {
@@ -111,8 +114,8 @@ gulp.task("default", function (done) {
     type: "list",
     message: "Which client-side framework would you like to use?",
     choices: [{
-      name: "Basic (ES6, jQuery, knockout.js)",
-      value: "basic"
+      name: "Knockout (ES6, jQuery, knockout.js)",
+      value: "knockout"
     }, {
       name: "Backbone (ES6, jQuery, lodash, Backbone)",
       value: "backbone"
@@ -133,17 +136,6 @@ gulp.task("default", function (done) {
     }, {
       name: "Skeleton.css",
       value: "skeleton"
-    }]
-  }, {
-    name: "iconBundleMethod",
-    type: "list",
-    message: "Which icon bundling (svg) approach would you like to use?",
-    choices: [{
-      name: "SVG Sprite Stack",
-      value: "spritestack"
-    }, {
-      name: "Icon Font",
-      value: "iconfont"
     }]
   }, {
     type: "confirm",
@@ -181,8 +173,8 @@ gulp.task("default", function (done) {
       config.deployDir = config.platform === "webhook" ? "" : "./public";
 
       config.browserSync = config.platform !== "webhook";
-      config.minifyCss = config.platform !== "webhook";
-      config.iconBundleMethod = "spritestack";
+      config.minifyCss = true;
+      config.version = pkg.version;
 
       var commonPath = __dirname + "/templates/common";
       var platformPath = __dirname + "/templates/platforms/" + config.platform;
@@ -190,19 +182,17 @@ gulp.task("default", function (done) {
 
       var installCommonFiles = function (cb) {
 
-        var ignorePaths = [
-          commonPath + "/{styles,styles/**,styles/**/.*}",
-          commonPath + "/{scripts,scripts/**,scripts/**/.*}",
-          commonPath + "/{pages,pages/**,pages/**/.*}",
-          commonPath + "/package.json"
+        var excludePaths = [
+          "{styles,styles/**,styles/**/.*}",
+          "{scripts,scripts/**,scripts/**/.*}",
+          "{pages,pages/**,pages/**/.*}",
+          "package.json"
         ];
 
         gulp.src(commonPath + "/**/*", { dot: true })
+          .pipe(ignore.exclude(excludePaths))
           .pipe(template(config, TEMPLATE_SETTINGS))
-          .pipe(ignore(ignorePaths))
-          .pipe(conflict(destDir, {
-            logger: console.log
-          }))
+          .pipe(conflict(destDir, { logger: console.log }))
           .pipe(gulp.dest(destDir))
           .on("end", cb);
       };
@@ -215,9 +205,7 @@ gulp.task("default", function (done) {
 
         gulp.src(paths, { dot: true })
           .pipe(template(config, TEMPLATE_SETTINGS))
-          .pipe(conflict(dest("pages"), {
-            logger: console.log
-          }))
+          .pipe(conflict(dest("pages"), { logger: console.log }))
           .pipe(gulp.dest(dest("pages")))
           .on("end", cb);
       };
@@ -230,9 +218,7 @@ gulp.task("default", function (done) {
         ];
 
         gulp.src(paths, { dot: true })
-          .pipe(conflict(dest("scripts"), {
-            logger: console.log
-          }))
+          .pipe(conflict(dest("scripts"), { logger: console.log }))
           .pipe(gulp.dest(dest("scripts")))
           .on("end", cb);
       };
@@ -245,25 +231,21 @@ gulp.task("default", function (done) {
         ];
 
         gulp.src(paths, { dot: true })
-          .pipe(conflict(dest("styles"), {
-            logger: console.log
-          }))
+          .pipe(conflict(dest("styles"), { logger: console.log }))
           .pipe(gulp.dest(dest("styles")))
           .on("end", cb);
       };
 
       var installPlatformFiles = function (cb) {
 
-        var ignorePaths = [
-          platformPath + "/package.json"
+        var excludePaths = [
+          "package.json"
         ];
 
         gulp.src(platformPath + "/**/!(*.slush)", { dot: true })
-          .pipe(ignore(ignorePaths))
+          .pipe(ignore.exclude(excludePaths))
           .pipe(template(config, TEMPLATE_SETTINGS))
-          .pipe(conflict(destDir, {
-            logger: console.log
-          }))
+          .pipe(conflict(destDir, { logger: console.log }))
           .pipe(gulp.dest(destDir))
           .on("end", cb);
       };

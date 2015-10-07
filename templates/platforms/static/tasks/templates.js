@@ -1,3 +1,5 @@
+/* eslint global-require:0 */
+
 "use strict";
 
 var path = require("path");
@@ -12,42 +14,70 @@ var glob = require("glob");
 var prettify = require("gulp-prettify");
 
 
-var getJsonData = function (dataDir) {
+var getJsonData = function (dataDir, pagesDir) {
+
   return function (file) {
+
     var jsonData;
+
     try {
-      var basename = path.basename(file.path, path.extname(file.path));
+
+      var re = new RegExp(path.extname(file.path) + "$");
+
+      var basename = file.path
+        .replace(pagesDir || dataDir, "")
+        .replace(re, "")
+        .replace(/^\//, "");
+
       var dataStr = fs.readFileSync(dataDir + "/" + basename + ".json", {
         encoding: "utf-8"
       });
+
       jsonData = JSON.parse(dataStr);
+
     } catch (e) {
       jsonData = null;
     }
+
     return jsonData;
   };
 };
 
-var getJsonGlobals = function (dataDir) {
+var globalMatches = function (obj, dir) {
 
-  var globals = {};
+  var getData = getJsonData(dir);
 
-  try {
-    globals = getJsonData(dataDir)({
-      path: "_globals.json"
-    });
-  } catch (err) {
-    globals = {};
-  }
+  return function (fileGlob) {
 
-  glob.sync(dataDir + "/**/_*.json").forEach(function (fileGlob) {
     var prop = path.basename(fileGlob).substr(1).replace(".json", "");
-    if (prop !== "globals") {
-      globals[prop] = getJsonData(dataDir)({
-        path: fileGlob
-      });
-    }
-  });
+    obj[prop] = getData({ path: fileGlob });
+  };
+};
+
+var dataMatches = function (obj, dir) {
+
+  var getData = getJsonData(dir);
+
+  return function (fileGlob) {
+
+    var propName = fileGlob
+      .replace(path.extname(fileGlob), "")
+      .replace(/index$/, "")
+      .replace(dir, "")
+      .replace(/^\//, "")
+      .replace(/\/$/, "")
+      .replace(/\//g, "_");
+
+    obj[propName || "index"] = getData({ path: fileGlob });
+  };
+};
+
+var getJson = function (dataDir) {
+
+  var globals = { data: {} };
+
+  glob.sync(dataDir + "/_*.json").forEach(globalMatches(globals, dataDir));
+  glob.sync(dataDir + "/**/[^_]*.json").forEach(dataMatches(globals.data, dataDir));
 
   return globals;
 };
@@ -76,13 +106,13 @@ gulp.task("templates", function () {
   var pagesDir = util.env.templatePagesDir;
   var dataDir = util.env.templateDataDir;
 
-  var globals = getJsonGlobals(dataDir);
-
-  globals.package = util.env.PACKAGE;
-  globals.stencil = util.env.PARAMS;
-  globals.__DEV__ = util.env.watching;
-
   var tags = loadTags(baseDir);
+
+  var locals = getJson(dataDir);
+
+  locals.package = util.env.PACKAGE;
+  locals.stencil = util.env.STENCIL;
+  locals.__DEV__ = util.env.watching;
 
   var opts = {
     setup: function (swigInstance) {
@@ -98,12 +128,12 @@ gulp.task("templates", function () {
     },
     defaults: {
       cache: false,
-      locals: globals
+      locals: locals
     }
   };
 
   return gulp.src(pagesDir + "/**/*.html")
-    .pipe(data(getJsonData(dataDir)))
+    .pipe(data(getJsonData(dataDir, pagesDir)))
     .on("error", notify.onError())
     .pipe(swig(opts))
     .on("error", notify.onError())
@@ -111,8 +141,6 @@ gulp.task("templates", function () {
       "indent_size": 2,
       "unformatted": ["script"]
     }))
-    .pipe(size({
-      title: "templates"
-    }))
+    .pipe(size({ title: "templates" }))
     .pipe(gulp.dest(buildDir));
 });

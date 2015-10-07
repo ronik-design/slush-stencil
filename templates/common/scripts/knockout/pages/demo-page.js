@@ -5,7 +5,7 @@ export default class DefaultPage extends ViewModel {
 
   constructor() {
     super();
-    this.observe("stats", []);
+    this.observable("stats", []);
   }
 
   onSubmit(form) {

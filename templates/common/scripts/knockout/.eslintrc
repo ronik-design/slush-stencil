@@ -6,7 +6,6 @@
   "globals": {
       "__DEV__": true,
       "File": true,
-      "ko": true,
-      "postal": true
+      "ko": true
   }
 }

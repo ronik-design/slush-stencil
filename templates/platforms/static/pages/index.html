@@ -6,8 +6,8 @@
 
 {% block content %}
 <div id="content">
-  <h1>{{ stencil.name }}</h1>
-  <p>{{ stencil.description }}</p>
-  <p>{{ welcomeMessage }}</p>
+  <h1>{{ globals.site_name }}</h1>
+  <p>{{ stencil.version }}</p>
+  <p>{{ content }}</p>
 </div>
 {% endblock %}

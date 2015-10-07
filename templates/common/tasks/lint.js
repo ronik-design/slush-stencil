@@ -15,9 +15,7 @@ gulp.task("lint", function () {
     "tasks/*"
   ];
 
-  var options = {
-    useEslintrc: true
-  };
+  var options = { useEslintrc: true };
 
   if (scripts) {
     globs.push("scripts/**/*.{js,jsx}");

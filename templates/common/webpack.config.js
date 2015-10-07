@@ -13,9 +13,8 @@ var ENTRY = {
 
 var providePlugins = {};
 
-if (STENCIL.jsFramework === "basic") {
+if (STENCIL.jsFramework === "knockout") {
   providePlugins.ko = "knockout";
-  providePlugins.postal = "postal";
 }
 
 if (STENCIL.jsFramework === "backbone") {
@@ -31,7 +30,7 @@ if (STENCIL.cssFramework === "bootstrap") {
 
 var externals = {};
 
-if (STENCIL.jsFramework === "basic" || STENCIL.jsFramework === "backbone") {
+if (STENCIL.jsFramework === "knockout" || STENCIL.jsFramework === "backbone") {
   externals.$ = "jquery";
   externals.jQuery = "jquery";
 }

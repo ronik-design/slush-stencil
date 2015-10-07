@@ -1,10 +1,10 @@
 "use strict";
 
 /* $lab:coverage:off$ */
-var PARAMS = require("./stencil/params.json");
+var STENCIL = require("./stencil/params.json");
 var HOST = process.env.HOST || "0.0.0.0";
 var PORT = process.env.PORT || 8080;
-var STATIC_DIR = process.env.WATCHING ? PARAMS.buildDir : PARAMS.deployDir;
+var STATIC_DIR = process.env.WATCHING ? STENCIL.buildDir : STENCIL.deployDir;
 /* $lab:coverage:on$ */
 
 var path = require("path");
@@ -49,7 +49,7 @@ server.route([{
   }
 }]);
 
-if (PARAMS.singlePageApplication) {
+if (STENCIL.singlePageApplication) {
   server.ext("onPreResponse", function (request, reply) {
 
     if (request.response.isBoom) {

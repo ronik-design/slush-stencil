@@ -17,7 +17,6 @@ var dirPath = function (dir) {
 
 // Params
 util.env.PACKAGE = PACKAGE;
-util.env.PARAMS = STENCIL;
 util.env.STENCIL = STENCIL;
 
 // Domain, for...
@@ -30,6 +29,7 @@ util.env.baseDir = dirPath("./");
 util.env.tmpDir = dirPath(STENCIL.buildDir + "/.tmp");
 
 // Various process sub-dirs
+util.env.spritesDir = dirPath("sprites");
 util.env.assetsDir = dirPath("assets");
 util.env.imagesDir = dirPath("images");
 util.env.scriptsDir = dirPath("scripts");
@@ -39,7 +39,8 @@ util.env.iconsDir = dirPath("icons");
 gulp.task("build", function (cb) {
 
   runSequence(
-    "clean", ["icons", "lint", "images", "assets"], ["styles", "webpack"],
+    "clean",
+    ["sprites", "lint", "images", "assets", "styles", "webpack"],
     "webhook-build",
     cb
   );
@@ -60,8 +61,8 @@ gulp.task("watch", function (cb) {
     watch("images/**/*", function () {
       gulp.start("images");
     });
-    watch("icons/**/*.svg", function () {
-      gulp.start("icons");
+    watch("sprites/**/*.svg", function () {
+      gulp.start("sprites");
     });
 
     cb();

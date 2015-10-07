@@ -49,12 +49,12 @@ $ gulp deploy
 * `assets` place files and directories to be directly copied to the output /
   static directory.
 
-* `icons` place `svg` files you would like automatically compiled into an icon
-  font. The filename becomes the basis for an auto-generated set of classes.
+* `sprites` place `svg` files you would like automatically compiled into a svg icon
+  stack.
 
 * `images` static images (backgrounds, etc) that you want optimized.
 
-* `scripts` client-side JS, to be compiled with Browserify. Code style dictates
+* `scripts` client-side JS, to be compiled with Webpack. Code style dictates
   use of ES6 (all files are transpiled using babel) and the `jsx` extension
   when appropriate.
 

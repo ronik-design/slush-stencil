@@ -17,5 +17,7 @@ gulp.task("clean", function (cb) {
     cleanDirs.push(util.env.deployDir + "/**/*");
   }
 
-  del(cleanDirs).then(cb);
+  del.sync(cleanDirs);
+
+  cb();
 });

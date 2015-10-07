@@ -1,7 +1,7 @@
+/* eslint global-require:0 */
+
 "use strict";
 
-/* eslint no-trailing-spaces:0 */
-var fs = require("fs");
 var gulp = require("gulp");
 var util = require("gulp-util");
 var sourcemaps = require("gulp-sourcemaps");
@@ -16,51 +16,21 @@ var nib = require("nib");
 var minify = require("gulp-minify-css");
 
 
-var getImports = function () {
-
-  var tmpDir = util.env.tmpDir;
-  var stencilDir = util.env.stencilDir;
-
-  var imports = [];
-  var iconfontEmbedded;
-  var iconStyles;
-
-  iconfontEmbedded = tmpDir + "/iconfont_embedded.css";
-
-  if (fs.existsSync(iconfontEmbedded)) {
-    imports.push(iconfontEmbedded);
-  } else {
-    imports.push(stencilDir + "/icons/iconfont_fontface.styl");
-  }
-
-  iconStyles = tmpDir + "/icons.styl";
-
-  if (fs.existsSync(iconStyles)) {
-    imports.push(iconStyles);
-  } else {
-    imports.push(stencilDir + "/icons/icons.styl");
-  }
-
-  return imports;
-};
-
 gulp.task("styles", function () {
 
-  var PARAMS = util.env.PARAMS;
+  var STENCIL = util.env.STENCIL;
   var watching = util.env.watching;
   var buildDir = util.env.buildDir;
 
   var stylesDir = util.env.stylesDir;
 
-  var imports = getImports();
-
   var use = [nib(), rupture()];
 
-  if (PARAMS.cssFramework === "basic") {
+  if (STENCIL.cssFramework === "basic") {
     use.push(require("jeet")());
   }
 
-  if (PARAMS.cssFramework === "bootstrap") {
+  if (STENCIL.cssFramework === "bootstrap") {
     use.push(require("bootstrap-styl")());
   }
 
@@ -68,15 +38,9 @@ gulp.task("styles", function () {
 
   return gulp.src(stylesDir + "/**/[!_]*.{css,styl}")
     .pipe(gulpIf(watching, sourcemaps.init()))
-    .pipe(stylint({
-      config: ".stylintrc"
-    }))
+    .pipe(stylint({ config: stylesDir + "/.stylintrc" }))
     .on("error", notify.onError())
-    .pipe(stylus({
-      use: use,
-      import: imports,
-      "include css": true
-    }))
+    .pipe(stylus({ use: use }))
     .on("error", notify.onError())
     .pipe(gulpIf(watching, sourcemaps.write("./")))
     .on("error", notify.onError())

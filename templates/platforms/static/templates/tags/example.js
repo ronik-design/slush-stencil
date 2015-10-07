@@ -1,5 +1,5 @@
 exports.compile = function () {
-    return '_output += \'<!-- tacos! -->\';';
+    return '_output += \'<!-- example tacos! -->\';';
 };
 
 exports.parse = function () {
