@@ -10,28 +10,28 @@ var size = require("gulp-size");
 
 gulp.task("svg-images", function () {
 
-  var buildDir = util.env.buildDir;
   var imagesDir = util.env.imagesDir;
+  var staticDir = util.env.staticDir;
 
   return gulp.src(imagesDir + "/**/!(*.gif|*.jpg|*.png|*.jpeg)")
-    .pipe(changed(buildDir + "/images"))
+    .pipe(changed(staticDir + "/images"))
     .on("error", notify.onError())
     .pipe(size({ title: "svg-images" }))
-    .pipe(gulp.dest(buildDir + "/images"));
+    .pipe(gulp.dest(staticDir + "/images"));
 });
 
 gulp.task("images", ["svg-images"], function () {
 
-  var buildDir = util.env.buildDir;
   var imagesDir = util.env.imagesDir;
+  var staticDir = util.env.staticDir;
 
   return gulp.src(imagesDir + "/**/*!(*.svg)")
-    .pipe(changed(buildDir + "/images"))
+    .pipe(changed(staticDir + "/images"))
     .pipe(imagemin({
       progressive: true,
       interlaced: true
     }))
     .on("error", notify.onError())
     .pipe(size({ title: "images" }))
-    .pipe(gulp.dest(buildDir + "/images"));
+    .pipe(gulp.dest(staticDir + "/images"));
 });

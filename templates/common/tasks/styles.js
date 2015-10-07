@@ -20,8 +20,8 @@ gulp.task("styles", function () {
 
   var STENCIL = util.env.STENCIL;
   var watching = util.env.watching;
-  var buildDir = util.env.buildDir;
-  var minify = !watching && STENCIL.minifyCss;
+  var staticDir = util.env.staticDir;
+  var doMinify = !watching && STENCIL.minifyCss;
 
   var stylesDir = util.env.stylesDir;
 
@@ -35,7 +35,7 @@ gulp.task("styles", function () {
     use.push(require("bootstrap-styl")());
   }
 
-  del.sync(buildDir + "/css/**/*");
+  del.sync(staticDir + "/css/**/*");
 
   return gulp.src(stylesDir + "/**/[!_]*.{css,styl}")
     .pipe(gulpIf(watching, sourcemaps.init()))
@@ -45,9 +45,9 @@ gulp.task("styles", function () {
     .on("error", notify.onError())
     .pipe(gulpIf(watching, sourcemaps.write("./")))
     .on("error", notify.onError())
-    .pipe(gulpIf(!watching, minify()))
+    .pipe(gulpIf(doMinify, minify()))
     .on("error", notify.onError())
     .pipe(size({ title: "styles" }))
-    .pipe(gulp.dest(buildDir + "/css/"));
+    .pipe(gulp.dest(staticDir + "/css/"));
 });
 

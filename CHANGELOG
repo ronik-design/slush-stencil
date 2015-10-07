@@ -1,3 +1,9 @@
+v0.14.2:
+  date: 2015-10-07
+  changes:
+    - Using Webhook minification for projects using that platform
+    - Move static platform css/js/image files into `/static` subfolder
+    - Only using svg sprites now
 v0.9.12:
   date: 2015-2-12
   changes:

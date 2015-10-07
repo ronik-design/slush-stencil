@@ -52,8 +52,8 @@ module.exports = {
 
   output: {
     filename: "main.js",
-    path: DEST + "/javascript/",
-    publicPath: "/javascript/"
+    path: DEST + "/static/javascript/",
+    publicPath: "/static/javascript/"
   },
 
   stats: {

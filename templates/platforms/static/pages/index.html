@@ -6,8 +6,9 @@
 
 {% block content %}
 <div id="content">
-  <h1>{{ globals.site_name }}</h1>
-  <p>{{ stencil.version }}</p>
+  <h1>{{ globals.site_name|default(stencil.name) }}</h1>
+  <h2>{{ globals.site_description|default(stencil.description) }}</h2>
   <p>{{ content }}</p>
+  <p>Generated with Slush Stencil ver. {{ stencil.version }}</p>
 </div>
 {% endblock %}

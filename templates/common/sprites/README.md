@@ -12,5 +12,5 @@ For example:
 * You can now reference it in your code.
 
 ```html
-<svg><use xlink:href="/sprites/icons.stack.svg#open"></use></svg>
+<svg><use xlink:href="/static/sprites/icons.stack.svg#open"></use></svg>
 ```

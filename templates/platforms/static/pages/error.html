@@ -1,7 +1,7 @@
 <html>
 
   <head>
-    <title>Error | {{ params.name }}</title>
+    <title>Error | {{ globals.site_name|default(stencil.name) }}</title>
   </head>
 
   <body>

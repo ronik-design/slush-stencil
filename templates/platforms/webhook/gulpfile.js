@@ -25,6 +25,7 @@ util.env.domain = STENCIL.domain;
 // Build directory
 util.env.stencilDir = dirPath("stencil");
 util.env.buildDir = dirPath(STENCIL.buildDir);
+util.env.staticDir = dirPath(STENCIL.buildDir);
 util.env.baseDir = dirPath("./");
 util.env.tmpDir = dirPath(STENCIL.buildDir + "/.tmp");
 
@@ -55,7 +56,7 @@ gulp.task("watch", function (cb) {
     watch("assets/**/*", function () {
       gulp.start("assets");
     });
-    watch("styles/**/*.{css,styl}", function () {
+    watch("styles/**/*", function () {
       gulp.start("styles");
     });
     watch("images/**/*", function () {
