@@ -173,7 +173,9 @@ gulp.task("default", function (done) {
       config.deployDir = config.platform === "webhook" ? "" : "./public";
 
       config.browserSync = config.platform !== "webhook";
-      config.minifyCss = true;
+      config.minifyCss = config.platform !== "webhook";
+      config.minifyJs = config.platform !== "webhook";
+
       config.version = pkg.version;
 
       var commonPath = __dirname + "/templates/common";

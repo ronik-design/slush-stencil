@@ -21,6 +21,7 @@ gulp.task("styles", function () {
   var STENCIL = util.env.STENCIL;
   var watching = util.env.watching;
   var buildDir = util.env.buildDir;
+  var minify = !watching && STENCIL.minifyCss;
 
   var stylesDir = util.env.stylesDir;
 

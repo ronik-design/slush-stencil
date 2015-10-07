@@ -2,6 +2,7 @@
 
 var webpack = require("webpack");
 var config = require("./webpack.config.js");
+var STENCIL = require("./stencil/params");
 
 var PLUGINS = [
   new webpack.DefinePlugin({
@@ -9,8 +10,12 @@ var PLUGINS = [
     "__DEV__": false
   }),
   new webpack.optimize.DedupePlugin(),
-  new webpack.optimize.OccurenceOrderPlugin(),
-  new webpack.optimize.UglifyJsPlugin({
+  new webpack.optimize.OccurenceOrderPlugin()
+];
+
+if (STENCIL.minifyJs) {
+
+  PLUGINS.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
       "screw_ie8": true,
       "properties": true,
@@ -20,9 +25,10 @@ var PLUGINS = [
       "warnings": true,
       "keep_fargs": true
     }
-  }),
-  new webpack.optimize.AggressiveMergingPlugin()
-];
+  }));
+
+  PLUGINS.push(new webpack.optimize.AggressiveMergingPlugin());
+}
 
 config.output.filename = "main.js";
 config.cache = false;
