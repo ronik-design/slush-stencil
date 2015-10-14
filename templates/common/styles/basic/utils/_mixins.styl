@@ -1,160 +1,160 @@
 ratio-box(percent)
-    position: relative
+  position: relative
 
-    &:before
-        content: ''
-        display: block
-        padding-top: percent
+  &:before
+    content: ""
+    display: block
+    padding-top: percent
 
-    > div
-        position: absolute
-        top: 0
-        right: 0
-        bottom: 0
-        left: 0
+  > div
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
 
 // Buttons
 
 button(size, button-color)
-    @extend $strip-input-style
+  @extend $strip-input-style
 
-    textColor = button-color
-    backgroundColor = button-color
-    hoverTextColor = #fff
+  textColor = button-color
+  backgroundColor = button-color
+  hoverTextColor = #fff
 
-    color: textColor
-    line-height: 1
-    background-color: transparent
-    position: relative
-    display: inline-block
-    appearance: none
-    outline: 0 none
-    border: 0.1rem solid backgroundColor
-    text-align: center
-    text-decoration: none
-    vertical-align: middle
-    transition: background-color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.2s ease-in-out, opacity 0.15s ease-in
+  color: textColor
+  line-height: 1
+  background-color: transparent
+  position: relative
+  display: inline-block
+  appearance: none
+  outline: 0 none
+  border: 0.1rem solid backgroundColor
+  text-align: center
+  text-decoration: none
+  vertical-align: middle
+  transition: background-color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.2s ease-in-out, opacity 0.15s ease-in
 
-    &:disabled
-        opacity: 0.5
+  &:disabled
+    opacity: 0.5
 
-    &:not(:disabled)
-        cursor: pointer
+  &:not(:disabled)
+    cursor: pointer
 
-        &:hover
-            color: hoverTextColor
-            background-color: backgroundColor
+    &:hover
+      color: hoverTextColor
+      background-color: backgroundColor
 
 form-input(options = {})
-    size = options.size ? options.size : 'm'
-    color = options.color ? options.color : 'light'
+  size = options.size ? options.size : "m"
+  color = options.color ? options.color : "light"
 
-    @extend $strip-input-style
+  @extend $strip-input-style
 
-    display: block
-    width: 100%
-    line-height: 1
-    vertical-align: middle
-    border-style: solid
-    border-width: 0.1rem
-    transition: border 0.15s ease-in-out
+  display: block
+  width: 100%
+  line-height: 1
+  vertical-align: middle
+  border-style: solid
+  border-width: 0.1rem
+  transition: border 0.15s ease-in-out
 
-    if color == 'light'
-        color: $gray['dark']
-        border-color: $gray['light']
+  if color == "light"
+    color: $gray["dark"]
+    border-color: $gray["light"]
 
-    else if color == 'dark'
-        color: $gray['dark']
-        border-color: $gray['dark']
+  else if color == "dark"
+    color: $gray["dark"]
+    border-color: $gray["dark"]
 
-    fontSize = 1.2rem
+  fontSize = 1.2rem
 
-    if size == 's'
-        padding: 1rem 1.6rem
-        height: 3.5rem
+  if size == "s"
+    padding: 1rem 1.6rem
+    height: 3.5rem
 
-    else if size == 'm'
-        fontSize = 1.6rem
-        padding: 1rem 1.6rem
+  else if size == "m"
+    fontSize = 1.6rem
+    padding: 1rem 1.6rem
 
+  font-size: fontSize
+
+  placeholder(@() {
+    color: $gray["xlight"]
     font-size: fontSize
+    line-height: 1.25
+    vertical-align: middle
+  })
 
-    placeholder(@() {
-        color: $gray['xlight']
-        font-size: fontSize
-        line-height: 1.25
-        vertical-align: middle
-    })
-
-    &:focus
-        border-color: $blue['base']
+  &:focus
+    border-color: $blue["base"]
 
 // HEADINGS
 
 hd-a(options = {})
-    family = options.family ? options.family : "Raleway"
-    color = options.color ? options.color : $gray['dark']
+  family = options.family ? options.family : "Raleway"
+  color = options.color ? options.color : $gray["dark"]
 
-    color: color
-    font-family: family
-    font-style: normal
-    font-weight: $weights['bold']
-    line-height: 1.16
+  color: color
+  font-family: family
+  font-style: normal
+  font-weight: $weights["bold"]
+  line-height: 1.16
 
 // SPINNER, Material Design style
 
 spinner(width = 100px, colors = {})
 
-    c1 = get(colors, color1, #fafafa)
-    c2 = get(colors, color2, #333333)
-    c3 = get(colors, color3, #666666)
-    c4 = get(colors, color4, #ffffff)
+  c1 = get(colors, color1, #fafafa)
+  c2 = get(colors, color2, #333333)
+  c3 = get(colors, color3, #666666)
+  c4 = get(colors, color4, #ffffff)
 
-    .spinner
-        position: relative
-        margin: 0 auto
-        width: width
-        height: width
-        zoom: 1.7
+  .spinner
+    position: relative
+    margin: 0 auto
+    width: width
+    height: width
+    zoom: 1.7
 
-    .circular
-        animation: rotate 2s linear infinite
-        height: width
-        position: relative
-        width: width
+  .circular
+    animation: rotate 2s linear infinite
+    height: width
+    position: relative
+    width: width
 
-    .path
-        stroke-dasharray: 1,200
-        stroke-dashoffset: 0
-        animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite
-        stroke-linecap: round;
+  .path
+    stroke-dasharray: 1,200
+    stroke-dashoffset: 0
+    animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite
+    stroke-linecap: round
 
-    @keyframes rotate
-        100%
-            transform: rotate(360deg)
+  @keyframes rotate
+    100%
+      transform: rotate(360deg)
 
-    @keyframes dash
-        0%
-            stroke-dasharray: 1,200
-            stroke-dashoffset: 0
+  @keyframes dash
+    0%
+      stroke-dasharray: 1,200
+      stroke-dashoffset: 0
 
-        50%
-            stroke-dasharray: 89,200
-            stroke-dashoffset: -35
+    50%
+      stroke-dasharray: 89,200
+      stroke-dashoffset: -35
 
-        100%
-            stroke-dasharray: 89,200
-            stroke-dashoffset: -124
+    100%
+      stroke-dasharray: 89,200
+      stroke-dashoffset: -124
 
-    @keyframes color
-        100%, 0%
-            stroke: c1
+  @keyframes color
+    100%, 0%
+      stroke: c1
 
-        40%
-            stroke: c2
+    40%
+      stroke: c2
 
-        66%
-            stroke: c3
+    66%
+      stroke: c3
 
-        80%, 90%
-            stroke: c4
+    80%, 90%
+      stroke: c4

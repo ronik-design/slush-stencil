@@ -24,8 +24,7 @@ gulp.task("stylint", function () {
       config: stylesDir + "/.stylintrc",
       reporter: "stylint-stylish"
     }))
-    .pipe(stylint.reporter())
-    .on("error", notify.onError());
+    .pipe(stylint.reporter());
 });
 
 gulp.task("styles", ["stylint"], function () {
