@@ -16,7 +16,19 @@ var nib = require("nib");
 var minify = require("gulp-minify-css");
 
 
-gulp.task("styles", function () {
+gulp.task("stylint", function () {
+
+  var stylesDir = util.env.stylesDir;
+  return gulp.src(stylesDir + "/**/*.styl")
+    .pipe(stylint({
+      config: stylesDir + "/.stylintrc",
+      reporter: "stylint-stylish"
+    }))
+    .pipe(stylint.reporter())
+    .on("error", notify.onError());
+});
+
+gulp.task("styles", ["stylint"], function () {
 
   var STENCIL = util.env.STENCIL;
   var watching = util.env.watching;
@@ -39,8 +51,6 @@ gulp.task("styles", function () {
 
   return gulp.src(stylesDir + "/**/[!_]*.{css,styl}")
     .pipe(gulpIf(watching, sourcemaps.init()))
-    .pipe(stylint({ config: stylesDir + "/.stylintrc" }))
-    .on("error", notify.onError())
     .pipe(stylus({ use: use }))
     .on("error", notify.onError())
     .pipe(gulpIf(watching, sourcemaps.write("./")))

@@ -57,6 +57,7 @@
     , "require-dir": "^0.3.0"
     , "run-sequence": "^1.0.2"
     , "rupture": "^0.6.1"
+    , "stylint-stylish": "^1.2.0"
     , "webpack": "^1.8.3"
     , "svg4everybody": "^2.0.0"
     {SLUSH{ if (minifyCss) { }}
