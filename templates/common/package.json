@@ -32,7 +32,6 @@
     , "eslint-config-defaults": "^7.0.1"
     , "eslint-loader": "^1.0.0"
     , "eslint-plugin-filenames": "^0.1.2"
-    , "fsevents": "^1.0.0"
     , "gulp": "^3.8.11"
     , "gulp-changed": "^1.2.1"
     , "gulp-data": "^1.2.0"

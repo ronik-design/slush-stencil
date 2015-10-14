@@ -31,8 +31,7 @@ if (STENCIL.cssFramework === "bootstrap") {
 var externals = {};
 
 if (STENCIL.jsFramework === "knockout" || STENCIL.jsFramework === "backbone") {
-  externals.$ = "jquery";
-  externals.jQuery = "jquery";
+  externals.jquery = "jQuery";
 }
 
 var LOADERS = [{
