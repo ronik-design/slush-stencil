@@ -3,6 +3,9 @@
   "env": {
       "jquery": true
   },
+  "ecmaFeatures": {
+    "experimentalObjectRestSpread": true
+  },
   "globals": {
       "__DEV__": true,
       "File": true,
