@@ -4,7 +4,7 @@ var path = require("path");
 var webpack = require("webpack");
 var STENCIL = require("./stencil/params");
 
-var DEST = STENCIL.buildDir;
+var DEST = path.join(STENCIL.buildDir, STENCIL.staticPath);
 
 var ENTRY = {
   "main.js": ["babel-core/polyfill", "./scripts/main.js"]
@@ -51,8 +51,7 @@ module.exports = {
 
   output: {
     filename: "main.js",
-    path: DEST + "/static/javascript/",
-    publicPath: "/static/javascript/"
+    path: DEST + "/javascript/"
   },
 
   stats: {

@@ -171,6 +171,7 @@ gulp.task("default", function (done) {
 
       config.buildDir = config.platform === "webhook" ? "./static" : "./.build";
       config.deployDir = config.platform === "webhook" ? "" : "./public";
+      config.staticPath = config.platform === "webhook" ? "" : "static";
 
       config.browserSync = config.platform !== "webhook";
       config.minifyCss = config.platform !== "webhook";

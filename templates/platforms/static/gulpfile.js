@@ -27,7 +27,7 @@ util.env.spa = STENCIL.singlePageApplication;
 // Build directory
 util.env.stencilDir = dirPath("stencil");
 util.env.buildDir = dirPath(STENCIL.buildDir);
-util.env.staticDir = dirPath(STENCIL.buildDir + "/static");
+util.env.staticDir = dirPath(path.join(STENCIL.buildDir, STENCIL.staticPath));
 util.env.deployDir = dirPath(STENCIL.deployDir);
 util.env.baseDir = dirPath("./");
 util.env.tmpDir = dirPath(STENCIL.buildDir + "/.tmp");
