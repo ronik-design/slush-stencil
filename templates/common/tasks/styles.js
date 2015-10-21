@@ -4,6 +4,7 @@
 
 var gulp = require("gulp");
 var util = require("gulp-util");
+var plumber = require("gulp-plumber");
 var sourcemaps = require("gulp-sourcemaps");
 var stylus = require("gulp-stylus");
 var stylint = require("gulp-stylint");
@@ -20,6 +21,7 @@ gulp.task("stylint", function () {
 
   var stylesDir = util.env.stylesDir;
   return gulp.src(stylesDir + "/**/*.styl")
+    .pipe(plumber({ errorHandler: notify.onError() }))
     .pipe(stylint({
       config: stylesDir + "/.stylintrc",
       reporter: "stylint-stylish"
@@ -49,8 +51,9 @@ gulp.task("styles", ["stylint"], function () {
   del.sync(staticDir + "/css/**/*");
 
   return gulp.src(stylesDir + "/**/[!_]*.{css,styl}")
+    .pipe(plumber({ errorHandler: notify.onError() }))
     .pipe(gulpIf(watching, sourcemaps.init()))
-    .pipe(stylus({ use: use }))
+    .pipe(stylus({ use: use, "include css": true }))
     .on("error", notify.onError())
     .pipe(gulpIf(watching, sourcemaps.write("./")))
     .on("error", notify.onError())

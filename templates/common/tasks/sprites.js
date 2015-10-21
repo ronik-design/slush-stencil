@@ -5,6 +5,7 @@ var glob = require("glob");
 var path = require("path");
 var merge = require("merge-stream");
 var util = require("gulp-util");
+var plumber = require("gulp-plumber");
 var notify = require("gulp-notify");
 var svgSprite = require("gulp-svg-sprite");
 var del = require("del");
@@ -30,14 +31,14 @@ gulp.task("sprites", function () {
     };
 
     return gulp.src(path.join(svgDir, folder, "/**/*.svg"))
+      .pipe(plumber({ errorHandler: notify.onError() }))
       .pipe(svgSprite(config))
-      .on("error", notify.onError())
       .pipe(gulp.dest(staticDir + "/sprites"));
   });
 
   var root = gulp.src(path.join(svgDir, "/*.svg"))
+      .pipe(plumber({ errorHandler: notify.onError() }))
       .pipe(svgSprite({ mode: { stack: { dest: ".", sprite: "main.stack.svg" }}}))
-      .on("error", notify.onError())
       .pipe(gulp.dest(staticDir + "/sprites"));
 
   del.sync(staticDir + "/sprites");

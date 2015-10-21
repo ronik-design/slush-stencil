@@ -40,11 +40,11 @@ util.env.iconsDir = dirPath("icons");
 gulp.task("build", function (cb) {
 
   runSequence(
+    "lint",
     "clean",
-    ["sprites", "lint", "images", "assets", "styles", "webpack"],
-    "webhook-build",
+    ["sprites", "images", "assets", "styles", "webpack"],
     cb
-  );
+    );
 });
 
 gulp.task("watch", function (cb) {
@@ -73,12 +73,10 @@ gulp.task("watch", function (cb) {
 });
 
 gulp.task("deploy", function (cb) {
-
   runSequence("build", "webhook-deploy", cb);
 });
 
 gulp.task("develop", function (cb) {
-
   runSequence("watch", "webhook-serve", cb);
 });
 
