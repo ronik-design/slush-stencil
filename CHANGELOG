@@ -1,3 +1,8 @@
+v0.17.1:
+  date: 2015-10-22
+  changes:
+    - Only use gulp plumber when watching
+    - Fixing circleci caching for webhook
 v0.17.0:
   date: 2015-10-22
   changes:
