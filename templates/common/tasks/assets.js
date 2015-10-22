@@ -10,6 +10,7 @@ var size = require("gulp-size");
 
 gulp.task("assets", function () {
 
+  var watching = util.env.watching;
   var buildDir = util.env.buildDir;
   var assetsDir = util.env.assetsDir;
 
