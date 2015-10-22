@@ -13,11 +13,12 @@ gulp.task("revisions", function () {
     dontRenameFile: [/\.(html|txt)$/]
   });
 
+  var watching = util.env.watching;
   var buildDir = util.env.buildDir;
   var deployDir = util.env.deployDir;
 
   gulp.src(buildDir + "/**")
+    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
     .pipe(revAll.revision())
-    .on("error", notify.onError())
     .pipe(gulp.dest(deployDir));
 });

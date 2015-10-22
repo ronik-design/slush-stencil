@@ -6,6 +6,8 @@ var path = require("path");
 var fs = require("fs");
 var gulp = require("gulp");
 var util = require("gulp-util");
+var gulpIf = require("gulp-if");
+var plumber = require("gulp-plumber");
 var notify = require("gulp-notify");
 var size = require("gulp-size");
 var swig = require("gulp-swig");
@@ -101,6 +103,7 @@ var loadTags = function (baseDir) {
 
 gulp.task("templates", function () {
 
+  var watching = util.env.watching;
   var buildDir = util.env.buildDir;
   var baseDir = util.env.baseDir;
   var pagesDir = util.env.templatePagesDir;
@@ -112,7 +115,7 @@ gulp.task("templates", function () {
 
   locals.package = util.env.PACKAGE;
   locals.stencil = util.env.STENCIL;
-  locals.__DEV__ = util.env.watching;
+  locals.__DEV__ = !util.env.production;
 
   var opts = {
     setup: function (swigInstance) {
@@ -133,10 +136,9 @@ gulp.task("templates", function () {
   };
 
   return gulp.src(pagesDir + "/**/*.html")
+    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
     .pipe(data(getJsonData(dataDir, pagesDir)))
-    .on("error", notify.onError())
     .pipe(swig(opts))
-    .on("error", notify.onError())
     .pipe(prettify({
       "indent_size": 2,
       "unformatted": ["script"]

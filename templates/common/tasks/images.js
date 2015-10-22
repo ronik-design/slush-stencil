@@ -2,6 +2,7 @@
 
 var gulp = require("gulp");
 var util = require("gulp-util");
+var gulpIf = require("gulp-if");
 var plumber = require("gulp-plumber");
 var changed = require("gulp-changed");
 var imagemin = require("gulp-imagemin");
@@ -11,11 +12,12 @@ var size = require("gulp-size");
 
 gulp.task("svg-images", function () {
 
+  var watching = util.env.watching;
   var imagesDir = util.env.imagesDir;
   var staticDir = util.env.staticDir;
 
   return gulp.src(imagesDir + "/**/!(*.gif|*.jpg|*.png|*.jpeg)")
-    .pipe(plumber({ errorHandler: notify.onError() }))
+    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
     .pipe(changed(staticDir + "/images"))
     .pipe(size({ title: "svg-images" }))
     .pipe(gulp.dest(staticDir + "/images"));
@@ -23,11 +25,12 @@ gulp.task("svg-images", function () {
 
 gulp.task("images", ["svg-images"], function () {
 
+  var watching = util.env.watching;
   var imagesDir = util.env.imagesDir;
   var staticDir = util.env.staticDir;
 
   return gulp.src(imagesDir + "/**/*!(*.svg)")
-    .pipe(plumber({ errorHandler: notify.onError() }))
+    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
     .pipe(changed(staticDir + "/images"))
     .pipe(imagemin({
       progressive: true,

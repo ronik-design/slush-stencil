@@ -3,6 +3,7 @@
 var gulp = require("gulp");
 var util = require("gulp-util");
 var plumber = require("gulp-plumber");
+var gulpIf = require("gulp-if");
 var notify = require("gulp-notify");
 var size = require("gulp-size");
 
@@ -13,7 +14,7 @@ gulp.task("assets", function () {
   var assetsDir = util.env.assetsDir;
 
   return gulp.src(assetsDir + "/**/*")
-    .pipe(plumber({ errorHandler: notify.onError() }))
+    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
     .pipe(size({ title: "assets" }))
     .pipe(gulp.dest(buildDir + "/"));
 });
