@@ -11,14 +11,12 @@ var logName = "\"" + cyan("s3-deploy") + "\"";
 
 gulp.task("s3-deploy", ["s3-deploy-config"], function () {
 
-  var production = util.env.production;
   var domain = util.env.domain;
   var deployDir = util.env.deployDir;
 
-  var bucketName = production ? domain : "stage." + domain;
   var publisher = awsPublish.create({
     params: {
-      Bucket: bucketName
+      Bucket: domain
     }
   });
 
@@ -39,14 +37,11 @@ gulp.task("s3-deploy", ["s3-deploy-config"], function () {
 
 gulp.task("s3-deploy-config", function (cb) {
 
-  var production = util.env.production;
   var domain = util.env.domain;
   var spa = util.env.spa;
 
-  var bucketName = production ? domain : "stage." + domain;
-
   var s3Config = {
-    domain: bucketName,
+    domain: domain,
     index: "index.html",
     error: "error.html"
   };
@@ -57,7 +52,7 @@ gulp.task("s3-deploy-config", function (cb) {
         HttpErrorCodeReturnedEquals: "404"
       },
       Redirect: {
-        HostName: bucketName
+        HostName: domain
       }
     }];
   }

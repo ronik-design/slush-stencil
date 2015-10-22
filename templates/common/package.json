@@ -17,16 +17,14 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint *.js tasks",
-    "build": "npm run lint && gulp build",
-    "test": "lab -t 100",
-    "test-cov-html": "lab -r html -o coverage.html"
+    "build": "gulp build",
+    "deploy": "gulp deploy"
   },
   "devDependencies": {
       "babel-core": "^5.0.12"
     , "babel-loader": "^5.0.0"
     , "babel-runtime": "^5.0.12"
     , "classnames": "^2.1.1"
-    , "code": "^1.4.0"
     , "del": "^2.0.1"
     , "eslint": "^1.3.1"
     , "eslint-config-defaults": "^7.0.1"
@@ -51,7 +49,6 @@
     , "gulp-util": "^3.0.3"
     , "gulp-watch": "^4.2.2"
     , "imports-loader": "^0.6.3"
-    , "lab": "^6.2.0"
     , "local-modules": "^1.0.1"
     , "merge-stream": "^1.0.0"
     , "nib": "^1.0.4"

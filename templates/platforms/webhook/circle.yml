@@ -1,0 +1,18 @@
+machine:
+  timezone:
+    America/New_York
+  node:
+    version: 4.1.0
+
+dependencies:
+  cache_directories:
+    - ~/nvm/v4.1.0/lib/node_modules/wh
+    - ~/nvm/v4.1.0/bin/wh
+  pre:
+    - if [ ! -e ~/nvm/v4.1.0/bin/wh ]; then npm install -g wh; else echo "Webhook seems to be cached"; fi;
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - npm run deploy

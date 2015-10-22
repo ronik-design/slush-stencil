@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "start": "npm run build && node server.js"
+    "start": "npm run build && node server.js",
+    "test": "lab -t 100",
+    "test-cov-html": "lab -r html -o coverage.html"
   },
   "dependencies": {
     "bole": "^2.0.0",
@@ -9,11 +11,13 @@
     "hapi": "^8.4.0"
   },
   "devDependencies": {
+    "code": "^1.4.0",
     "glob": "^5.0.5",
     "gulp-awspublish": "^3.0.0",
     "gulp-data": "^1.2.0",
     "gulp-prettify": "^0.3.0",
     "gulp-rev-all": "^0.8.21",
+    "lab": "^6.2.0",
     "lodash": "^3.7.0",
     "mkdirp": "^0.5.0",
     "run-sequence": "^1.0.2",

@@ -3,8 +3,8 @@
 "use strict";
 
 var gulp = require("gulp");
-var util = require("gulp-util");
 var plumber = require("gulp-plumber");
+var util = require("gulp-util");
 var sourcemaps = require("gulp-sourcemaps");
 var stylus = require("gulp-stylus");
 var stylint = require("gulp-stylint");
@@ -32,9 +32,8 @@ gulp.task("stylint", function () {
 gulp.task("styles", ["stylint"], function () {
 
   var STENCIL = util.env.STENCIL;
-  var watching = util.env.watching;
+  var production = util.env.production;
   var staticDir = util.env.staticDir;
-  var doMinify = !watching && STENCIL.minifyCss;
 
   var stylesDir = util.env.stylesDir;
 
@@ -52,13 +51,10 @@ gulp.task("styles", ["stylint"], function () {
 
   return gulp.src(stylesDir + "/**/[!_]*.{css,styl}")
     .pipe(plumber({ errorHandler: notify.onError() }))
-    .pipe(gulpIf(watching, sourcemaps.init()))
+    .pipe(gulpIf(!production, sourcemaps.init()))
     .pipe(stylus({ use: use, "include css": true }))
-    .on("error", notify.onError())
-    .pipe(gulpIf(watching, sourcemaps.write("./")))
-    .on("error", notify.onError())
-    .pipe(gulpIf(doMinify, minify()))
-    .on("error", notify.onError())
+    .pipe(gulpIf(!production, sourcemaps.write("./")))
+    .pipe(gulpIf(production && STENCIL.minifyCss, minify()))
     .pipe(size({ title: "styles" }))
     .pipe(gulp.dest(staticDir + "/css/"));
 });

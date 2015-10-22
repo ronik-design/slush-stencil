@@ -1,3 +1,11 @@
+v0.16.0:
+  date: 2015-10-22
+  changes:
+    - Clean up package.json scripts
+    - Run simple mocha test for webhook, lab tests for static
+    - Added circle.yml files
+    - Added more explicit --production flag for builds, set for deploys
+    - Removed S3 "stage" site. Seems confusing.
 v0.14.2:
   date: 2015-10-07
   changes:

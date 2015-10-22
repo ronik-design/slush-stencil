@@ -11,7 +11,6 @@ var mkdirp = require("mkdirp");
 
 gulp.task("webpack", function (cb) {
 
-  var watching = util.env.watching;
   var baseDir = util.env.baseDir;
   var staticDir = util.env.staticDir;
   var started = false;
@@ -20,10 +19,10 @@ gulp.task("webpack", function (cb) {
   del.sync(staticDir + "/javascript/**/*");
   mkdirp.sync(staticDir + "/javascript");
 
-  if (watching) {
-    config = require(baseDir + "/webpack.development.config.js");
-  } else {
+  if (util.env.production) {
     config = require(baseDir + "/webpack.production.config.js");
+  } else {
+    config = require(baseDir + "/webpack.development.config.js");
   }
 
   var bundler = webpack(config);
@@ -54,7 +53,7 @@ gulp.task("webpack", function (cb) {
     }
   };
 
-  if (watching) {
+  if (util.env.watching) {
     bundler.watch(200, bundle);
   } else {
     bundler.run(bundle);

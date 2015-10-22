@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "start": "wh serve",
+    "test": "npm run lint && mocha"
+  },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
 }

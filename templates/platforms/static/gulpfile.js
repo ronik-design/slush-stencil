@@ -43,7 +43,6 @@ util.env.templatePagesDir = dirPath("pages");
 util.env.templateDataDir = dirPath("data");
 
 gulp.task("build", function (cb) {
-
   runSequence(
     "lint",
     "clean",
@@ -83,6 +82,8 @@ gulp.task("watch", function (cb) {
 
 gulp.task("deploy", function (cb) {
 
+  util.env.production = true;
+
   runSequence("build", "s3-deploy", function () {
 
     if (util.env.website) {
@@ -112,8 +113,8 @@ gulp.task("default", function (cb) {
     "gulp lint [--scripts]",
     "gulp watch",
     "gulp develop [--host, --port]",
-    "gulp build",
-    "gulp deploy [--production]",
+    "gulp build [--production]",
+    "gulp deploy",
     ""
   ];
 
