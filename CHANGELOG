@@ -1,4 +1,4 @@
-v0.16.0:
+v0.17.0:
   date: 2015-10-22
   changes:
     - Clean up package.json scripts
