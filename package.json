@@ -29,7 +29,7 @@
     "test": "echo \"No tests\""
   },
   "dependencies": {
-    "async": "^1.4.2",
+    "async": "^1.5.0",
     "gulp": "^3.9.0",
     "gulp-conflict": "^0.4.0",
     "gulp-if": "^2.0.0",
@@ -37,10 +37,10 @@
     "gulp-install": "^0.6.0",
     "gulp-json-editor": "^2.2.1",
     "gulp-rename": "^1.2.2",
-    "gulp-template": "^3.0.0",
-    "gulp-util": "^3.0.6",
+    "gulp-template": "^3.1.0",
+    "gulp-util": "^3.0.7",
     "iniparser": "^1.0.5",
-    "inquirer": "^0.10.1",
+    "inquirer": "^0.11.0",
     "lodash.clone": "^3.0.3",
     "lodash.merge": "^3.3.2",
     "slush": ">=1.0.0",
@@ -61,8 +61,8 @@
     "stencil"
   ],
   "devDependencies": {
-    "eslint": "^1.6.0",
-    "eslint-config-defaults": "^7.0.1",
-    "eslint-plugin-filenames": "^0.1.2"
+    "eslint": "^1.10.1",
+    "eslint-config-defaults": "^7.1.1",
+    "eslint-plugin-filenames": "^0.2.0"
   }
 }

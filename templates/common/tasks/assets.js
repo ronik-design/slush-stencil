@@ -1,6 +1,4 @@
-"use strict";
-
-var gulp = require("gulp");
+const gulp = require("gulp");
 var util = require("gulp-util");
 var plumber = require("gulp-plumber");
 var gulpIf = require("gulp-if");
