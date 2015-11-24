@@ -1,10 +1,10 @@
 "use strict";
 
-var webpack = require("webpack");
-var config = require("./webpack.config.js");
-var STENCIL = require("./stencil/params");
+const webpack = require("webpack");
+const config = require("./webpack.config.js");
+const STENCIL = require("./stencil/params");
 
-var PLUGINS = [
+const PLUGINS = [
   new webpack.DefinePlugin({
     "process.env.NODE_ENV": "\"production\"",
     "__DEV__": false

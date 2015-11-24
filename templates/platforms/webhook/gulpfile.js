@@ -1,17 +1,17 @@
 "use strict";
 
-var PACKAGE = require("./package");
-var STENCIL = require("./stencil/params");
+const PACKAGE = require("./package");
+const STENCIL = require("./stencil/params");
 
-var path = require("path");
-var gulp = require("gulp");
-var util = require("gulp-util");
-var watch = require("gulp-watch");
-var runSequence = require("run-sequence");
-var requireDir = require("require-dir");
+const path = require("path");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const watch = require("gulp-watch");
+const runSequence = require("run-sequence");
+const requireDir = require("require-dir");
 
 
-var dirPath = function (dir) {
+const dirPath = function (dir) {
   return path.resolve(__dirname, dir);
 };
 
@@ -27,7 +27,7 @@ util.env.stencilDir = dirPath("stencil");
 util.env.buildDir = dirPath(STENCIL.buildDir);
 util.env.staticDir = dirPath(path.join(STENCIL.buildDir, STENCIL.staticPath));
 util.env.baseDir = dirPath("./");
-util.env.tmpDir = dirPath(STENCIL.buildDir + "/.tmp");
+util.env.tmpDir = dirPath(`${STENCIL.buildDir}/.tmp`);
 
 // Various process sub-dirs
 util.env.spritesDir = dirPath("sprites");
@@ -37,7 +37,7 @@ util.env.scriptsDir = dirPath("scripts");
 util.env.stylesDir = dirPath("styles");
 util.env.iconsDir = dirPath("icons");
 
-gulp.task("build", function (cb) {
+gulp.task("build", (cb) => {
 
   runSequence(
     "lint",
@@ -47,22 +47,22 @@ gulp.task("build", function (cb) {
     );
 });
 
-gulp.task("watch", function (cb) {
+gulp.task("watch", (cb) => {
 
   util.env.watching = true;
 
-  var watchStart = function () {
+  const watchStart = () => {
 
-    watch("assets/**/*", function () {
+    watch("assets/**/*", () => {
       gulp.start("assets");
     });
-    watch("styles/**/*", function () {
+    watch("styles/**/*", () => {
       gulp.start("styles");
     });
-    watch("images/**/*", function () {
+    watch("images/**/*", () => {
       gulp.start("images");
     });
-    watch("sprites/**/*.svg", function () {
+    watch("sprites/**/*.svg", () => {
       gulp.start("sprites");
     });
 
@@ -72,17 +72,17 @@ gulp.task("watch", function (cb) {
   runSequence("build", watchStart);
 });
 
-gulp.task("deploy", function (cb) {
+gulp.task("deploy", (cb) => {
   runSequence("build", "webhook-deploy", cb);
 });
 
-gulp.task("develop", function (cb) {
+gulp.task("develop", (cb) => {
   runSequence("watch", "webhook-serve", cb);
 });
 
-gulp.task("default", function (cb) {
+gulp.task("default", (cb) => {
 
-  var help = [
+  const help = [
     "",
     "",
     "---- S T E N C I L ----",

@@ -2,14 +2,14 @@ machine:
   timezone:
     America/New_York
   node:
-    version: 4.1.0
+    version: 5.1.0
 
 dependencies:
   cache_directories:
-    - ~/nvm/versions/node/v4.1.0/lib/node_modules/wh
-    - ~/nvm/versions/node/v4.1.0/bin
+    - ~/nvm/versions/node/v5.1.0/lib/node_modules/wh
+    - ~/nvm/versions/node/v5.1.0/bin
   pre:
-    - if [ ! -e ~/nvm/versions/node/v4.1.0/bin/wh ]; then npm install -g wh; else echo "Webhook seems to be cached"; fi;
+    - if [ ! -e ~/nvm/versions/node/v5.1.0/bin/wh ]; then npm install -g wh; else echo "Webhook seems to be cached"; fi;
 
 deployment:
   production:

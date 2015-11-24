@@ -1,32 +1,39 @@
 "use strict";
 
-var gulp = require("gulp");
-var util = require("gulp-util");
-var awspublish = require("gulp-awspublish");
-var s3Website = require("s3-website");
-var notify = require("gulp-notify");
-var merge = require("merge-stream");
-var cyan = util.colors.cyan;
-var logName = "\"" + cyan("s3-deploy") + "\"";
+const path = require("path");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const awspublish = require("gulp-awspublish");
+const s3Website = require("s3-website");
+const notify = require("gulp-notify");
+const merge = require("merge-stream");
+const cyan = util.colors.cyan;
+const logName = `"${cyan("s3-deploy")}"`;
 
 
-gulp.task("s3-deploy", ["s3-deploy-config"], function () {
+gulp.task("s3-deploy", ["s3-deploy-config"], () => {
 
-  var domain = util.env.domain;
-  var deployDir = util.env.deployDir;
+  const domain = util.env.domain;
+  const deployDir = util.env.deployDir;
 
-  var publisher = awspublish.create({
+  const publisher = awspublish.create({
     params: {
       Bucket: domain
     }
   });
 
-  var headers = {
+  const headers = {
     "Cache-Control": "max-age=315360000, no-transform, public"
   };
 
-  var gzip = gulp.src(deployDir + "/**/*.{css,html,js}").pipe(awspublish.gzip());
-  var plain = gulp.src([deployDir + "/**/*", "!" + deployDir + "/**/*.{css,html,js}" ]);
+  const gzipGlob = path.join(deployDir, "**/*.{css,html,js}");
+  const plainGlob = [
+    path.join(deployDir, "**/*"),
+    `!${gzipGlob}`
+  ];
+
+  const gzip = gulp.src(gzipGlob).pipe(awspublish.gzip());
+  const plain = gulp.src(plainGlob);
 
   return merge(gzip, plain)
     .pipe(publisher.publish(headers))
@@ -38,13 +45,13 @@ gulp.task("s3-deploy", ["s3-deploy-config"], function () {
     .pipe(awspublish.reporter());
 });
 
-gulp.task("s3-deploy-config", function (cb) {
+gulp.task("s3-deploy-config", (cb) => {
 
-  var domain = util.env.domain;
-  var spa = util.env.spa;
+  const domain = util.env.domain;
+  const spa = util.env.spa;
 
-  var s3Config = {
-    domain: domain,
+  const s3Config = {
+    domain,
     index: "index.html",
     error: "error.html"
   };
@@ -60,7 +67,7 @@ gulp.task("s3-deploy-config", function (cb) {
     }];
   }
 
-  s3Website(s3Config, function (err, website) {
+  s3Website(s3Config, (err, website) => {
 
     if (err) {
       notify.onError(err);

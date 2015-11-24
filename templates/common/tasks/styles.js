@@ -2,49 +2,50 @@
 
 "use strict";
 
-var gulp = require("gulp");
-var plumber = require("gulp-plumber");
-var util = require("gulp-util");
-var sourcemaps = require("gulp-sourcemaps");
-var stylus = require("gulp-stylus");
-var stylint = require("gulp-stylint");
-var notify = require("gulp-notify");
-var size = require("gulp-size");
-var del = require("del");
-var rupture = require("rupture");
-var gulpIf = require("gulp-if");
-var nib = require("nib");
-var minify = require("gulp-minify-css");
+const path = require("path");
+const gulp = require("gulp");
+const plumber = require("gulp-plumber");
+const util = require("gulp-util");
+const sourcemaps = require("gulp-sourcemaps");
+const stylus = require("gulp-stylus");
+const stylint = require("gulp-stylint");
+const notify = require("gulp-notify");
+const size = require("gulp-size");
+const del = require("del");
+const rupture = require("rupture");
+const gulpIf = require("gulp-if");
+const nib = require("nib");
+const minify = require("gulp-minify-css");
 
 
-gulp.task("stylint", function () {
+gulp.task("stylint", () => {
 
-  var watching = util.env.watching;
-  var stylesDir = util.env.stylesDir;
+  const watching = util.env.watching;
+  const stylesDir = util.env.stylesDir;
+  const errorHandler = notify.onError();
 
-  return gulp.src(stylesDir + "/**/*.styl")
-    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
+  return gulp.src(path.join(stylesDir, "**/*.styl"))
+    .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(stylint({
-      config: stylesDir + "/.stylintrc",
+      config: path.join(stylesDir, ".stylintrc"),
       reporter: "stylint-stylish"
     }))
-    .on("error", function () {
+    .on("error", () => {
       throw new util.PluginError("stylint", "style linting failed");
     })
     .pipe(stylint.reporter());
-
 });
 
-gulp.task("styles", ["stylint"], function () {
+gulp.task("styles", ["stylint"], () => {
 
-  var STENCIL = util.env.STENCIL;
-  var production = util.env.production;
-  var watching = util.env.watching;
-  var staticDir = util.env.staticDir;
+  const STENCIL = util.env.STENCIL;
+  const production = util.env.production;
+  const watching = util.env.watching;
+  const staticDir = util.env.staticDir;
+  const stylesDir = util.env.stylesDir;
 
-  var stylesDir = util.env.stylesDir;
-
-  var use = [nib(), rupture()];
+  const errorHandler = notify.onError();
+  const use = [nib(), rupture()];
 
   if (STENCIL.cssFramework === "basic") {
     use.push(require("jeet")());
@@ -54,15 +55,15 @@ gulp.task("styles", ["stylint"], function () {
     use.push(require("bootstrap-styl")());
   }
 
-  del.sync(staticDir + "/css/**/*");
+  del.sync(path.join(staticDir, "css/**/*"));
 
-  return gulp.src(stylesDir + "/**/[!_]*.{css,styl}")
-    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
+  return gulp.src(path.join(stylesDir, "/**/[!_]*.{css,styl}"))
+    .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(gulpIf(!production, sourcemaps.init()))
-    .pipe(stylus({ use: use, "include css": true }))
+    .pipe(stylus({ use, "include css": true }))
     .pipe(gulpIf(!production, sourcemaps.write("./")))
     .pipe(gulpIf(production && STENCIL.minifyCss, minify()))
     .pipe(size({ title: "styles" }))
-    .pipe(gulp.dest(staticDir + "/css/"));
+    .pipe(gulp.dest(path.join(staticDir, "css")));
 });
 

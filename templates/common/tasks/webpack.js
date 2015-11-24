@@ -2,35 +2,36 @@
 
 "use strict";
 
-var gulp = require("gulp");
-var util = require("gulp-util");
-var del = require("del");
-var webpack = require("webpack");
-var mkdirp = require("mkdirp");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const del = require("del");
+const webpack = require("webpack");
+const mkdirp = require("mkdirp");
 
 
-gulp.task("webpack", function (cb) {
+gulp.task("webpack", (cb) => {
 
-  var watching = util.env.watching;
-  var baseDir = util.env.baseDir;
-  var staticDir = util.env.staticDir;
-  var started = false;
-  var config;
+  const watching = util.env.watching;
+  const baseDir = util.env.baseDir;
+  const staticDir = util.env.staticDir;
 
-  del.sync(staticDir + "/javascript/**/*");
-  mkdirp.sync(staticDir + "/javascript");
+  let started = false;
+  let config;
+
+  del.sync(`${staticDir}/javascript/**/*`);
+  mkdirp.sync(`${staticDir}/javascript`);
 
   if (util.env.production) {
-    config = require(baseDir + "/webpack.production.config.js");
+    config = require(`${baseDir}/webpack.production.config.js`);
   } else {
-    config = require(baseDir + "/webpack.development.config.js");
+    config = require(`${baseDir}/webpack.development.config.js`);
   }
 
-  var bundler = webpack(config);
+  const bundler = webpack(config);
 
-  var bundle = function (err, stats) {
+  const bundle = function (err, stats) {
 
-    var errors;
+    let errors;
 
     if (err) {
       throw new util.PluginError("webpack", err);

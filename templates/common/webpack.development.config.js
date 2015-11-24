@@ -1,9 +1,9 @@
 "use strict";
 
-var webpack = require("webpack");
-var config = require("./webpack.config.js");
+const webpack = require("webpack");
+const config = require("./webpack.config.js");
 
-var PLUGINS = [
+const PLUGINS = [
   new webpack.NoErrorsPlugin(),
   new webpack.DefinePlugin({
     "__DEV__": true

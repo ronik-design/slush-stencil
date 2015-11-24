@@ -1,49 +1,48 @@
 "use strict";
 
-var gulp = require("gulp");
-var glob = require("glob");
-var path = require("path");
-var merge = require("merge-stream");
-var util = require("gulp-util");
-var gulpIf = require("gulp-if");
-var plumber = require("gulp-plumber");
-var notify = require("gulp-notify");
-var svgSprite = require("gulp-svg-sprite");
-var del = require("del");
+const gulp = require("gulp");
+const glob = require("glob");
+const path = require("path");
+const merge = require("merge-stream");
+const util = require("gulp-util");
+const gulpIf = require("gulp-if");
+const plumber = require("gulp-plumber");
+const notify = require("gulp-notify");
+const svgSprite = require("gulp-svg-sprite");
+const del = require("del");
 
 
-gulp.task("sprites", function () {
+gulp.task("sprites", () => {
 
-  var watching = util.env.watching;
-  var svgDir = util.env.spritesDir;
-  var staticDir = util.env.staticDir;
+  const watching = util.env.watching;
+  const svgDir = util.env.spritesDir;
+  const staticDir = util.env.staticDir;
 
-  var folders = glob.sync("*/", { cwd: svgDir });
+  const folders = glob.sync("*/", { cwd: svgDir });
 
-  var tasks = folders.map(function (folder) {
+  const tasks = folders.map((folder) => {
 
-    var folderName = folder.substr(0, folder.length - 1);
-    var config = {
-      mode: {
-        stack: {
-          dest: ".",
-          sprite: folderName + ".stack.svg"
-        }
-      }
+    const folderName = folder.substr(0, folder.length - 1);
+    const dest = ".";
+    const sprite = `${folderName}.stack.svg`;
+    const errorHandler = notify.onError();
+
+    const config = {
+      mode: { stack: { dest, sprite } }
     };
 
-    return gulp.src(path.join(svgDir, folder, "/**/*.svg"))
-      .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
+    return gulp.src(path.join(svgDir, folder, "**/*.svg"))
+      .pipe(gulpIf(watching, plumber({ errorHandler })))
       .pipe(svgSprite(config))
-      .pipe(gulp.dest(staticDir + "/sprites"));
+      .pipe(gulp.dest(path.join(staticDir, "sprites")));
   });
 
-  var root = gulp.src(path.join(svgDir, "/*.svg"))
+  const root = gulp.src(path.join(svgDir, "*.svg"))
       .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
       .pipe(svgSprite({ mode: { stack: { dest: ".", sprite: "main.stack.svg" }}}))
-      .pipe(gulp.dest(staticDir + "/sprites"));
+      .pipe(gulp.dest(path.join(staticDir, "sprites")));
 
-  del.sync(staticDir + "/sprites");
+  del.sync(path.join(staticDir, "sprites"));
 
   return merge(tasks, root);
 });

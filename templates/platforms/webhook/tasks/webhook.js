@@ -1,20 +1,20 @@
 "use strict";
 
-var gulp = require("gulp");
-var util = require("gulp-util");
-var notify = require("gulp-notify");
-var spawn = require("child_process").spawn;
+const gulp = require("gulp");
+const util = require("gulp-util");
+const notify = require("gulp-notify");
+const spawn = require("child_process").spawn;
 
 
-var onExit = function (cb) {
+const onExit = function (cb) {
   return function (code) {
-    cb(code === 0 ? null : "ERROR: Webhook process exited with code: " + code);
+    cb(code === 0 ? null : `ERROR: Webhook process exited with code: ${code}`);
   };
 };
 
-gulp.task("webhook-build", function (cb) {
+gulp.task("webhook-build", (cb) => {
 
-  var wh = spawn("wh", ["build"], {
+  const wh = spawn("wh", ["build"], {
     env: process.env,
     stdio: "inherit"
   });
@@ -22,15 +22,15 @@ gulp.task("webhook-build", function (cb) {
   wh.on("exit", onExit(cb));
 });
 
-gulp.task("webhook-serve", function (cb) {
+gulp.task("webhook-serve", (cb) => {
 
-  var args = ["serve"];
+  const args = ["serve"];
 
   if (util.env.port) {
     args.push(util.env.port);
   }
 
-  var wh = spawn("wh", args, {
+  const wh = spawn("wh", args, {
     env: process.env,
     stdio: "inherit"
   });
@@ -38,9 +38,9 @@ gulp.task("webhook-serve", function (cb) {
   wh.on("exit", onExit(cb));
 });
 
-gulp.task("webhook-deploy", function (cb) {
+gulp.task("webhook-deploy", (cb) => {
 
-  var wh = spawn("wh", ["deploy"], {
+  const wh = spawn("wh", ["deploy"], {
     env: process.env,
     stdio: "inherit"
   });

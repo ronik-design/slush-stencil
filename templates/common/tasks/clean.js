@@ -1,20 +1,20 @@
 "use strict";
 
-var gulp = require("gulp");
-var util = require("gulp-util");
-var del = require("del");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const del = require("del");
 
 
-gulp.task("clean", function (cb) {
+gulp.task("clean", (cb) => {
 
-  var cleanDirs = [];
+  const watching = util.env.watching;
+  const buildDir = util.env.buildDir;
+  const deployDir = util.env.deployDir;
 
-  var watching = util.env.watching;
+  const cleanDirs = [`${buildDir}/**/*`];
 
-  cleanDirs.push(util.env.buildDir + "/**/*");
-
-  if (!watching && util.env.deployDir) {
-    cleanDirs.push(util.env.deployDir + "/**/*");
+  if (!watching && deployDir) {
+    cleanDirs.push(`${deployDir}/**/*`);
   }
 
   del.sync(cleanDirs);

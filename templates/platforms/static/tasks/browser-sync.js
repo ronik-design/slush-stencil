@@ -1,20 +1,21 @@
 "use strict";
 
-var fs = require("fs");
-var url = require("url");
-var gulp = require("gulp");
-var util = require("gulp-util");
-var watch = require("gulp-watch");
-var browserSync = require("browser-sync");
+const path = require("path");
+const fs = require("fs");
+const url = require("url");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const watch = require("gulp-watch");
+const browserSync = require("browser-sync");
 
 
-var middleware = function (buildDir) {
+const middleware = function (buildDir) {
 
   return function (req, res, next) {
 
-    var fileName = url.parse(req.url);
-    fileName = fileName.href.split(fileName.search).join("");
-    var fileExists = fs.existsSync(buildDir + fileName);
+    const requestPath = url.parse(req.url);
+    const fileName = requestPath.href.split(requestPath.search).join("");
+    const fileExists = fs.existsSync(path.join(buildDir, fileName));
     if (!fileExists && fileName.indexOf("browser-sync-client") < 0) {
       req.url = "/index.html";
     }
@@ -22,33 +23,33 @@ var middleware = function (buildDir) {
   };
 };
 
-gulp.task("browser-sync", function () {
+gulp.task("browser-sync", () => {
 
-  var buildDir = util.env.buildDir;
+  const buildDir = util.env.buildDir;
 
-  var host = util.env.host || "localhost";
-  var port = util.env.port || 2002;
-  var spa = util.env.spa;
+  const host = util.env.host || "localhost";
+  const port = util.env.port || 2002;
+  const spa = util.env.spa;
 
-  var serverOptions = {
+  const server = {
     baseDir: buildDir
   };
 
   if (spa) {
-    serverOptions.middleware = middleware(buildDir);
+    server.middleware = middleware(buildDir);
   }
 
   browserSync({
     open: false,
     ghostMode: false,
-    host: host,
-    port: port,
-    server: serverOptions
+    host,
+    port,
+    server
   });
 
   util.env.reload = browserSync.reload;
 
-  watch(buildDir + "/**/*.{js,html,css}", function () {
+  watch(path.join(buildDir, "**/*.{js,html,css}"), () => {
     browserSync.reload();
   });
 });

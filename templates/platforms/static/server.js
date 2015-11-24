@@ -1,27 +1,27 @@
 "use strict";
 
 /* $lab:coverage:off$ */
-var STENCIL = require("./stencil/params.json");
-var HOST = process.env.HOST || "0.0.0.0";
-var PORT = process.env.PORT || 8080;
-var STATIC_DIR = process.env.WATCHING ? STENCIL.buildDir : STENCIL.deployDir;
+const STENCIL = require("./stencil/params.json");
+const HOST = process.env.HOST || "0.0.0.0";
+const PORT = process.env.PORT || 8080;
+const STATIC_DIR = process.env.WATCHING ? STENCIL.buildDir : STENCIL.deployDir;
 /* $lab:coverage:on$ */
 
-var path = require("path");
-var hapi = require("hapi");
-var bole = require("bole");
-var boleConsole = require("bole-console");
+const path = require("path");
+const hapi = require("hapi");
+const bole = require("bole");
+const boleConsole = require("bole-console");
 
-var log = bole("server");
-var boleConsoleStream = boleConsole();
+const log = bole("server");
+const boleConsoleStream = boleConsole();
 bole.output({
   level: "info",
   stream: boleConsoleStream
 });
 
-var server = new hapi.Server();
+const server = new hapi.Server();
 
-var staticDir = path.join(__dirname, STATIC_DIR);
+const staticDir = path.join(__dirname, STATIC_DIR);
 
 server.connection({
   host: HOST,
@@ -50,7 +50,7 @@ server.route([{
 }]);
 
 if (STENCIL.singlePageApplication) {
-  server.ext("onPreResponse", function (request, reply) {
+  server.ext("onPreResponse", (request, reply) => {
 
     if (request.response.isBoom) {
       if (request.response.output.statusCode === 404) {
@@ -62,8 +62,7 @@ if (STENCIL.singlePageApplication) {
   });
 }
 
-server.start(function () {
-
+server.start(() => {
   log.info("Listening at: http://%s:%d", HOST, PORT);
 });
 

@@ -1,17 +1,16 @@
 "use strict";
 
-var path = require("path");
-var webpack = require("webpack");
-var STENCIL = require("./stencil/params");
+const path = require("path");
+const webpack = require("webpack");
+const STENCIL = require("./stencil/params");
 
-var DEST = path.join(STENCIL.buildDir, STENCIL.staticPath);
+const DEST = path.join(STENCIL.buildDir, STENCIL.staticPath);
 
-var ENTRY = {
-  "main.js": ["babel-core/polyfill", "./scripts/main.js"]
+const ENTRY = {
+  "main.js": ["babel-polyfill", "./scripts/main.js"]
 };
 
-
-var providePlugins = {};
+const providePlugins = {};
 
 if (STENCIL.jsFramework === "knockout") {
   providePlugins.ko = "knockout";
@@ -22,28 +21,33 @@ if (STENCIL.jsFramework === "backbone") {
   providePlugins._ = "lodash";
 }
 
-var aliases = {};
+const aliases = {};
 
 if (STENCIL.cssFramework === "bootstrap") {
   aliases.bootstrap = path.resolve(__dirname, "node_modules/bootstrap-styl/js");
 }
 
-var externals = {};
+const externals = {};
 
 if (STENCIL.jsFramework === "knockout" || STENCIL.jsFramework === "backbone") {
   externals.jquery = "jQuery";
 }
 
-var LOADERS = [{
+const loaders = [{
   test: /scripts\/vendor\/.+\.js$/,
   loaders: ["imports?this=>window"]
 }, {
   test: /\.jsx?$/,
   exclude: /node_modules|scripts\/vendor/,
-  loaders: [
-    "babel?stage=0",
-    "eslint"
-  ]
+  loader: "babel",
+  query: {
+    cacheDirectory: true,
+    presets: ["es2015"]
+  }
+}, {
+  test: /\.jsx?$/,
+  exclude: /node_modules|scripts\/vendor/,
+  loader: "eslint"
 }];
 
 module.exports = {
@@ -51,7 +55,7 @@ module.exports = {
 
   output: {
     filename: "main.js",
-    path: DEST + "/javascript/"
+    path: path.join(DEST, "/javascript/")
   },
 
   stats: {
@@ -63,10 +67,10 @@ module.exports = {
     new webpack.ProvidePlugin(providePlugins)
   ],
 
-  externals: externals,
+  externals,
 
   resolve: {
-    aliases: aliases,
+    aliases,
     modulesDirectories: ["local_modules", "node_modules"],
     extensions: ["", ".js", ".jsx"]
   },
@@ -75,7 +79,5 @@ module.exports = {
     configFile: "./scripts/.eslintrc"
   },
 
-  module: {
-    loaders: LOADERS
-  }
+  module: { loaders }
 };

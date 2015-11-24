@@ -1,19 +1,22 @@
+"use strict";
+
 const gulp = require("gulp");
-var util = require("gulp-util");
-var plumber = require("gulp-plumber");
-var gulpIf = require("gulp-if");
-var notify = require("gulp-notify");
-var size = require("gulp-size");
+const util = require("gulp-util");
+const plumber = require("gulp-plumber");
+const gulpIf = require("gulp-if");
+const notify = require("gulp-notify");
+const size = require("gulp-size");
 
 
-gulp.task("assets", function () {
+gulp.task("assets", () => {
 
-  var watching = util.env.watching;
-  var buildDir = util.env.buildDir;
-  var assetsDir = util.env.assetsDir;
+  const watching = util.env.watching;
+  const buildDir = util.env.buildDir;
+  const assetsDir = util.env.assetsDir;
+  const errorHandler = notify.onError();
 
-  return gulp.src(assetsDir + "/**/*")
-    .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
+  return gulp.src(`${assetsDir}/**/*`)
+    .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(size({ title: "assets" }))
-    .pipe(gulp.dest(buildDir + "/"));
+    .pipe(gulp.dest(`${buildDir}/`));
 });

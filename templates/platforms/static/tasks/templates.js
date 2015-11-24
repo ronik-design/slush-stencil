@@ -2,36 +2,39 @@
 
 "use strict";
 
-var path = require("path");
-var fs = require("fs");
-var gulp = require("gulp");
-var util = require("gulp-util");
-var gulpIf = require("gulp-if");
-var plumber = require("gulp-plumber");
-var notify = require("gulp-notify");
-var size = require("gulp-size");
-var swig = require("gulp-swig");
-var data = require("gulp-data");
-var glob = require("glob");
-var prettify = require("gulp-prettify");
+const path = require("path");
+const fs = require("fs");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const gulpIf = require("gulp-if");
+const plumber = require("gulp-plumber");
+const notify = require("gulp-notify");
+const size = require("gulp-size");
+const swig = require("gulp-swig");
+const data = require("gulp-data");
+const glob = require("glob");
+const prettify = require("gulp-prettify");
 
 
-var getJsonData = function (dataDir, pagesDir) {
+const getJsonData = function (dataDir, pagesDir) {
 
   return function (file) {
 
-    var jsonData;
+    let jsonData;
 
     try {
 
-      var re = new RegExp(path.extname(file.path) + "$");
+      const ext = path.extname(file.path);
+      const re = new RegExp(`${ext}$`);
 
-      var basename = file.path
+      const basename = file.path
         .replace(pagesDir || dataDir, "")
         .replace(re, "")
         .replace(/^\//, "");
 
-      var dataStr = fs.readFileSync(dataDir + "/" + basename + ".json", {
+      const dataFile = `${dataDir}/${basename}.json`;
+
+      const dataStr = fs.readFileSync(dataFile, {
         encoding: "utf-8"
       });
 
@@ -45,24 +48,24 @@ var getJsonData = function (dataDir, pagesDir) {
   };
 };
 
-var globalMatches = function (obj, dir) {
+const globalMatches = function (obj, dir) {
 
-  var getData = getJsonData(dir);
+  const getData = getJsonData(dir);
 
   return function (fileGlob) {
 
-    var prop = path.basename(fileGlob).substr(1).replace(".json", "");
+    const prop = path.basename(fileGlob).substr(1).replace(".json", "");
     obj[prop] = getData({ path: fileGlob });
   };
 };
 
-var dataMatches = function (obj, dir) {
+const dataMatches = function (obj, dir) {
 
-  var getData = getJsonData(dir);
+  const getData = getJsonData(dir);
 
   return function (fileGlob) {
 
-    var propName = fileGlob
+    const propName = fileGlob
       .replace(path.extname(fileGlob), "")
       .replace(/index$/, "")
       .replace(dir, "")
@@ -74,68 +77,64 @@ var dataMatches = function (obj, dir) {
   };
 };
 
-var getJson = function (dataDir) {
+const getJson = function (dataDir) {
 
-  var globals = { data: {} };
+  const globals = { data: {} };
 
-  glob.sync(dataDir + "/_*.json").forEach(globalMatches(globals, dataDir));
-  glob.sync(dataDir + "/**/[^_]*.json").forEach(dataMatches(globals.data, dataDir));
+  glob.sync(`${dataDir}/_*.json`).forEach(globalMatches(globals, dataDir));
+  glob.sync(`${dataDir}/**/[^_]*.json`).forEach(dataMatches(globals.data, dataDir));
 
   return globals;
 };
 
-var loadTags = function (baseDir) {
+const loadTags = function (baseDir) {
 
-  var tags = {};
+  const tags = {};
 
-  glob.sync(baseDir + "/templates/tags/*.js").forEach(function (fileGlob) {
-    var prop = path.basename(fileGlob).replace(".js", "");
+  glob.sync(`${baseDir}/templates/tags/*.js`).forEach((fileGlob) => {
+    const prop = path.basename(fileGlob).replace(".js", "");
 
     try {
       tags[prop] = require(fileGlob);
     } catch (err) {
-      util.log("templates", "Could not load custom tag " + prop);
+      util.log("templates", `Could not load custom tag ${prop}`);
     }
   });
 
   return tags;
 };
 
-gulp.task("templates", function () {
+gulp.task("templates", () => {
 
-  var watching = util.env.watching;
-  var buildDir = util.env.buildDir;
-  var baseDir = util.env.baseDir;
-  var pagesDir = util.env.templatePagesDir;
-  var dataDir = util.env.templateDataDir;
+  const watching = util.env.watching;
+  const buildDir = util.env.buildDir;
+  const baseDir = util.env.baseDir;
+  const pagesDir = util.env.templatePagesDir;
+  const dataDir = util.env.templateDataDir;
 
-  var tags = loadTags(baseDir);
-
-  var locals = getJson(dataDir);
+  const tags = loadTags(baseDir);
+  const locals = getJson(dataDir);
 
   locals.package = util.env.PACKAGE;
   locals.stencil = util.env.STENCIL;
   locals.__DEV__ = !util.env.production;
 
-  var opts = {
-    setup: function (swigInstance) {
+  const opts = {
+    setup(swigInstance) {
 
       swigInstance.setDefaults({
         loader: swigInstance.loaders.fs(baseDir)
       });
 
-      Object.keys(tags).forEach(function (tagName) {
-        var tag = tags[tagName];
+      Object.keys(tags).forEach((tagName) => {
+        const tag = tags[tagName];
         swigInstance.setTag(tagName, tag.parse, tag.compile, tag.ends, tag.blockLevel);
       });
     },
-    defaults: {
-      cache: false,
-      locals: locals
-    }
+    defaults: { cache: false, locals }
   };
 
-  return gulp.src(pagesDir + "/**/*.html")
+  return gulp.src(`${pagesDir}/**/*.html`)
     .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
     .pipe(data(getJsonData(dataDir, pagesDir)))
     .pipe(swig(opts))

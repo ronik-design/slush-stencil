@@ -1,16 +1,16 @@
 "use strict";
 
-var PACKAGE = require("./package");
-var STENCIL = require("./stencil/params");
+const PACKAGE = require("./package");
+const STENCIL = require("./stencil/params");
 
-var path = require("path");
-var gulp = require("gulp");
-var util = require("gulp-util");
-var watch = require("gulp-watch");
-var runSequence = require("run-sequence");
-var requireDir = require("require-dir");
+const path = require("path");
+const gulp = require("gulp");
+const util = require("gulp-util");
+const watch = require("gulp-watch");
+const runSequence = require("run-sequence");
+const requireDir = require("require-dir");
 
-var dirPath = function (dir) {
+const dirPath = function (dir) {
   return path.resolve(__dirname, dir);
 };
 
@@ -30,7 +30,7 @@ util.env.buildDir = dirPath(STENCIL.buildDir);
 util.env.staticDir = dirPath(path.join(STENCIL.buildDir, STENCIL.staticPath));
 util.env.deployDir = dirPath(STENCIL.deployDir);
 util.env.baseDir = dirPath("./");
-util.env.tmpDir = dirPath(STENCIL.buildDir + "/.tmp");
+util.env.tmpDir = dirPath(`${STENCIL.buildDir}/.tmp`);
 
 // Various process sub-dirs
 util.env.spritesDir = dirPath("sprites");
@@ -42,7 +42,7 @@ util.env.iconsDir = dirPath("icons");
 util.env.templatePagesDir = dirPath("pages");
 util.env.templateDataDir = dirPath("data");
 
-gulp.task("build", function (cb) {
+gulp.task("build", (cb) => {
   runSequence(
     "lint",
     "clean",
@@ -52,25 +52,25 @@ gulp.task("build", function (cb) {
   );
 });
 
-gulp.task("watch", function (cb) {
+gulp.task("watch", (cb) => {
 
   util.env.watching = true;
 
-  var watchStart = function () {
+  const watchStart = function () {
 
-    watch("assets/**/*", function () {
+    watch("assets/**/*", () => {
       gulp.start("assets");
     });
-    watch("styles/**/*", function () {
+    watch("styles/**/*", () => {
       gulp.start("styles");
     });
-    watch("images/**/*", function () {
+    watch("images/**/*", () => {
       gulp.start("images");
     });
-    watch("sprites/**/*.svg", function () {
+    watch("sprites/**/*.svg", () => {
       gulp.start("sprites");
     });
-    watch(["templates/**/*", "pages/**/*", "data/**/*"], function () {
+    watch(["templates/**/*", "pages/**/*", "data/**/*"], () => {
       gulp.start("templates");
     });
 
@@ -80,11 +80,11 @@ gulp.task("watch", function (cb) {
   runSequence("build", watchStart);
 });
 
-gulp.task("deploy", function (cb) {
+gulp.task("deploy", (cb) => {
 
   util.env.production = true;
 
-  runSequence("build", "s3-deploy", function () {
+  runSequence("build", "s3-deploy", () => {
 
     if (util.env.website) {
       util.log("Your site has been deployed to S3");
@@ -96,13 +96,13 @@ gulp.task("deploy", function (cb) {
   });
 });
 
-gulp.task("develop", function (cb) {
+gulp.task("develop", (cb) => {
   runSequence("watch", "browser-sync", cb);
 });
 
-gulp.task("default", function (cb) {
+gulp.task("default", (cb) => {
 
-  var help = [
+  const help = [
     "",
     "",
     "---- S T E N C I L ----",

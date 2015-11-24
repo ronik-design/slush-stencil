@@ -11,13 +11,13 @@
     "hapi": "^8.4.0"
   },
   "devDependencies": {
-    "code": "^1.4.0",
+    "code": "^2.0.1",
     "glob": "^5.0.5",
     "gulp-awspublish": "^3.0.0",
     "gulp-data": "^1.2.0",
     "gulp-prettify": "^0.3.0",
     "gulp-rev-all": "^0.8.21",
-    "lab": "^6.2.0",
+    "lab": "^7.3.0",
     "lodash": "^3.7.0",
     "mkdirp": "^0.5.0",
     "run-sequence": "^1.0.2",

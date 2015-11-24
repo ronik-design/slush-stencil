@@ -1,3 +1,8 @@
+v0.20.0:
+  date: 2015-11-24
+  changes:
+    - Rewriting most support files with node 5 / es2015 features
+    - Many version bumps in dependencies
 v0.17.3:
   date: 2015-11-24
   changes:
