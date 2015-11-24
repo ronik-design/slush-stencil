@@ -2,9 +2,10 @@
 
 var gulp = require("gulp");
 var util = require("gulp-util");
-var awsPublish = require("gulp-awspublish");
+var awspublish = require("gulp-awspublish");
 var s3Website = require("s3-website");
 var notify = require("gulp-notify");
+var merge = require("merge-stream");
 var cyan = util.colors.cyan;
 var logName = "\"" + cyan("s3-deploy") + "\"";
 
@@ -14,7 +15,7 @@ gulp.task("s3-deploy", ["s3-deploy-config"], function () {
   var domain = util.env.domain;
   var deployDir = util.env.deployDir;
 
-  var publisher = awsPublish.create({
+  var publisher = awspublish.create({
     params: {
       Bucket: domain
     }
@@ -24,15 +25,17 @@ gulp.task("s3-deploy", ["s3-deploy-config"], function () {
     "Cache-Control": "max-age=315360000, no-transform, public"
   };
 
-  return gulp.src(deployDir + "/**/*")
-    .pipe(awsPublish.gzip())
+  var gzip = gulp.src(deployDir + "/**/*.{css,html,js}").pipe(awspublish.gzip());
+  var plain = gulp.src([deployDir + "/**/*", "!" + deployDir + "/**/*.{css,html,js}" ]);
+
+  return merge(gzip, plain)
     .pipe(publisher.publish(headers))
     .on("error", notify.onError())
     .pipe(publisher.sync())
     .on("error", notify.onError())
     .pipe(publisher.cache())
     .on("error", notify.onError())
-    .pipe(awsPublish.reporter());
+    .pipe(awspublish.reporter());
 });
 
 gulp.task("s3-deploy-config", function (cb) {

@@ -1,3 +1,7 @@
+v0.17.3:
+  date: 2015-11-24
+  changes:
+    - Only gzip html,css,js when doing S3 deployment
 v0.17.2:
   date: 2015-10-22
   changes:
