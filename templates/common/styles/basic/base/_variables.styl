@@ -1,16 +1,56 @@
+/* Typography */
 $font-size-base = 10px
 $font-size = 1.6rem
 $line-height = 1.44
 
-$layers = "footer", "header", "content", "button", "dropdown", "tooltip", "sticky", "sidebar", "modal"
-
-rupture.scale = 0 768px 992px 1200px
-rupture.scale-names = "s" "m" "l"
-rupture.anti-overlap = true
-
-jeet = {
-  gutter: 2.631578947,
-  parent-first: false,
-  layout-direction: LTR,
-  max-width: 1000px
+$font-weights = {
+  thin: 200,
+  light: 300,
+  regular: 400,
+  medium: 400,
+  semibold: 500,
+  bold: 600,
+  black: 700
+  extrabold: 800
 }
+
+/* Layers */
+$layers = "unselectable", "panel", "content", "button", "tooltip", "header", "overlay", "modal"
+
+/* Grid, sizing, etc */
+@lost gutter 4rem
+
+$column-width = 6rem
+$column-count-mobile = 8
+$column-count-desktop = 12
+$column-count-hd = 16
+
+$width-mobile = ($column-count-mobile * $column-width) + (($column-count-mobile - 1) * $padding-mobile)
+$width-desktop = ($column-count-desktop * $column-width) + (($column-count-desktop - 1) * $padding-desktop)
+$width-hd = ($column-count-hd * $column-width) + (($column-count-hd - 1) * $padding-desktop)
+
+/* Desktop partial widths */
+$width-desktop-five-sixths = (5/6) * $width-desktop
+$width-desktop-three-fourths = (3/4) * $width-desktop
+$width-desktop-two-thirds = (2/3) * $width-desktop
+$width-desktop-one-half = (1/2) * $width-desktop
+
+/* Mobile partial widths */
+$width-mobile-three-fourths = (3/4) * $width-mobile
+
+$break-mobile = 780px
+$break-tablet = 900px
+$break-desktop = 1024px
+$break-hd = 1366px
+
+rupture.anti-overlap = true
+rupture.scale = 0 780px 1024px 1600px
+
+rupture.mobile-cutoff = $break-mobile
+rupture.desktop-cutoff = $break-desktop
+rupture.hd-cutoff = $break-hd
+
+/* Transitions */
+$hover-time = 0.22s
+$hover-function = cubic-bezier(0.165, 0.84, 0.44, 1)
+$swift-out = cubic-bezier(0.55, 0, 0.1, 1)

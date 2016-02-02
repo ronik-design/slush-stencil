@@ -67,7 +67,7 @@
     , "gulp-minify-css": "^1.0.0"
     {SLUSH{ } }}
     {SLUSH{ if (cssFramework === 'basic') { }}
-    , "jeet": "^6.1.2"
+    , "lost": "^6.6.2",
     {SLUSH{ } }}
     {SLUSH{ if (cssFramework === 'bootstrap') { }}
     , "bootstrap-styl": "^4.0.3"

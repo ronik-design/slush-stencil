@@ -1,14 +1,43 @@
-$weights = {
-  thin: 100,
-  light: 200,
-  regular: 300,
-  medium: 400,
-  semibold: 500,
-  bold: 600,
-  black: 700
-}
-
 div, p, span, li, small, label, input, select, button, a, h1, h2, h3, h4, h5, h6
   text-rendering optimizeLegibility
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
+
+copy(options = {})
+  color = options.color ? options.color : $gray['xdark']
+  size = options.size ? options.size : 1.8rem
+  line-height = options.line-height ? options.line-height : 1.6
+
+  color: color
+  font-size: size
+  font-weight: $font-weights["regular"]
+  line-height: line-height
+
+  em
+    font-style: italic
+
+  strong
+    font-weight: $font-weights["bold"]
+
+  a
+    @extend $strip-link-style
+
+rubric(options = {})
+  size = options.size ? options.size : 1.6rem
+  color = options.color ? options.color : $gray["xdark"]
+
+  color: color
+  font-size: size
+  font-weight: $font-weights["bold"]
+  letter-spacing: 0.04em
+  line-height: 1.3
+  text-transform: uppercase
+
+hd-a(options = {})
+  color = options.color ? options.color : #fff
+
+  color: color
+  font-size: 8rem
+  font-style: normal
+  font-weight: $font-weights["light"]
+  line-height: 1.02

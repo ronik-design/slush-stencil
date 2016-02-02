@@ -9,6 +9,7 @@
 
 .form__group
   @extend $cf
+
   position: relative
   display: block
   vertical-align: top
@@ -20,19 +21,23 @@ $form-element
 
 .form__element
   @extend $form-element
+
   width: 100%
   float: left
 
 .form__element--two-col
   @extend .form__element
+
   col(2/8)
 
 .form__element--three-col
   @extend .form__element
+
   col(3/8)
 
 .form__element--four-col
   @extend .form__element
+
   col(4/8)
 
 $form-label
@@ -52,6 +57,7 @@ $form-label
 
 $form-input
   @extend $strip-input-style
+
   display: block
   width: 100%
 
