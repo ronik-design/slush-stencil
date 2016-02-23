@@ -10,9 +10,19 @@
   @return null;
 }
 
-@function -z($key) {
-  $index: -index($layers, $key);
-  @return $index * 10;
+@function -z($key, $push) {
+
+  $index: -index($layers, $key) * 10;
+
+  @if $push == "above" {
+    @return $index + 1;
+  }
+
+  @if $push == "below" {
+    @return $index - 1;
+  }
+
+  @return $index;
 }
 
 @function -color($key) {
