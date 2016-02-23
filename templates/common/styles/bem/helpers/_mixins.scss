@@ -5,13 +5,11 @@
   @if $value == on {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
   }
 
   @else {
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: auto;
-    text-rendering: optimizeLegibility;
   }
 }
 
@@ -85,51 +83,45 @@
 
 /* Media Query Helpers */
 
-@mixin desktop($where: above) {
+@mixin above($breakpoint) {
 
-  @if $where == above {
-    $mq: (min-height -bp(desktop));
+  @if map-has-key($breakpoints, $breakpoint) {
+
+    @include breakpoint(min-height map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
   }
 
-  @if $where == below {
-    $mq: (max-height -bp(desktop));
-  }
-
-  @include breakpoint($mq) {
-    @content;
-  }
-}
-
-@mixin mobile($where: below) {
-
-  @if $where == above {
-    $mq: (min-height -bp(mobile));
-  }
-
-  @if $where == below {
-    $mq: (max-height -bp(desktop));
-  }
-
-  @include breakpoint($mq) {
-    @content;
+  @else {
+    @warn "Unknown `#{$breakpoint}` in $breakpoints.";
   }
 }
 
-@mixin tablet($where: between) {
+@mixin below($breakpoint) {
 
-  @if $where == above {
-    $mq: (min-height -bp(tablet));
+  @if map-has-key($breakpoints, $breakpoint) {
+
+    @include breakpoint(max-height map-get($breakpoints, $breakpoint)) {
+      @content;
+    }
   }
 
-  @if $where == below {
-    $mq: (max-height -bp(tablet));
-  }
-
-  @if $where == between {
-    $mq: -bp(mobile) -bp(tablet);
-  }
-
-  @include breakpoint($mq) {
-    @content;
+  @else {
+    @warn "Unknown `#{$breakpoint}` in $breakpoints.";
   }
 }
+
+@mixin between($breakpoint-1, $breakpoint-2) {
+
+  @if map-has-key($breakpoints, $breakpoint-1) and map-has-key($breakpoints, $breakpoint-2) {
+
+    @include breakpoint(map-get($breakpoints, $breakpoint-1) map-get($breakpoints, $breakpoint-2)) {
+      @content;
+    }
+  }
+
+  @else {
+    @warn "Unknown values in $breakpoints.";
+  }
+}
+

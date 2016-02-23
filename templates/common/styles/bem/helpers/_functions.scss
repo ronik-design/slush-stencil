@@ -10,16 +10,12 @@
   @return null;
 }
 
-@function -z($key, $push) {
+@function -z($key, $mod: 0) {
 
   $index: -index($layers, $key) * 10;
 
-  @if $push == "above" {
-    @return $index + 1;
-  }
-
-  @if $push == "below" {
-    @return $index - 1;
+  @if $mod {
+    @return $index + $mod;
   }
 
   @return $index;
