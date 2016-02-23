@@ -44,7 +44,11 @@ gulp.task("build", (cb) => {
   runSequence(
     "lint",
     "clean",
-    ["sprites", "images", "assets", "styles", "webpack"],
+    "styles",
+    "webpack",
+    "sprites",
+    "images",
+    "assets",
     cb
     );
 });

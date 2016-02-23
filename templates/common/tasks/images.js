@@ -8,10 +8,11 @@ const changed = require("gulp-changed");
 const imagemin = require("gulp-imagemin");
 const notify = require("gulp-notify");
 const size = require("gulp-size");
+const runSequence = require("run-sequence");
 
 const errorHandler = notify.onError();
 
-gulp.task("svg-images", () => {
+gulp.task("images:copy", () => {
 
   const watching = util.env.watching;
 
@@ -24,11 +25,11 @@ gulp.task("svg-images", () => {
   return gulp.src(srcDir)
     .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(changed(destDir))
-    .pipe(size({ title: "svg-images" }))
+    .pipe(size({ title: "images:copy" }))
     .pipe(gulp.dest(destDir));
 });
 
-gulp.task("images", ["svg-images"], () => {
+gulp.task("images:min", () => {
 
   const watching = util.env.watching;
 
@@ -45,6 +46,10 @@ gulp.task("images", ["svg-images"], () => {
       progressive: true,
       interlaced: true
     }))
-    .pipe(size({ title: "images" }))
+    .pipe(size({ title: "images:min" }))
     .pipe(gulp.dest(destDir));
+});
+
+gulp.task("images", (cb) => {
+  runSequence("images:copy", "images:min", cb);
 });

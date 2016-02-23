@@ -6,8 +6,9 @@ const util = require("gulp-util");
 const sourcemaps = require("gulp-sourcemaps");
 const notify = require("gulp-notify");
 const size = require("gulp-size");
-const del = require("del");
 const gulpIf = require("gulp-if");
+const del = require("del");
+const runSequence = require("run-sequence");
 
 const sass = require("gulp-sass");
 const postcss = require("gulp-postcss");
@@ -35,7 +36,7 @@ gulp.task("styles:lint", () => {
     .pipe(postcss(processors), { syntax: syntaxScss });
 });
 
-gulp.task("styles:build", ["styles:lint"], () => {
+gulp.task("styles:build", () => {
 
   const production = util.env.production;
   const watching = util.env.watching;
@@ -73,4 +74,6 @@ gulp.task("styles:build", ["styles:lint"], () => {
     .pipe(gulp.dest(destDir));
 });
 
-gulp.task("styles", ["styles:build"]);
+gulp.task("styles", (cb) => {
+  runSequence("styles:lint", "styles:build", cb);
+});
