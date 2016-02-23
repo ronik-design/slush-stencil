@@ -12,7 +12,7 @@ const onExit = function (cb) {
   };
 };
 
-gulp.task("webhook-build", (cb) => {
+gulp.task("webhook:build", (cb) => {
 
   const wh = spawn("wh", ["build"], {
     env: process.env,
@@ -22,7 +22,7 @@ gulp.task("webhook-build", (cb) => {
   wh.on("exit", onExit(cb));
 });
 
-gulp.task("webhook-serve", (cb) => {
+gulp.task("webhook:serve", (cb) => {
 
   const args = ["serve"];
 
@@ -38,7 +38,7 @@ gulp.task("webhook-serve", (cb) => {
   wh.on("exit", onExit(cb));
 });
 
-gulp.task("webhook-deploy", (cb) => {
+gulp.task("webhook:deploy", (cb) => {
 
   const wh = spawn("wh", ["deploy"], {
     env: process.env,

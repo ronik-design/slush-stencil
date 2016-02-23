@@ -1,0 +1,61 @@
+.visible-desktop-block {
+  display: none;
+
+  @include desktop() {
+    display: block;
+  }
+}
+
+.visible-desktop-inline {
+  display: none;
+
+  @include desktop() {
+    display: inline
+  }
+}
+
+.visible-desktop-inline-block {
+  display: none;
+
+  @include desktop() {
+    display: inline-block;
+  }
+}
+
+.visible-mobile-block {
+  display: none;
+
+  @include mobile() {
+    display: block;
+  }
+}
+
+.visible-mobile-inline {
+  display: none;
+
+  @include mobile() {
+    display: inline;
+  }
+}
+
+.visible-mobile-inline-block {
+  display: none;
+
+  @include mobile() {
+    display: inline-block;
+  }
+}
+
+.hidden-mobile {
+
+  @include mobile() {
+    display: none;
+  }
+}
+
+.hidden-desktop {
+
+  @include desktop() {
+    display: none;
+  }
+}

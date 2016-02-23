@@ -7,16 +7,19 @@ const gulpIf = require("gulp-if");
 const notify = require("gulp-notify");
 const size = require("gulp-size");
 
+const errorHandler = notify.onError();
 
 gulp.task("assets", () => {
 
   const watching = util.env.watching;
-  const buildDir = util.env.buildDir;
-  const assetsDir = util.env.assetsDir;
-  const errorHandler = notify.onError();
 
-  return gulp.src(`${assetsDir}/**/*`)
+  const assetsDir = util.env["assets-dir"];
+
+  const srcDir = `${assetsDir}/**/*`;
+  const destDir = util.env["build-dir"];
+
+  return gulp.src(srcDir)
     .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(size({ title: "assets" }))
-    .pipe(gulp.dest(`${buildDir}/`));
+    .pipe(gulp.dest(destDir));
 });

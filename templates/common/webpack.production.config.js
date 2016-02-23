@@ -2,9 +2,9 @@
 
 const webpack = require("webpack");
 const config = require("./webpack.config.js");
-const STENCIL = require("./stencil/params");
+const STENCIL = require("./stencil");
 
-const PLUGINS = [
+const plugins = [
   new webpack.DefinePlugin({
     "process.env.NODE_ENV": "\"production\"",
     "__DEV__": false
@@ -15,7 +15,7 @@ const PLUGINS = [
 
 if (STENCIL.minifyJs) {
 
-  PLUGINS.push(new webpack.optimize.UglifyJsPlugin({
+  plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
       "screw_ie8": true,
       "properties": true,
@@ -27,13 +27,13 @@ if (STENCIL.minifyJs) {
     }
   }));
 
-  PLUGINS.push(new webpack.optimize.AggressiveMergingPlugin());
+  plugins.push(new webpack.optimize.AggressiveMergingPlugin());
 }
 
 config.output.filename = "main.js";
 config.cache = false;
 config.debug = false;
 config.devtool = false;
-config.plugins = config.plugins.concat(PLUGINS);
+config.plugins = config.plugins.concat(plugins);
 
 module.exports = config;

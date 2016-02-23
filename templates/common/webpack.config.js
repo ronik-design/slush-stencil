@@ -2,35 +2,30 @@
 
 const path = require("path");
 const webpack = require("webpack");
-const STENCIL = require("./stencil/params");
+const STENCIL = require("./stencil");
 
-const DEST = path.join(STENCIL.buildDir, STENCIL.staticPath);
+const dest = path.join(STENCIL.buildDir, STENCIL.staticPath);
 
-const ENTRY = {
+const entry = {
   "main.js": ["babel-polyfill", "./scripts/main.js"]
 };
 
 const providePlugins = {};
 
-if (STENCIL.jsFramework === "knockout") {
+if (STENCIL.js === "knockout") {
   providePlugins.ko = "knockout";
-}
-
-if (STENCIL.jsFramework === "backbone") {
-  providePlugins.Backbone = "backbone";
-  providePlugins._ = "lodash";
 }
 
 const aliases = {};
 
-if (STENCIL.cssFramework === "bootstrap") {
-  aliases.bootstrap = path.resolve(__dirname, "node_modules/bootstrap-styl/js");
-}
-
 const externals = {};
 
-if (STENCIL.jsFramework === "knockout" || STENCIL.jsFramework === "backbone") {
+if (STENCIL.jsExternals.indexOf("jquery") >= 0) {
   externals.jquery = "jQuery";
+}
+
+if (STENCIL.jsExternals.indexOf("modernizr") >= 0) {
+  externals.modernizr = "Modernizr";
 }
 
 const loaders = [{
@@ -51,11 +46,11 @@ const loaders = [{
 }];
 
 module.exports = {
-  entry: ENTRY,
+  entry,
 
   output: {
     filename: "main.js",
-    path: path.join(DEST, "/javascript/")
+    path: path.join(dest, "/javascript/")
   },
 
   stats: {

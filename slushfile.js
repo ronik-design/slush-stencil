@@ -110,34 +110,45 @@ gulp.task("default", function (done) {
     name: "github",
     message: "GitHub repo name?"
   }, {
-    name: "jsFramework",
-    type: "list",
-    message: "Which client-side framework would you like to use?",
+    type: "checkbox",
+    name: "jsExternals",
+    message: "Which external JS libraries would you like included?",
     choices: [{
-      name: "Knockout (ES6, jQuery, knockout.js)",
-      value: "knockout"
+      name: "jQuery (2.2.0)",
+      value: "jquery"
     }, {
-      name: "Backbone (ES6, jQuery, lodash, Backbone)",
-      value: "backbone"
-    }, {
-      name: "React (ES6, jsx, Flux/alt, React Router)",
-      value: "react"
+      name: "Modernizr (2.8.4)",
+      value: "modernizr"
     }]
   }, {
-    name: "cssFramework",
-    type: "list",
-    message: "Which stylus libraries would you like to use?",
-    choices: [{
-      name: "Basic (BEM-style, topical)",
-      value: "basic"
-    }, {
-      name: "Bootstrap (bootstrap-styl)",
-      value: "bootstrap"
-    }, {
-      name: "Skeleton.css",
-      value: "skeleton"
-    }]
-  }, {
+    // name: "js",
+    // type: "list",
+    // message: "Which client-side framework would you like to use?",
+    // choices: [{
+    //   name: "Knockout (ES6, jQuery, knockout.js)",
+    //   value: "knockout"
+    // }, {
+    //   name: "Backbone (ES6, jQuery, lodash, Backbone)",
+    //   value: "backbone"
+    // }, {
+    //   name: "React (ES6, jsx, Flux/alt, React Router)",
+    //   value: "react"
+    // }]
+  // }, {
+    // name: "css",
+    // type: "list",
+    // message: "Which stylus libraries would you like to use?",
+    // choices: [{
+    //   name: "BEM",
+    //   value: "bem"
+    // }, {
+    //   name: "Bootstrap (bootstrap-styl)",
+    //   value: "bootstrap"
+    // }, {
+    //   name: "Skeleton.css",
+    //   value: "skeleton"
+    // }]
+  // }, {
     type: "confirm",
     name: "singlePageApplication",
     message: "Single Page Application? (Unknown routes are handled by index.html)",
@@ -169,13 +180,24 @@ gulp.task("default", function (done) {
         }
       }
 
-      config.buildDir = config.platform === "webhook" ? "./static" : "./.build";
-      config.deployDir = config.platform === "webhook" ? "" : "./public";
-      config.staticPath = config.platform === "webhook" ? "" : "static";
+      config.js = "knockout";
+      config.css = "bem";
 
-      config.browserSync = config.platform !== "webhook";
-      config.minifyCss = config.platform !== "webhook";
-      config.minifyJs = config.platform !== "webhook";
+      if (config.platform === "webhook") {
+        config.buildDir = "static";
+        config.deployDir = ".build";
+        config.staticPath = "";
+        config.browserSync = false;
+        config.minifyCss = false;
+        config.minifyJs = false;
+      } else {
+        config.buildDir = ".build";
+        config.deployDir = "public";
+        config.staticPath = "static";
+        config.browserSync = true;
+        config.minifyCss = true;
+        config.minifyJs = true;
+      }
 
       config.version = pkg.version;
 
@@ -203,7 +225,7 @@ gulp.task("default", function (done) {
       var installCommonPages = function (cb) {
 
         var paths = [
-          commonPath + "/pages/" + config.cssFramework + "/**/*"
+          commonPath + "/pages/" + config.css + "/**/*"
         ];
 
         gulp.src(paths, { dot: true })
@@ -217,7 +239,7 @@ gulp.task("default", function (done) {
 
         var paths = [
           commonPath + "/scripts/common/**/*",
-          commonPath + "/scripts/" + config.jsFramework + "/**/*"
+          commonPath + "/scripts/" + config.js + "/**/*"
         ];
 
         gulp.src(paths, { dot: true })
@@ -230,7 +252,7 @@ gulp.task("default", function (done) {
 
         var paths = [
           commonPath + "/styles/common/**/*",
-          commonPath + "/styles/" + config.cssFramework + "/**/*"
+          commonPath + "/styles/" + config.css + "/**/*"
         ];
 
         gulp.src(paths, { dot: true })
@@ -255,12 +277,12 @@ gulp.task("default", function (done) {
 
       var writeConfig = function (cb) {
 
-        gulp.src(commonPath + "/stencil/params.json")
+        gulp.src(commonPath + "/stencil.json")
           .pipe(jeditor(config, {
             "indent_char": " ",
             "indent_size": 2
           }))
-          .pipe(gulp.dest(dest("stencil")))
+          .pipe(gulp.dest(dest()))
           .on("end", cb);
       };
 

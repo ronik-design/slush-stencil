@@ -8,7 +8,6 @@ const util = require("gulp-util");
 const watch = require("gulp-watch");
 const browserSync = require("browser-sync");
 
-
 const middleware = function (buildDir) {
 
   return function (req, res, next) {
@@ -25,7 +24,7 @@ const middleware = function (buildDir) {
 
 gulp.task("browser-sync", () => {
 
-  const buildDir = util.env.buildDir;
+  const buildDir = util.env["build-dir"];
 
   const host = util.env.host || "localhost";
   const port = util.env.port || 2002;

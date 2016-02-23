@@ -1,6 +1,5 @@
 "use strict";
 
-const path = require("path");
 const gulp = require("gulp");
 const util = require("gulp-util");
 const notify = require("gulp-notify");
@@ -8,6 +7,7 @@ const plumber = require("gulp-plumber");
 const gulpIf = require("gulp-if");
 const RevAll = require("gulp-rev-all");
 
+const errorHandler = notify.onError();
 
 gulp.task("revisions", () => {
 
@@ -17,11 +17,10 @@ gulp.task("revisions", () => {
   });
 
   const watching = util.env.watching;
-  const buildDir = util.env.buildDir;
-  const deployDir = util.env.deployDir;
-  const errorHandler = notify.onError();
+  const buildDir = util.env["build-dir"];
+  const deployDir = util.env["deploy-dir"];
 
-  gulp.src(path.join(buildDir, "**"))
+  gulp.src(`${buildDir}/**`)
     .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(revAll.revision())
     .pipe(gulp.dest(deployDir));

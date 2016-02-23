@@ -1,0 +1,135 @@
+/* General */
+
+@mixin font-smoothing($value: on) {
+
+  @if $value == on {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  @else {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@mixin cf() {
+
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin strip-input-style() {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  outline: 0 none !important;
+  appearance: none;
+}
+
+@mixin ratio-box($percent) {
+  position: relative;
+
+  &:before {
+    content: "";
+    display: block;
+    padding-top: $percent;
+  }
+
+  > div {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+@mixin button($size, $color) {
+  @extend $strip-input-style;
+
+  $hover-color: #fff;
+
+  color: $color;
+  line-height: 1;
+  background-color: transparent;
+  position: relative;
+  display: inline-block;
+  appearance: none;
+  outline: 0 none;
+  border: 0.1rem solid $color;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  transition: background-color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1), color 0.2s ease-in-out, opacity 0.15s ease-in;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
+
+    &:hover {
+      color: $hover-color;
+      background-color: $color;
+    }
+  }
+}
+
+
+/* Media Query Helpers */
+
+@mixin desktop($where: above) {
+
+  @if $where == above {
+    $mq: (min-height -bp(desktop));
+  }
+
+  @if $where == below {
+    $mq: (max-height -bp(desktop));
+  }
+
+  @include breakpoint($mq) {
+    @content;
+  }
+}
+
+@mixin mobile($where: below) {
+
+  @if $where == above {
+    $mq: (min-height -bp(mobile));
+  }
+
+  @if $where == below {
+    $mq: (max-height -bp(desktop));
+  }
+
+  @include breakpoint($mq) {
+    @content;
+  }
+}
+
+@mixin tablet($where: between) {
+
+  @if $where == above {
+    $mq: (min-height -bp(tablet));
+  }
+
+  @if $where == below {
+    $mq: (max-height -bp(tablet));
+  }
+
+  @if $where == between {
+    $mq: -bp(mobile) -bp(tablet);
+  }
+
+  @include breakpoint($mq) {
+    @content;
+  }
+}

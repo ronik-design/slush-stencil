@@ -1,13 +1,14 @@
+import ko from "knockout";
 import pages from "./pages";
 import bindings from "./bindings";
 
-
-export default class App {
+class App {
 
   constructor() {
 
     this.root = null;
     this.page = null;
+    this.pageName = "DEFAULT";
     this.pageVars = {};
     this.config = {};
     this.afterPage = [];
@@ -22,14 +23,15 @@ export default class App {
     }
   }
 
-  setPage(page) {
+  setPage(pageName) {
 
-    const Page = pages[page] || pages.DEFAULT;
+    this.pageName = pages[pageName] ? pageName : this.pageName;
+  }
 
-    this.page = new Page({
-      vars: this.pageVars,
-      config: this.config
-    });
+  loadPage() {
+
+    const Page = pages[this.pageName];
+    this.page = new Page({ vars: this.pageVars, config: this.config });
   }
 
   setPageVar(key, value) {
@@ -45,6 +47,10 @@ export default class App {
 
     Object.keys(customBindings).forEach((name) => {
       ko.bindingHandlers[name] = customBindings[name];
+
+      if (customBindings[name].allowVirtual) {
+        ko.virtualElements.allowedBindings[name] = true;
+      }
     });
   }
 
@@ -60,11 +66,15 @@ export default class App {
     this.root = root;
 
     this.addCustomBindings(bindings);
+
     if (!this.page) {
       this.setPage();
     }
 
+    this.loadPage();
+
     this.afterPage.forEach((fn) => fn(this.page, this));
+
     ko.applyBindings(this.page, this.root);
   }
 
@@ -73,3 +83,5 @@ export default class App {
     ko.cleanNode(this.root);
   }
 }
+
+export default App;

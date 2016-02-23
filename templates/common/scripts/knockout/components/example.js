@@ -1,7 +1,6 @@
 import ViewModel from "../core/view-model";
 
-
-export default class DefaultPage extends ViewModel {
+class Example extends ViewModel {
 
   constructor() {
     super();
@@ -11,3 +10,5 @@ export default class DefaultPage extends ViewModel {
     super.destroy();
   }
 }
+
+export default Example;

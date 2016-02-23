@@ -1,0 +1,20 @@
+{% macro img(image, alt, sizes, src) %}
+
+  {% set oW = image.width %}
+  {% set o = image.url %}
+
+  {% set sW = Math.floor(oW * 0.25) %}
+  {% set s = image|imageSize(sW, 'auto') %}
+
+  {% set mW = Math.floor(oW * 0.5) %}
+  {% set m = image|imageSize(mW, 'auto') %}
+
+  {% set lW = Math.floor(oW * 0.75) %}
+  {% set l = image|imageSize(lW, 'auto') %}
+
+  <img src="{{ src|default(m) }}"
+       srcset="{{ s }} {{ sW }}w, {{ m }} {{ mW }}w, {{ l }} {{ lW }}w, {{ o }} {{ oW }}w"
+       sizes="{% if sizes %}{{ sizes }}, {% endif %}100vw"
+       alt="{{ alt }}" />
+
+{% endmacro %}

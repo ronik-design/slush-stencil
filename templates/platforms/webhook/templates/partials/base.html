@@ -1,20 +1,11 @@
 {# ------------------------------------------------------- #}
 
-{# YOUR BASE TEMPLATE. EVERYTHING GETS LOADED INTO THIS PAGE. #}
-
-{# Webhook uses the SWIG.js (like Djagno/Twig) templating system. Their documentation is here: #}
-{# http://paularmstrong.github.io/swig/docs/tags/ #}
-
-{# Learn about calling data into Webhook pages here: #}
-{# http://www.webhook.com/docs/template-rules-and-filters/ #}
+{# Webhook uses the SWIG.js (like Djagno/Twig) templating system. #}
+{# Documentation: http://paularmstrong.github.io/swig/docs/tags/ #}
 
 {# ------------------------------------------------------- #}
-
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<html>
 
   {# Grab the title and description from the CMS general settings. #}
   {% set site_title = getSetting('site_name')%}
@@ -35,7 +26,9 @@
     <link rel="stylesheet" href="/static/css/main.css"/>
     <!-- endbuild -->
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
+    {SLUSH{ if (jsExternals.indexOf("modernizr") > -1) { }}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    {SLUSH{ } }}
 
     <!--[if lte IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/classlist/2014.01.31/classList.min.js"></script>
@@ -72,7 +65,9 @@
       {# Put your JS in here and we'll minify it into one file. No CDN scripts. More info: #}
       {# http://www.webhook.com/docs/minify-your-js-and-css/ #}
 
-      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      {SLUSH{ if (jsExternals.indexOf("jquery") > -1) { }}
+      <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+      {SLUSH{ } }}
 
       <!-- build:js /static/javascript/minified.js -->
       <script src="/static/javascript/main.js"></script>

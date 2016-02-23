@@ -1,14 +1,10 @@
 {
   "extends": "defaults/configurations/walmart/es6-browser",
-  "env": {
-      "jquery": true
-  },
   "ecmaFeatures": {
     "experimentalObjectRestSpread": true
   },
   "globals": {
       "__DEV__": true,
-      "File": true,
-      "ko": true
+      "File": true
   }
 }

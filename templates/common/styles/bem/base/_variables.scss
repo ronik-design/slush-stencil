@@ -1,0 +1,39 @@
+$font-size-base: 10px;
+$font-size: 1.6rem;
+$line-height: 1.44;
+
+$font-weights: (
+  thin: 100,
+  light: 200,
+  regular: 300,
+  medium: 400,
+  semibold: 500,
+  bold: 600,
+  black: 700
+);
+
+$breakpoints: (
+  mobile: 400px,
+  tablet: 600px,
+  desktop: 800px,
+  hd: 1200px,
+  super-hd: 1600px
+);
+
+$layers: (
+  bottomless-pit: -9999,
+  default: 1,
+  dropdown: 3000,
+  overlay: 4000,
+  modal: 4001
+);
+
+$colors: (
+  gray-xdark: #4d4e50,
+  gray-dark: #6d6e71,
+  gray: #929292,
+  gray-light: #ababab,
+  gray-xlight: #dadbdb,
+  black: #000000,
+  white: #ffffff
+);

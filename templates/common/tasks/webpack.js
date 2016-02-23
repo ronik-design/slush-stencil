@@ -8,12 +8,13 @@ const del = require("del");
 const webpack = require("webpack");
 const mkdirp = require("mkdirp");
 
+const WATCH_DELAY = 200;
 
 gulp.task("webpack", (cb) => {
 
   const watching = util.env.watching;
-  const baseDir = util.env.baseDir;
-  const staticDir = util.env.staticDir;
+  const baseDir = util.env["base-dir"];
+  const staticDir = util.env["static-dir"];
 
   let started = false;
   let config;
@@ -55,7 +56,7 @@ gulp.task("webpack", (cb) => {
   };
 
   if (watching) {
-    bundler.watch(200, bundle);
+    bundler.watch(WATCH_DELAY, bundle);
   } else {
     bundler.run(bundle);
   }

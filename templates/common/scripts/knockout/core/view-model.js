@@ -1,4 +1,5 @@
 /* eslint no-console:0 */
+import ko from "knockout";
 
 const isUninitialized = function (val) {
   return val === null || val === undefined || Array.isArray(val) && val.length === 0;
@@ -88,14 +89,12 @@ export default class ViewModel {
     return ko.pureComputed(() => obs());
   }
 
-  log(message) {
+  log() {
 
-    if (message instanceof Error) {
-      return console.error(message);
-    }
-
-    if (message) {
-      console.log(message);
+    if (arguments[0] instanceof Error) {
+      return console.error(...arguments);
+    } else {
+      console.log(...arguments);
     }
   }
 

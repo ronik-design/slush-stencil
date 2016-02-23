@@ -1,69 +1,76 @@
-/* eslint global-require:0 */
-
 "use strict";
 
-const path = require("path");
 const gulp = require("gulp");
 const plumber = require("gulp-plumber");
 const util = require("gulp-util");
 const sourcemaps = require("gulp-sourcemaps");
-const stylus = require("gulp-stylus");
-const stylint = require("gulp-stylint");
 const notify = require("gulp-notify");
 const size = require("gulp-size");
 const del = require("del");
-const rupture = require("rupture");
 const gulpIf = require("gulp-if");
-const nib = require("nib");
-const minify = require("gulp-minify-css");
 
+const sass = require("gulp-sass");
+const postcss = require("gulp-postcss");
+const autoprefixer = require("autoprefixer");
+const cssnano = require("cssnano");
+const lost = require("lost");
+const stylelint = require("stylelint");
+const syntaxScss = require("postcss-scss");
+const reporter = require("postcss-reporter");
 
-gulp.task("stylint", () => {
+const errorHandler = notify.onError();
+
+gulp.task("styles:lint", () => {
 
   const watching = util.env.watching;
-  const stylesDir = util.env.stylesDir;
-  const errorHandler = notify.onError();
+  const stylesDir = util.env["styles-dir"];
 
-  return gulp.src(path.join(stylesDir, "**/*.styl"))
+  const processors = [
+    stylelint({ configFile: `${stylesDir}/.stylelintrc` }),
+    reporter({ clearMessages: true, throwError: true })
+  ];
+
+  return gulp.src(`${stylesDir}/**/*.{sass,scss}`)
     .pipe(gulpIf(watching, plumber({ errorHandler })))
-    .pipe(stylint({
-      config: path.join(stylesDir, ".stylintrc"),
-      reporter: "stylint-stylish"
-    }))
-    .on("error", () => {
-      throw new util.PluginError("stylint", "style linting failed");
-    })
-    .pipe(stylint.reporter());
+    .pipe(postcss(processors), { syntax: syntaxScss });
 });
 
-gulp.task("styles", ["stylint"], () => {
+gulp.task("styles:build", ["styles:lint"], () => {
 
-  const STENCIL = util.env.STENCIL;
   const production = util.env.production;
   const watching = util.env.watching;
-  const staticDir = util.env.staticDir;
-  const stylesDir = util.env.stylesDir;
+  const minifyCss = util.env["minify-css"];
 
-  const errorHandler = notify.onError();
-  const use = [nib(), rupture()];
+  const baseDir = util.env["base-dir"];
+  const stylesDir = util.env["styles-dir"];
+  const staticDir = util.env["static-dir"];
+  const destDir = `${staticDir}/css`;
 
-  if (STENCIL.cssFramework === "basic") {
-    use.push(require("jeet")());
+  const sassPaths = [
+    `${baseDir}/node_modules/breakpoint-sass/stylesheets`
+  ];
+
+  const postcssProcessors = [
+    autoprefixer({browsers: ["last 2 versions"]}),
+    lost
+  ];
+
+  if (production && minifyCss) {
+    postcssProcessors.push(cssnano);
   }
 
-  if (STENCIL.cssFramework === "bootstrap") {
-    use.push(require("bootstrap-styl")());
+  if (!watching) {
+    del.sync(`${destDir}/**/*`);
   }
 
-  del.sync(path.join(staticDir, "css/**/*"));
-
-  return gulp.src(path.join(stylesDir, "/**/[!_]*.{css,styl}"))
+  return gulp.src(`${stylesDir}/**/[!_]*.{css,sass,scss}`)
     .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(gulpIf(!production, sourcemaps.init()))
-    .pipe(stylus({ use, "include css": true }))
+    .pipe(sass({ includePaths: sassPaths }).on("error", sass.logError))
+    .pipe(postcss(postcssProcessors))
     .pipe(gulpIf(!production, sourcemaps.write("./")))
-    .pipe(gulpIf(production && STENCIL.minifyCss, minify()))
     .pipe(size({ title: "styles" }))
-    .pipe(gulp.dest(path.join(staticDir, "css")));
+    .pipe(gulp.dest(destDir));
 });
 
+gulp.task("styles", ["styles:build"]);

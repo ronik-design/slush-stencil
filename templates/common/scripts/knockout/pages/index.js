@@ -1,8 +1,8 @@
-import DEFAULT from "./default-page";
-import demo from "./demo-page";
-
+import base from "./base";
+import demo from "./demo";
 
 export default {
-  DEFAULT,
+  DEFAULT: base,
+  base,
   demo
 };

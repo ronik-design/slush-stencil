@@ -9,16 +9,19 @@ const imagemin = require("gulp-imagemin");
 const notify = require("gulp-notify");
 const size = require("gulp-size");
 
+const errorHandler = notify.onError();
 
 gulp.task("svg-images", () => {
 
   const watching = util.env.watching;
-  const imagesDir = util.env.imagesDir;
-  const staticDir = util.env.staticDir;
-  const errorHandler = notify.onError();
+
+  const imagesDir = util.env["images-dir"];
+  const staticDir = util.env["static-dir"];
+
+  const srcDir = `!${imagesDir}/**/*.(gif|jpg|png|jpeg)`;
   const destDir = `${staticDir}/images`;
 
-  return gulp.src(`!${imagesDir}/**/*.(gif|jpg|png|jpeg)`)
+  return gulp.src(srcDir)
     .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(changed(destDir))
     .pipe(size({ title: "svg-images" }))
@@ -28,12 +31,14 @@ gulp.task("svg-images", () => {
 gulp.task("images", ["svg-images"], () => {
 
   const watching = util.env.watching;
-  const imagesDir = util.env.imagesDir;
-  const staticDir = util.env.staticDir;
-  const errorHandler = notify.onError();
+
+  const imagesDir = util.env["images-dir"];
+  const staticDir = util.env["static-dir"];
+
+  const srcDir = `${imagesDir}/**/*!(*.svg)`;
   const destDir = `${staticDir}/images`;
 
-  return gulp.src(`${imagesDir}/**/*!(*.svg)`)
+  return gulp.src(srcDir)
     .pipe(gulpIf(watching, plumber({ errorHandler })))
     .pipe(changed(destDir))
     .pipe(imagemin({

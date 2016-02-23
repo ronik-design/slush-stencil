@@ -1,7 +1,7 @@
 "use strict";
 
 const PACKAGE = require("./package");
-const STENCIL = require("./stencil/params");
+const STENCIL = require("./stencil");
 
 const path = require("path");
 const gulp = require("gulp");
@@ -25,20 +25,21 @@ util.env.domain = STENCIL.domain;
 util.env.spa = STENCIL.singlePageApplication;
 
 // Build directory
-util.env.stencilDir = dirPath("stencil");
-util.env.buildDir = dirPath(STENCIL.buildDir);
-util.env.staticDir = dirPath(path.join(STENCIL.buildDir, STENCIL.staticPath));
-util.env.deployDir = dirPath(STENCIL.deployDir);
-util.env.baseDir = dirPath("./");
-util.env.tmpDir = dirPath(`${STENCIL.buildDir}/.tmp`);
+util.env["base-dir"] = dirPath("./");
+util.env["build-dir"] = dirPath(STENCIL.buildDir);
+util.env["deploy-dir"] = dirPath(STENCIL.deployDir);
+util.env["static-dir"] = dirPath(path.join(STENCIL.buildDir, STENCIL.staticPath));
+
+// Misc
+util.env["minify-css"] = STENCIL.minifyCss;
+util.env["minify-js"] = STENCIL.minifyJs;
 
 // Various process sub-dirs
-util.env.spritesDir = dirPath("sprites");
-util.env.assetsDir = dirPath("assets");
-util.env.imagesDir = dirPath("images");
-util.env.scriptsDir = dirPath("scripts");
-util.env.stylesDir = dirPath("styles");
-util.env.iconsDir = dirPath("icons");
+util.env["sprites-dir"] = dirPath("sprites");
+util.env["assets-dir"] = dirPath("assets");
+util.env["images-dir"] = dirPath("images");
+util.env["scripts-dir"] = dirPath("scripts");
+util.env["styles-dir"] = dirPath("styles");
 util.env.templatePagesDir = dirPath("pages");
 util.env.templateDataDir = dirPath("data");
 

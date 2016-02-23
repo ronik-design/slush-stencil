@@ -1,14 +1,8 @@
-/**
-  If using SVG Sprite Stacks this polyfill will allow <use> in IE.
-  import svg4everybody from "svg4everybody";
-**/
-
+import { ready } from "vanillajs-dom";
+import svg4everybody from "svg4everybody";
 import App from "./app";
 
+window.app = new App();
+svg4everybody();
 
-window.App = new App();
-
-document.addEventListener("DOMContentLoaded", () => {
-  // svg4everybody();
-  window.App.start();
-});
+ready(() => window.app.start());

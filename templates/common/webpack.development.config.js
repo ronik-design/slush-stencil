@@ -3,7 +3,7 @@
 const webpack = require("webpack");
 const config = require("./webpack.config.js");
 
-const PLUGINS = [
+const plugins = [
   new webpack.NoErrorsPlugin(),
   new webpack.DefinePlugin({
     "__DEV__": true
@@ -13,6 +13,6 @@ const PLUGINS = [
 config.cache = true;
 config.debug = true;
 config.devtool = "inline-source-map";
-config.plugins = config.plugins.concat(PLUGINS);
+config.plugins = config.plugins.concat(plugins);
 
 module.exports = config;
