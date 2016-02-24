@@ -1,20 +1,91 @@
-{% macro img(image, alt, sizes, src) %}
+{% macro img(image, alt, classes, sizes, ratio, src) %}
 
-  {% set oW = image.width %}
-  {% set o = image.url %}
+{% if image.width %}
 
-  {% set sW = Math.floor(oW * 0.25) %}
-  {% set s = image|imageSize(sW, 'auto') %}
+{% set oW = image.width %}
+{% set o = image|imageSize(oW, 'auto') %}
 
-  {% set mW = Math.floor(oW * 0.5) %}
-  {% set m = image|imageSize(mW, 'auto') %}
+{% if ratio %}
+{% set oH = Math.floor(oW * ratio) %}
+{% set o = image|imageCrop(oW, oH) %}
+{% endif %}
 
-  {% set lW = Math.floor(oW * 0.75) %}
-  {% set l = image|imageSize(lW, 'auto') %}
+{% set sW = Math.floor(oW * 0.5) %}
+{% set s = image|imageSize(sW, 'auto') %}
 
-  <img src="{{ src|default(m) }}"
-       srcset="{{ s }} {{ sW }}w, {{ m }} {{ mW }}w, {{ l }} {{ lW }}w, {{ o }} {{ oW }}w"
-       sizes="{% if sizes %}{{ sizes }}, {% endif %}100vw"
-       alt="{{ alt }}" />
+{% if ratio %}
+{% set sH = Math.floor(sW * ratio) %}
+{% set s = image|imageCrop(sW, sH) %}
+{% endif %}
 
+{% set mW = Math.floor(oW * 0.75) %}
+{% set m = image|imageSize(mW, 'auto') %}
+
+{% if ratio %}
+{% set mH = Math.floor(mW * ratio) %}
+{% set m = image|imageCrop(mW, mH) %}
+{% endif %}
+
+{% set srcset = s + ' ' + sW + 'w, ' + m + ' ' + mW + 'w, ' + o + ' ' + oW + 'w' %}
+
+{% elseif !src %}
+
+{% set src = image.url %}
+
+{% endif %}
+
+<img src="{{ src | default(m) }}"
+     {% if srcset %}srcset="{{ srcset }}"{% endif %}
+     {% if srcset %}sizes="{{ sizes|default("100vw") }}"{% endif %}
+     {% if classes %}class="{{ classes }}"{% endif %}
+     alt="{{ alt }}" />
+
+{% endmacro %}
+
+
+{% macro img_set(image, class_names) %}
+
+{% set hiW = image.width %}
+{% set hi = image.url %}
+
+{% set loW = Math.floor(hiW * 0.5) %}
+{% set lo = image|imageSize(loW, 'auto') %}
+
+<div class="image-set {{ class_names }}"
+     style="background-image: url('{{ hi }}'); background-image: -webkit-image-set(url('{{ lo }}') 1x, url('{{ hi }}') 2x)">
+</div>
+
+{% endmacro %}
+
+
+{% macro video(src, classes) %}
+<video class="{{ classes }}" src="{{ src }}"></video>
+{% endmacro %}
+
+
+{% macro icon(name) %}
+<svg><use xlink:href="/static/sprites/icons.stack.svg#{{ name }}"></use></svg>
+{% endmacro %}
+
+
+{% macro title(primary, fallback, size, separator) %}{% spaceless %}
+{% set site_name = getSetting('site_name') %}
+{% set text = primary | default(fallback) | striptags | replace('\n', '') %}
+{% set size = size | default(100) %}
+{% if text %}
+{% if size %}
+{% set text = text | truncate(size) %}
+{% endif %}
+{{ text }}{{ separator | default(' - ') }}{{ site_name }}
+{% else %}
+{{ site_name }}
+{% endif %}
+{% endspaceless %}{% endmacro %}
+
+
+{% macro absolute_url(url) %}{% spaceless %}{{ getSetting('site_url') }}/{{ url|default(getCurrentUrl())|replace('^\/', '') }}{% endspaceless %}{% endmacro %}
+
+
+{% macro link(url, text, classes) %}
+<a class="{{ classes }}" href="{{ url }}">{{ text }}</a>
 {% endmacro %}
