@@ -9,8 +9,7 @@ const plugins = [
     "process.env.NODE_ENV": "\"production\"",
     "__DEV__": false
   }),
-  new webpack.optimize.DedupePlugin(),
-  new webpack.optimize.OccurenceOrderPlugin()
+  new webpack.optimize.DedupePlugin()
 ];
 
 if (STENCIL.minifyJs) {

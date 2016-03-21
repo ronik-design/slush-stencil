@@ -10,7 +10,8 @@ const gulpIf = require("gulp-if");
 const plumber = require("gulp-plumber");
 const notify = require("gulp-notify");
 const size = require("gulp-size");
-const swig = require("gulp-swig");
+const nunjucks = require("gulp-nunjucks");
+const nunjucksModule = require("nunjucks");
 const data = require("gulp-data");
 const glob = require("glob");
 const prettify = require("gulp-prettify");
@@ -87,57 +88,60 @@ const getJson = function (dataDir) {
   return globals;
 };
 
-const loadTags = function (baseDir) {
+// const loadTags = function (baseDir) {
 
-  const tags = {};
+//   const tags = {};
 
-  glob.sync(`${baseDir}/templates/tags/*.js`).forEach((fileGlob) => {
-    const prop = path.basename(fileGlob).replace(".js", "");
+//   glob.sync(`${baseDir}/templates/tags/*.js`).forEach((fileGlob) => {
+//     const prop = path.basename(fileGlob).replace(".js", "");
 
-    try {
-      tags[prop] = require(fileGlob);
-    } catch (err) {
-      util.log("templates", `Could not load custom tag ${prop}`);
-    }
-  });
+//     try {
+//       tags[prop] = require(fileGlob);
+//     } catch (err) {
+//       util.log("templates", `Could not load custom tag ${prop}`);
+//     }
+//   });
 
-  return tags;
-};
+//   return tags;
+// };
 
 gulp.task("templates", () => {
 
   const watching = util.env.watching;
-  const buildDir = util.env.buildDir;
-  const baseDir = util.env.baseDir;
+  const buildDir = util.env["build-dir"];
+  // const baseDir = util.env.baseDir;
   const pagesDir = util.env.templatePagesDir;
   const dataDir = util.env.templateDataDir;
 
-  const tags = loadTags(baseDir);
+  // const tags = loadTags(baseDir);
   const locals = getJson(dataDir);
 
   locals.package = util.env.PACKAGE;
   locals.stencil = util.env.STENCIL;
   locals.__DEV__ = !util.env.production;
 
-  const opts = {
-    setup(swigInstance) {
+  // const opts = {
+  //   setup(swigInstance) {
 
-      swigInstance.setDefaults({
-        loader: swigInstance.loaders.fs(baseDir)
-      });
+  //     swigInstance.setDefaults({
+  //       loader: swigInstance.loaders.fs(baseDir)
+  //     });
 
-      Object.keys(tags).forEach((tagName) => {
-        const tag = tags[tagName];
-        swigInstance.setTag(tagName, tag.parse, tag.compile, tag.ends, tag.blockLevel);
-      });
-    },
-    defaults: { cache: false, locals }
-  };
+  //     Object.keys(tags).forEach((tagName) => {
+  //       const tag = tags[tagName];
+  //       swigInstance.setTag(tagName, tag.parse, tag.compile, tag.ends, tag.blockLevel);
+  //     });
+  //   },
+  //   defaults: { cache: false, locals }
+  // };
+
+  // const env = new nunjucksModule.Environment();
+  const env = nunjucksModule.configure("templates");
 
   return gulp.src(`${pagesDir}/**/*.html`)
     .pipe(gulpIf(watching, plumber({ errorHandler: notify.onError() })))
     .pipe(data(getJsonData(dataDir, pagesDir)))
-    .pipe(swig(opts))
+    .pipe(nunjucks.compile(null, { env }))
     .pipe(prettify({
       "indent_size": 2,
       "unformatted": ["script"]

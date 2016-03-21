@@ -1,8 +1,2 @@
-import base from "./base";
-import demo from "./demo";
-
-export default {
-  DEFAULT: base,
-  base,
-  demo
-};
+export { default as DEFAULT } from "./base";
+export { default as demo } from "./demo";

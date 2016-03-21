@@ -59,18 +59,11 @@ gulp.task("watch", (cb) => {
 
   const watchStart = () => {
 
-    watch("assets/**/*", () => {
-      gulp.start("assets");
-    });
-    watch("styles/**/*", () => {
-      gulp.start("styles");
-    });
-    watch("images/**/*", () => {
-      gulp.start("images");
-    });
-    watch("sprites/**/*.svg", () => {
-      gulp.start("sprites");
-    });
+    watch("assets/**/*", () => gulp.start("assets"));
+    watch("styles/**/*", () => gulp.start("styles"));
+    watch("images/**/*", () => gulp.start("images"));
+    watch("sprites/**/*.svg", () => gulp.start("sprites"));
+    watch("scripts/**/*.js", () => gulp.start("webpack"));
 
     cb();
   };

@@ -8,6 +8,8 @@ const util = require("gulp-util");
 const watch = require("gulp-watch");
 const browserSync = require("browser-sync");
 
+const DEFAULT_PORT = 2002;
+
 const middleware = function (buildDir) {
 
   return function (req, res, next) {
@@ -27,7 +29,7 @@ gulp.task("browser-sync", () => {
   const buildDir = util.env["build-dir"];
 
   const host = util.env.host || "localhost";
-  const port = util.env.port || 2002;
+  const port = util.env.port || DEFAULT_PORT;
   const spa = util.env.spa;
 
   const server = {

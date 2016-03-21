@@ -4,60 +4,46 @@
 
 const gulp = require("gulp");
 const util = require("gulp-util");
-const del = require("del");
+const path = require("path");
 const webpack = require("webpack");
-const mkdirp = require("mkdirp");
+const webpackStream = require("webpack-stream");
+const notify = require("gulp-notify");
+const plumber = require("gulp-plumber");
+const gulpIf = require("gulp-if");
 
-const WATCH_DELAY = 200;
+notify.logLevel(0);
 
-gulp.task("webpack", (cb) => {
+const errorHandler = notify.onError();
 
+const getConfig = function (baseDir, options) {
+
+  let configPath;
+
+  if (options.production) {
+    configPath = path.join(baseDir, "webpack.production.config.js");
+  } else {
+    configPath = path.join(baseDir, "webpack.development.config.js");
+  }
+
+  return require(configPath);
+};
+
+gulp.task("webpack", () => {
+
+  const production = util.env.production;
   const watching = util.env.watching;
+
   const baseDir = util.env["base-dir"];
   const staticDir = util.env["static-dir"];
+  const scriptsDir = util.env["scripts-dir"];
 
-  let started = false;
-  let config;
+  const src = path.join(scriptsDir, "main.js");
+  const dest = path.join(staticDir, "javascript");
 
-  del.sync(`${staticDir}/javascript/**/*`);
-  mkdirp.sync(`${staticDir}/javascript`);
+  const config = getConfig(baseDir, { production });
 
-  if (util.env.production) {
-    config = require(`${baseDir}/webpack.production.config.js`);
-  } else {
-    config = require(`${baseDir}/webpack.development.config.js`);
-  }
-
-  const bundler = webpack(config);
-
-  const bundle = function (err, stats) {
-
-    let errors;
-
-    if (err) {
-      throw new util.PluginError("webpack", err);
-    }
-
-    if (stats.hasErrors()) {
-      util.log("webpack:", stats.toString({ colors: true }));
-      errors = stats.toJson().errors;
-    }
-
-    if (stats.hasWarnings()) {
-      util.log("webpack:", stats.toString({ colors: true }));
-    }
-
-    util.log("webpack:", "Rebuilt bundle...");
-
-    if (!started) {
-      started = true;
-      return cb(watching ? null : errors);
-    }
-  };
-
-  if (watching) {
-    bundler.watch(WATCH_DELAY, bundle);
-  } else {
-    bundler.run(bundle);
-  }
+  return gulp.src(src)
+    .pipe(gulpIf(watching, plumber({ errorHandler })))
+    .pipe(webpackStream(config, webpack))
+    .pipe(gulp.dest(dest));
 });

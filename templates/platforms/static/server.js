@@ -1,9 +1,13 @@
 "use strict";
 
+const HTTP_CODE_NOT_FOUND = 404;
+const YEAR_MS = 31536000000;
+
 /* $lab:coverage:off$ */
-const STENCIL = require("./stencil/params.json");
+const DEFAULT_PORT = 8080;
+const STENCIL = require("./stencil.json");
 const HOST = process.env.HOST || "0.0.0.0";
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || DEFAULT_PORT;
 const STATIC_DIR = process.env.WATCHING ? STENCIL.buildDir : STENCIL.deployDir;
 /* $lab:coverage:on$ */
 
@@ -44,7 +48,7 @@ server.route([{
   },
   config: {
     cache: {
-      expiresIn: 1 * 365 * 24 * 60 * 60 * 1000
+      expiresIn: 1 * YEAR_MS
     }
   }
 }]);
@@ -53,7 +57,7 @@ if (STENCIL.singlePageApplication) {
   server.ext("onPreResponse", (request, reply) => {
 
     if (request.response.isBoom) {
-      if (request.response.output.statusCode === 404) {
+      if (request.response.output.statusCode === HTTP_CODE_NOT_FOUND) {
         return reply.file(path.join(staticDir, "index.html"));
       }
     }

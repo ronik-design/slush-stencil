@@ -1,86 +1,74 @@
 import ko from "knockout";
-import pages from "./pages";
-import bindings from "./bindings";
+import * as pages from "./pages";
+import * as bindings from "./bindings";
+import * as components from "./components";
 
 class App {
 
   constructor() {
 
-    this.root = null;
-    this.page = null;
-    this.pageName = "DEFAULT";
-    this.pageVars = {};
+    this.rootEl = null;
     this.config = {};
-    this.afterPage = [];
+    this.pages = {};
+    this.components = {};
   }
 
-  setConfig(options = {}) {
+  setConfig() {
 
-    this.config = Object.assign(options, this.config);
+    if (arguments.length === 2) {
+      this.config[arguments[0]] = arguments[1];
+    }
 
-    if (this.page) {
-      this.page.config = this.config;
+    if (arguments.length === 1) {
+      this.config = Object.assign(this.config, arguments[0]);
     }
   }
 
-  setPage(pageName) {
+  clearConfig() {
 
-    this.pageName = pages[pageName] ? pageName : this.pageName;
+    this.config = {};
   }
 
-  loadPage() {
+  addBindings() {
 
-    const Page = pages[this.pageName];
-    this.page = new Page({ vars: this.pageVars, config: this.config });
-  }
-
-  setPageVar(key, value) {
-
-    this.pageVars[key] = value;
-
-    if (this.page) {
-      this.page[key] = value;
-    }
-  }
-
-  addCustomBindings(customBindings) {
-
-    Object.keys(customBindings).forEach((name) => {
-      ko.bindingHandlers[name] = customBindings[name];
-
-      if (customBindings[name].allowVirtual) {
+    for (const name in bindings) {
+      ko.bindingHandlers[name] = bindings[name];
+      if (bindings[name].allowVirtual) {
         ko.virtualElements.allowedBindings[name] = true;
       }
-    });
-  }
-
-  addAfterPageFn(fn) {
-
-    if (fn instanceof Function) {
-      this.afterPage.push(fn);
     }
   }
 
-  start(root = document.body) {
+  addComponents() {
 
-    this.root = root;
-
-    this.addCustomBindings(bindings);
-
-    if (!this.page) {
-      this.setPage();
+    for (const name in components) {
+      const Component = components[name];
+      this.components[name] = ko.observable(new Component({ config: this.config }));
     }
+  }
 
-    this.loadPage();
+  addPages() {
 
-    this.afterPage.forEach((fn) => fn(this.page, this));
+    for (const name in pages) {
+      const Page = pages[name];
+      this.pages[name] = ko.observable(new Page({ config: this.config }));
+    }
+  }
 
-    ko.applyBindings(this.page, this.root);
+  start(rootEl = document.body) {
+
+    this.rootEl = rootEl;
+
+    this.addBindings();
+    this.addComponents();
+    this.addPages();
+
+    ko.applyBindings(this, this.rootEl);
   }
 
   stop() {
 
-    ko.cleanNode(this.root);
+    ko.cleanNode(this.rootEl);
   }
 }
 

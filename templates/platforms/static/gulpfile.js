@@ -44,7 +44,10 @@ util.env.templatePagesDir = dirPath("pages");
 util.env.templateDataDir = dirPath("data");
 
 gulp.task("build", (cb) => {
-  runSequence(
+
+  const production = util.env.production;
+
+  const tasks = [
     "lint",
     "clean",
     "styles",
@@ -52,10 +55,14 @@ gulp.task("build", (cb) => {
     "images",
     "assets",
     "sprites",
-    "templates",
-    "revisions",
-    cb
-  );
+    "templates"
+  ];
+
+  if (production) {
+    tasks.push("revisions");
+  }
+
+  runSequence(...tasks, cb);
 });
 
 gulp.task("watch", (cb) => {
@@ -64,21 +71,12 @@ gulp.task("watch", (cb) => {
 
   const watchStart = function () {
 
-    watch("assets/**/*", () => {
-      gulp.start("assets");
-    });
-    watch("styles/**/*", () => {
-      gulp.start("styles");
-    });
-    watch("images/**/*", () => {
-      gulp.start("images");
-    });
-    watch("sprites/**/*.svg", () => {
-      gulp.start("sprites");
-    });
-    watch(["templates/**/*", "pages/**/*", "data/**/*"], () => {
-      gulp.start("templates");
-    });
+    watch("assets/**/*", () => gulp.start("assets"));
+    watch("styles/**/*", () => gulp.start("styles"));
+    watch("images/**/*", () => gulp.start("images"));
+    watch("sprites/**/*.svg", () => gulp.start("sprites"));
+    watch(["templates/**/*", "pages/**/*", "data/**/*"], () => gulp.start("templates"));
+    watch("scripts/**/*.js", () => gulp.start("webpack"));
 
     cb();
   };
@@ -90,7 +88,7 @@ gulp.task("deploy", (cb) => {
 
   util.env.production = true;
 
-  runSequence("build", "s3-deploy", () => {
+  runSequence("build", "revisions", "s3-deploy", () => {
 
     if (util.env.website) {
       util.log("Your site has been deployed to S3");

@@ -1,10 +1,11 @@
 {
   "scripts": {
     "start": "wh serve",
-    "test": "npm run lint && mocha"
+    "test": "mocha --timeout 5000"
   },
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "mocha": "^2.3.3",
+    "through2": "^2.0.1"
   }
 }

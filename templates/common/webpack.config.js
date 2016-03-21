@@ -6,10 +6,6 @@ const STENCIL = require("./stencil");
 
 const dest = path.join(STENCIL.buildDir, STENCIL.staticPath);
 
-const entry = {
-  "main.js": ["babel-polyfill", "./scripts/main.js"]
-};
-
 const providePlugins = {};
 
 if (STENCIL.js === "knockout") {
@@ -28,29 +24,34 @@ if (STENCIL.jsExternals.indexOf("modernizr") >= 0) {
   externals.modernizr = "Modernizr";
 }
 
-const loaders = [{
-  test: /scripts\/vendor\/.+\.js$/,
-  loaders: ["imports?this=>window"]
-}, {
-  test: /\.jsx?$/,
-  exclude: /node_modules|scripts\/vendor/,
-  loader: "babel",
-  query: {
-    cacheDirectory: true,
-    presets: ["es2015"]
+const loaders = [
+  {
+    test: /scripts\/vendor\/.+\.js$/,
+    loader: "imports?this=>window"
+  }, {
+    test: /\.js$/,
+    exclude: /node_modules|scripts\/vendor/,
+    loader: "babel",
+    query: {
+      cacheDirectory: true,
+      presets: ["es2015-native-modules"]
+    }
+  }, {
+    test: /\.js$/,
+    exclude: /node_modules|scripts\/vendor/,
+    loader: "eslint"
   }
-}, {
-  test: /\.jsx?$/,
-  exclude: /node_modules|scripts\/vendor/,
-  loader: "eslint"
-}];
+];
 
 module.exports = {
-  entry,
+
+  entry: {
+    "main.js": ["babel-polyfill", "./scripts/main.js"]
+  },
 
   output: {
     filename: "main.js",
-    path: path.join(dest, "/javascript/")
+    path: path.join(__dirname, dest, "javascript")
   },
 
   stats: {
@@ -66,12 +67,12 @@ module.exports = {
 
   resolve: {
     aliases,
-    modulesDirectories: ["local_modules", "node_modules"],
-    extensions: ["", ".js", ".jsx"]
+    modules: ["local_modules", "node_modules"],
+    extensions: ["", ".js"]
   },
 
   eslint: {
-    configFile: "./scripts/.eslintrc"
+    configFile: path.join(__dirname, "scripts/.eslintrc")
   },
 
   module: { loaders }

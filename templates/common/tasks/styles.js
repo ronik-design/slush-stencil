@@ -48,7 +48,8 @@ gulp.task("styles:build", () => {
   const destDir = `${staticDir}/css`;
 
   const sassPaths = [
-    `${baseDir}/node_modules/breakpoint-sass/stylesheets`
+    `${baseDir}/node_modules/breakpoint-sass/stylesheets`,
+    `${baseDir}/node_modules/bourbon/app/assets/stylesheets`
   ];
 
   const postcssProcessors = [

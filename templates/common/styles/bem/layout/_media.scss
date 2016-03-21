@@ -1,7 +1,7 @@
 .visible-desktop-block {
   display: none;
 
-  @include desktop() {
+  @include above(desktop) {
     display: block;
   }
 }
@@ -9,7 +9,7 @@
 .visible-desktop-inline {
   display: none;
 
-  @include desktop() {
+  @include above(desktop) {
     display: inline
   }
 }
@@ -17,7 +17,7 @@
 .visible-desktop-inline-block {
   display: none;
 
-  @include desktop() {
+  @include above(desktop) {
     display: inline-block;
   }
 }
@@ -25,7 +25,7 @@
 .visible-mobile-block {
   display: none;
 
-  @include mobile() {
+  @include below(mobile) {
     display: block;
   }
 }
@@ -33,7 +33,7 @@
 .visible-mobile-inline {
   display: none;
 
-  @include mobile() {
+  @include below(mobile) {
     display: inline;
   }
 }
@@ -41,21 +41,21 @@
 .visible-mobile-inline-block {
   display: none;
 
-  @include mobile() {
+  @include below(mobile) {
     display: inline-block;
   }
 }
 
 .hidden-mobile {
 
-  @include mobile() {
+  @include below(mobile) {
     display: none;
   }
 }
 
 .hidden-desktop {
 
-  @include desktop() {
+  @include above(desktop) {
     display: none;
   }
 }

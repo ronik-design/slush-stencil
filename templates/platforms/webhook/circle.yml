@@ -2,15 +2,15 @@ machine:
   timezone:
     America/New_York
   node:
-    version: 5.6.0
+    version: 5.8.0
 
 dependencies:
   cache_directories:
-    - ~/nvm/versions/node/v5.6.0/lib/node_modules/wh
-    - ~/nvm/versions/node/v5.6.0/bin
+    - ~/nvm/versions/node/v5.8.0/lib/node_modules/wh
+    - ~/nvm/versions/node/v5.8.0/bin
   pre:
-    - if [ ! -e ~/nvm/versions/node/v5.6.0/bin/grunt ]; then npm install -g grunt-cli; else echo "Grunt CLI seems to be cached"; fi;
-    - if [ ! -e ~/nvm/versions/node/v5.6.0/bin/wh ]; then npm install -g wh; else echo "Webhook seems to be cached"; fi;
+    - if [ ! -e ~/nvm/versions/node/v5.8.0/bin/grunt ]; then npm install -g grunt-cli; else echo "Grunt CLI seems to be cached"; fi;
+    - if [ ! -e ~/nvm/versions/node/v5.8.0/bin/wh ]; then npm install -g wh; else echo "Webhook seems to be cached"; fi;
 
 deployment:
   production:

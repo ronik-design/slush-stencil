@@ -1,15 +1,43 @@
+/* eslint global-require:0 */
+
 "use strict";
 
 const path = require("path");
 const gulp = require("gulp");
 const util = require("gulp-util");
+const ignore = require("gulp-ignore");
 const runSequence = require("run-sequence");
 const awspublish = require("gulp-awspublish");
 const s3Website = require("s3-website");
 const notify = require("gulp-notify");
 const merge = require("merge-stream");
+const parallelize = require("concurrent-transform");
 const cyan = util.colors.cyan;
 const logName = `"${cyan("s3-deploy")}"`;
+
+const MAX_CONCURRENCY = 5;
+
+const REVISIONED_HEADERS = {
+  "Cache-Control": "max-age=315360000, no-transform, public"
+};
+
+const STATIC_HEADERS = {
+  "Cache-Control": "max-age=300, s-maxage=900, no-transform, public"
+};
+
+const getManifest = function (dirname, filename) {
+
+  let manifest;
+
+  try {
+    const revManifest = require(path.join(dirname, filename || "rev-manifest.json"));
+    manifest = Object.keys(revManifest).map((p) => revManifest[p]);
+  } catch (e) {
+    manifest = [];
+  }
+
+  return manifest;
+};
 
 gulp.task("s3-deploy:config", (cb) => {
 
@@ -49,11 +77,11 @@ gulp.task("s3-deploy:config", (cb) => {
   });
 });
 
-
 gulp.task("s3-deploy:publish", () => {
 
+  const force = util.env.force;
   const domain = util.env.domain;
-  const deployDir = util.env.deployDir;
+  const deployDir = util.env["deploy-dir"];
 
   const publisher = awspublish.create({
     params: {
@@ -61,21 +89,37 @@ gulp.task("s3-deploy:publish", () => {
     }
   });
 
-  const headers = {
-    "Cache-Control": "max-age=315360000, no-transform, public"
-  };
+  const publisherOpts = { force };
 
-  const gzipGlob = path.join(deployDir, "**/*.{css,html,js}");
-  const plainGlob = [
-    path.join(deployDir, "**/*"),
-    `!${gzipGlob}`
-  ];
+  const revManifest = getManifest(deployDir);
 
-  const gzip = gulp.src(gzipGlob).pipe(awspublish.gzip());
-  const plain = gulp.src(plainGlob);
+  let gzipRevisioned = util.noop();
+  let plainRevisioned = util.noop();
 
-  return merge(gzip, plain)
-    .pipe(publisher.publish(headers))
+  if (revManifest.length) {
+
+    const revPaths = revManifest.map((p) => path.join(deployDir, p));
+
+    gzipRevisioned = gulp.src(revPaths, { base: deployDir })
+      .pipe(ignore.include("**/*.{html,js,css,txt}"))
+      .pipe(awspublish.gzip())
+      .pipe(parallelize(publisher.publish(REVISIONED_HEADERS, publisherOpts), MAX_CONCURRENCY));
+
+    plainRevisioned = gulp.src(revPaths, { base: deployDir })
+      .pipe(ignore.exclude("**/*.{html,js,css,txt}"))
+      .pipe(parallelize(publisher.publish(REVISIONED_HEADERS, publisherOpts), MAX_CONCURRENCY));
+  }
+
+  const gzipStatic = gulp.src(path.join(deployDir, "**/*.+(html|js|css|txt)"))
+    .pipe(ignore.exclude(revManifest))
+    .pipe(awspublish.gzip())
+    .pipe(parallelize(publisher.publish(STATIC_HEADERS, publisherOpts), MAX_CONCURRENCY));
+
+  const plainStatic = gulp.src(path.join(deployDir, "/**/*.!(html|js|css|txt)"))
+    .pipe(ignore.exclude(revManifest))
+    .pipe(parallelize(publisher.publish(STATIC_HEADERS, publisherOpts), MAX_CONCURRENCY));
+
+  return merge(gzipRevisioned, gzipStatic, plainRevisioned, plainStatic)
     .on("error", notify.onError())
     .pipe(publisher.sync())
     .on("error", notify.onError())

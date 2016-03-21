@@ -12,7 +12,7 @@ const plugins = [
 
 config.cache = true;
 config.debug = true;
-config.devtool = "inline-source-map";
+config.devtool = "source-map";
 config.plugins = config.plugins.concat(plugins);
 
 module.exports = config;
