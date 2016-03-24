@@ -13,18 +13,14 @@
   "devDependencies": {
     "code": "^2.0.1",
     "glob": "^5.0.5",
-    "gulp-data": "^1.2.0",
-    "gulp-prettify": "^0.3.0",
-    "gulp-rev-all": "^0.8.21",
     "lab": "^7.3.0",
     "lodash": "^3.7.0",
     "mkdirp": "^0.5.0",
-    "run-sequence": "^1.0.2",
     "require-dir": "^0.3.0",
     "nunjucks": "^2.3.0",
     "gulp-nunjucks": "^2.2.0",
     "gulp-rev": "^7.0.0",
     "gulp-rev-replace": "^0.4.3",
-    "uslug": "^1.0.3"
+    "gulp-htmlmin": "^1.3.0"
   }
 }
