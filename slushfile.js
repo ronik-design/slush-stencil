@@ -121,34 +121,6 @@ gulp.task("default", function (done) {
       value: "modernizr"
     }]
   }, {
-    // name: "js",
-    // type: "list",
-    // message: "Which client-side framework would you like to use?",
-    // choices: [{
-    //   name: "Knockout (ES6, jQuery, knockout.js)",
-    //   value: "knockout"
-    // }, {
-    //   name: "Backbone (ES6, jQuery, lodash, Backbone)",
-    //   value: "backbone"
-    // }, {
-    //   name: "React (ES6, jsx, Flux/alt, React Router)",
-    //   value: "react"
-    // }]
-  // }, {
-    // name: "css",
-    // type: "list",
-    // message: "Which stylus libraries would you like to use?",
-    // choices: [{
-    //   name: "BEM",
-    //   value: "bem"
-    // }, {
-    //   name: "Bootstrap (bootstrap-styl)",
-    //   value: "bootstrap"
-    // }, {
-    //   name: "Skeleton.css",
-    //   value: "skeleton"
-    // }]
-  // }, {
     type: "confirm",
     name: "singlePageApplication",
     message: "Single Page Application? (Unknown routes are handled by index.html)",
@@ -185,7 +157,7 @@ gulp.task("default", function (done) {
 
       if (config.platform === "webhook") {
         config.buildDir = "static";
-        config.deployDir = ".build";
+        config.deployDir = ".whdist/.build";
         config.staticPath = "";
         config.browserSync = false;
         config.minifyCss = false;

@@ -22,6 +22,9 @@ util.env.STENCIL = STENCIL;
 // Domain, for...
 util.env.domain = STENCIL.domain;
 
+// Production flag
+util.env.production = util.env.production || process.env.NODE_ENV === "production";
+
 // Build directory
 util.env["base-dir"] = dirPath("./");
 util.env["build-dir"] = dirPath(STENCIL.buildDir);
@@ -44,11 +47,11 @@ gulp.task("build", (cb) => {
   runSequence(
     "lint",
     "clean",
-    "styles",
-    "webpack",
     "sprites",
     "images",
     "assets",
+    "styles",
+    "webpack",
     cb
     );
 });
@@ -59,11 +62,29 @@ gulp.task("watch", (cb) => {
 
   const watchStart = () => {
 
-    watch("assets/**/*", () => gulp.start("assets"));
-    watch("styles/**/*", () => gulp.start("styles"));
-    watch("images/**/*", () => gulp.start("images"));
-    watch("sprites/**/*.svg", () => gulp.start("sprites"));
-    watch("scripts/**/*.js", () => gulp.start("webpack"));
+    watch("assets/**/*", () => {
+      gulp.start("assets");
+    });
+
+    watch("styles/**/*", () => {
+      gulp.start("styles");
+    });
+
+    watch("images/**/*", () => {
+      gulp.start("images");
+    });
+
+    watch("sprites/**/*.svg", () => {
+      gulp.start("sprites:svg");
+    });
+
+    watch("sprites/**/*.png", () => {
+      gulp.start("sprites:image");
+    });
+
+    watch("scripts/**/*.js", () => {
+      gulp.start("webpack");
+    });
 
     cb();
   };
@@ -71,13 +92,15 @@ gulp.task("watch", (cb) => {
   runSequence("build", watchStart);
 });
 
-gulp.task("deploy", (cb) => {
+gulp.task("deploy:webhook", (cb) => {
   runSequence("build", "webhook:deploy", cb);
 });
 
-gulp.task("deploy:staging", (cb) => {
-  runSequence("build", "webhook:build", "s3-deploy", cb);
+gulp.task("deploy:s3", (cb) => {
+  runSequence("build", "webhook:build", "revisions", "s3-deploy", cb);
 });
+
+gulp.task("deploy", ["deploy:webhook"]);
 
 gulp.task("develop", (cb) => {
   runSequence("watch", "webhook:serve", cb);

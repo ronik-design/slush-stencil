@@ -7,6 +7,7 @@ const gulp = require("gulp");
 const util = require("gulp-util");
 const ignore = require("gulp-ignore");
 const runSequence = require("run-sequence");
+const gulpIf = require("gulp-if");
 const awspublish = require("gulp-awspublish");
 const s3Website = require("s3-website");
 const notify = require("gulp-notify");
@@ -111,12 +112,12 @@ gulp.task("s3-deploy:publish", () => {
   }
 
   const gzipStatic = gulp.src(path.join(deployDir, "**/*.+(html|js|css|txt)"))
-    .pipe(ignore.exclude(revManifest))
+    .pipe(gulpIf(revManifest.length, ignore.exclude(revManifest)))
     .pipe(awspublish.gzip())
     .pipe(parallelize(publisher.publish(STATIC_HEADERS, publisherOpts), MAX_CONCURRENCY));
 
   const plainStatic = gulp.src(path.join(deployDir, "/**/*.!(html|js|css|txt)"))
-    .pipe(ignore.exclude(revManifest))
+    .pipe(gulpIf(revManifest.length, ignore.exclude(revManifest)))
     .pipe(parallelize(publisher.publish(STATIC_HEADERS, publisherOpts), MAX_CONCURRENCY));
 
   return merge(gzipRevisioned, gzipStatic, plainRevisioned, plainStatic)
