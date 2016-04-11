@@ -1,0 +1,24 @@
+{% if description %}<meta name="description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
+{% if keywords %}<meta name="keywords" content="{{ keywords | escape('html') }}">{% endif %}
+
+<meta property="og:type" content="{{ type | default('website') | escape('html') }}">
+<meta property="og:title" content="{{ title | escape('html') }}">
+<meta property="og:url" content="{{ url }}">
+<meta property="og:site_name" content="{{ site_name | escape('html') }}">
+{% if description %}<meta property="og:description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
+{% if image %}<meta property="og:image" content="{{ image }}">{% endif %}
+
+<meta name="twitter:card" content="{{ card | default('summary') | escape('html') }}">
+<meta name="twitter:url" content="{{ url }}">
+<meta name="twitter:title" content="{{ title | escape('html') }}">
+{% if description %}<meta name="twitter:description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
+{% if image %}<meta name="twitter:image" content="{{ image }}">{% endif %}
+
+{% if type === 'business.business' %}
+<meta property="business:contact_data:street_address" content="{{ address.street1 }}" />
+<meta property="business:contact_data:locality" content="{{ address.city }}" />
+<meta property="business:contact_data:postal_code" content="{{ address.zip }}" />
+<meta property="business:contact_data:country_name" content="{{ address.country }}" />
+{% endif %}
+
+<link rel="canonical" href="{{ url }}">

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{#
+{% set object = cms.homepage %}
+  <url>
+    <loc>{{ getSetting('site_url') }}</loc>
+    <lastmod>{{ object.last_updated }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+{% for object in cms.posts | sort('publish_date', true) %}
+  <url>
+    <loc>{{ getSetting('site_url') }}{{ url(object) }}</loc>
+    <lastmod>{{ object.last_updated }}</lastmod>
+  </url>
+{% endfor %}
+#}
+</urlset>
