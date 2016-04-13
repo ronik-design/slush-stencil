@@ -13,7 +13,6 @@ const plugins = [
 ];
 
 if (STENCIL.minifyJs) {
-
   plugins.push(new webpack.optimize.UglifyJsPlugin({
     compress: {
       "screw_ie8": true,
@@ -25,11 +24,9 @@ if (STENCIL.minifyJs) {
       "keep_fargs": true
     }
   }));
-
   plugins.push(new webpack.optimize.AggressiveMergingPlugin());
 }
 
-config.output.filename = "main.js";
 config.cache = false;
 config.debug = false;
 config.devtool = false;

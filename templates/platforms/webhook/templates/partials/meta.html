@@ -1,24 +1,48 @@
+{% import "templates/partials/macros.html" as macros %}
+
+{% set site_name = getSetting('site_name') %}
+{% set site_description = getSetting('site_description') %}
+{% set site_keywords = getSetting('site_keywords') %}
+
+{% if !image && cms.sitesettings %}
+  {% set favicon = cms.sitesettings.favicon %}
+  {% set image = favicon.url %}
+{% endif %}
+
+{% if !description %}
+  {% set description = site_description %}
+{% endif %}
+
+{% if !keywords %}
+  {% set keywords = site_keywords %}
+{% endif %}
+
+{% if !canonical %}
+  {% set canonical = macros.absolute_url() %}
+{% endif %}
+
 {% if description %}<meta name="description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
 {% if keywords %}<meta name="keywords" content="{{ keywords | escape('html') }}">{% endif %}
 
-<meta property="og:type" content="{{ type | default('website') | escape('html') }}">
-<meta property="og:title" content="{{ title | escape('html') }}">
-<meta property="og:url" content="{{ url }}">
+<meta property="og:type" content="{{ og_type | default('website') | escape('html') }}">
+<meta property="og:title" content="{{ title | default(site_name) | escape('html') }}">
+<meta property="og:url" content="{{ canonical }}">
 <meta property="og:site_name" content="{{ site_name | escape('html') }}">
 {% if description %}<meta property="og:description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
-{% if image %}<meta property="og:image" content="{{ image }}">{% endif %}
+{% if image || og_image %}<meta property="og:image" content="{{ og_image | default(image) }}">{% endif %}
 
-<meta name="twitter:card" content="{{ card | default('summary') | escape('html') }}">
-<meta name="twitter:url" content="{{ url }}">
-<meta name="twitter:title" content="{{ title | escape('html') }}">
+<meta name="twitter:card" content="{{ twitter_card | default('summary') | escape('html') }}">
+<meta name="twitter:url" content="{{ canonical }}">
+<meta name="twitter:title" content="{{ title | default(site_name) | escape('html') }}">
 {% if description %}<meta name="twitter:description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
-{% if image %}<meta name="twitter:image" content="{{ image }}">{% endif %}
+{% if image || twitter_image %}<meta name="twitter:image" content="{{ twitter_image | default(image) }}">{% endif %}
 
 {% if type === 'business.business' %}
+{% if !address && cms.sitesettings %}{% set address = cms.sitesettings.address %}{% endif %}
 <meta property="business:contact_data:street_address" content="{{ address.street1 }}" />
 <meta property="business:contact_data:locality" content="{{ address.city }}" />
 <meta property="business:contact_data:postal_code" content="{{ address.zip }}" />
 <meta property="business:contact_data:country_name" content="{{ address.country }}" />
 {% endif %}
 
-<link rel="canonical" href="{{ url }}">
+<link rel="canonical" href="{{ canonical }}">

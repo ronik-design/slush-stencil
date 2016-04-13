@@ -63,6 +63,7 @@
     "local-modules": "^1.0.1",
     "lost": "^6.7.2",
     "merge-stream": "^1.0.0",
+    "object-fit-polyfill": "^0.1.0",
     "postcss-reporter": "^1.3.3",
     "postcss-scss": "^0.1.7",
     "require-dir": "^0.3.0",

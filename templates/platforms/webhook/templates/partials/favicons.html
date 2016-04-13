@@ -1,17 +1,21 @@
 <link rel="shortcut icon" href="favicon.ico">
 
 {% if pinicon %}
-<link rel="mask-icon" sizes="any" href="{{ pinicon.image.url }}" color="{{ pinicon.color }}">
+<link rel="mask-icon" sizes="any" href="{{ pinicon.url }}" color="{{ pinicon_color }}">
 {% endif %}
 
 {% if tileicon %}
-<meta name="msapplication-TileColor" content="{{ tileicon.color }}">
-<meta name="msapplication-TileImage" content="{{ tileicon.image | imageSize(144) }}">
+<meta name="msapplication-TileColor" content="{{ tileicon_color }}">
+<meta name="msapplication-TileImage" content="{{ tileicon | imageSize(144) }}">
 {% endif %}
 
 {% if favicon %}
   {% for size in [ 16, 32, 96, 160, 192 ] %}
-    <link rel="icon" type="image/png" href="{{ favicon | imageSize(size) }}" sizes="{{ size }}x{{ size }}">
+    {% set image = favicon %}
+    {% if favicon_small && size === 16 || size === 32 %}
+      {% set image = favicon_small %}
+    {% endif %}
+    <link rel="icon" type="image/png" href="{{ image | imageSize(size) }}" sizes="{{ size }}x{{ size }}">
   {% endfor %}
   {% for size in [ 57, 60, 72, 76, 114, 120, 144, 152, 180 ] %}
     <link rel="apple-touch-icon" href="/{{ favicon | imageSize(size) }}" sizes="{{ size }}x{{ size }}">
@@ -19,5 +23,5 @@
 {% endif %}
 
 {% if themecolor %}
-<meta name="theme-color" content="{{ themecolor }}">
+<meta name="theme-color" content="{{ theme_color }}">
 {% endif %}

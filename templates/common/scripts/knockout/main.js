@@ -1,3 +1,6 @@
+import "babel-polyfill";
+import "object-fit-polyfill";
+
 import { ready } from "vanillajs-dom";
 import svg4everybody from "svg4everybody";
 import App from "./app";

@@ -9,8 +9,12 @@ class App {
 
     this.rootEl = null;
     this.config = {};
+
     this.pages = {};
     this.components = {};
+
+    this.pageInstances = {};
+    this.componentInstances = {};
   }
 
   setConfig() {
@@ -22,6 +26,38 @@ class App {
     if (arguments.length === 1) {
       this.config = Object.assign(this.config, arguments[0]);
     }
+  }
+
+  getPage(name) {
+
+    const Ctor = pages[name];
+
+    return () => {
+
+      let instance = this.pageInstances[name];
+
+      if (!instance) {
+        instance = new Ctor({ config: this.config, app: this });
+      }
+
+      return instance;
+    };
+  }
+
+  getComponent(name) {
+
+    const Ctor = components[name];
+
+    return () => {
+
+      let instance = this.componentInstances[name];
+
+      if (!instance) {
+        instance = new Ctor({ config: this.config, app: this });
+      }
+
+      return instance;
+    };
   }
 
   clearConfig() {
@@ -40,18 +76,18 @@ class App {
   }
 
   addComponents() {
-
     for (const name in components) {
-      const Component = components[name];
-      this.components[name] = ko.observable(new Component({ config: this.config }));
+      Object.defineProperty(this.components, name, {
+        get: this.getComponent(name)
+      });
     }
   }
 
   addPages() {
-
     for (const name in pages) {
-      const Page = pages[name];
-      this.pages[name] = ko.observable(new Page({ config: this.config }));
+      Object.defineProperty(this.pages, name, {
+        get: this.getPage(name)
+      });
     }
   }
 

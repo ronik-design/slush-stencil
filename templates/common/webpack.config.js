@@ -1,10 +1,7 @@
 "use strict";
 
-const path = require("path");
 const webpack = require("webpack");
 const STENCIL = require("./stencil");
-
-const dest = path.join(STENCIL.buildDir, STENCIL.staticPath);
 
 const providePlugins = {};
 
@@ -45,13 +42,8 @@ const loaders = [
 
 module.exports = {
 
-  entry: {
-    "main.js": ["babel-polyfill", "./scripts/main.js"]
-  },
-
   output: {
-    filename: "main.js",
-    path: path.join(__dirname, dest, "javascript")
+    filename: "main.js"
   },
 
   stats: {
@@ -68,11 +60,7 @@ module.exports = {
   resolve: {
     aliases,
     modules: ["local_modules", "node_modules"],
-    extensions: ["", ".js"]
-  },
-
-  eslint: {
-    configFile: path.join(__dirname, "scripts/.eslintrc")
+    extensions: ["", ".js", ".jsx"]
   },
 
   module: { loaders }
