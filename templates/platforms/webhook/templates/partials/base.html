@@ -26,10 +26,6 @@
     <link rel="stylesheet" href="/static/css/main.css"/>
     <!-- endbuild -->
 
-    {SLUSH{ if (jsExternals.indexOf("modernizr") > -1) { }}
-    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
-    {SLUSH{ } }}
-
     <!--[if lte IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/classlist/2014.01.31/classList.min.js"></script>
     <![endif]-->
@@ -37,29 +33,28 @@
     {# Useful block for loading outside scripts in other pages. #}
     {% block head_extra %}{% endblock %}
   </head>
-  <body {% block body_attributes %}{% endblock %}>
+
+  <body class="{% block body_classes %}page{% endblock %}" data-bind="{% block body_bindings %}{% endblock %}" {% block body_attributes %}{% endblock %}>
     {% block body %}
+
       <!--[if lt IE 7]>
         <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
       <![endif]-->
 
       <div class="page__wrapper">
-        <div id="header" class="page__header">
-            {% block header %}
-              {% include "templates/partials/header.html" %}
-            {% endblock %}
-        </div>
 
-        {# By default, your inner pages will load into this block. #}
-        <div id="content" class="page__content">
+        {% block header %}
+          {% include "templates/partials/header.html" %}
+        {% endblock %}
+
+        <div class="page-content">
           {% block content %}{% endblock %}
         </div>
 
-        <div id="footer" class="page__footer">
-            {% block footer %}
-              {% include "templates/partials/footer.html" %}
-            {% endblock %}
-        </div>
+        {% block footer %}
+          {% include "templates/partials/footer.html" %}
+        {% endblock %}
+
       </div>
 
       {# Put your JS in here and we'll minify it into one file. No CDN scripts. More info: #}
@@ -72,6 +67,15 @@
       <!-- build:js /static/javascript/minified.js -->
       <script src="/static/javascript/main.js"></script>
       <!-- endbuild -->
+
+      {% block modal %}
+        {% include "templates/partials/modal.html" %}
+      {% endblock %}
+
+      <!-- App config -->
+      <script>
+        window.app.setConfig({ settings: {} });
+      </script>
 
       {% block scripts_extra %}{% endblock %}
 

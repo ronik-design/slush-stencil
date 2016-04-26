@@ -1,0 +1,17 @@
+<div class="modal" data-bind="with: $root.components.modal">
+
+  <div class="modal__inner" data-bind="css: { 'modal-is-open': isOpen }, attr: { 'data-modal-name': modalName }">
+    <div class="modal__backdrop"></div>
+    <div class="modal__wrap">
+      <div class="modal__close" data-bind="click: close"></div>
+      <div class="modal__content" data-bind="template: { name: modalName }"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="text/html" id="modal-default"></script>
+
+<script type="text/javascript">
+  window.app.setConfig("modalDefaultTemplate", "modal-default");
+</script>

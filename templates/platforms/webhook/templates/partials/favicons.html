@@ -18,7 +18,7 @@
     <link rel="icon" type="image/png" href="{{ image | imageSize(size) }}" sizes="{{ size }}x{{ size }}">
   {% endfor %}
   {% for size in [ 57, 60, 72, 76, 114, 120, 144, 152, 180 ] %}
-    <link rel="apple-touch-icon" href="/{{ favicon | imageSize(size) }}" sizes="{{ size }}x{{ size }}">
+    <link rel="apple-touch-icon" href="{{ favicon | imageSize(size) }}" sizes="{{ size }}x{{ size }}">
   {% endfor %}
 {% endif %}
 

@@ -1,0 +1,102 @@
+.modal__backdrop {
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -z(modal-background);
+  background-color: @modal-backdrop-bg;
+
+  .modal-is-open & {
+    opacity: $modal-backdrop-opacity;
+  }
+
+}
+
+.modal__inner {
+
+  display: none;
+  height: 100%;
+  width: 100%;
+  z-index: -z(modal);
+  align-items: center;
+  justify-content: center;
+
+  &.modal-is-open {
+    display: flex;
+  }
+
+}
+
+.modal__wrap {
+
+  position: relative;
+  width: auto;
+
+  @include above(screen-sm) {
+    width: $modal-md;
+
+    .modal-sm {
+      width: $modal-sm;
+    }
+  }
+
+  @include above(screen-md) {
+    .modal-lg {
+      width: $modal-lg;
+    }
+  }
+
+}
+
+.modal__content {
+
+  position: relative;
+  background-color: $modal-content-bg;
+  z-index: -z(modal-content);
+  height: 100%;
+  width: 100%;
+
+}
+
+.modal__close {
+
+  cursor: pointer;
+  height: 4rem;
+  width: 4rem;
+  position: absolute;
+  top: -5rem;
+  right: -5rem;
+  border: 3px solid -color(white);
+  border-radius: 50%;
+
+  &:hover {
+    background: -color(white);
+    &:before,
+    &:after {
+      background: -color(black);
+    }
+  }
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    width: 75%;
+    top: 41%;
+    left: 13%;
+    background: -color(white);
+    height: 3px;
+    margin-top: 3px;
+  }
+
+  &:before {
+    @include transform(rotate(45deg));
+  }
+
+  &:after {
+    @include transform(rotate(-45deg));
+  }
+
+}

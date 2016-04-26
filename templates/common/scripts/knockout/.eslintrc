@@ -4,7 +4,6 @@
     "experimentalObjectRestSpread": true
   },
   "globals": {
-      "__DEV__": true,
-      "File": true
+    "__DEV__": true
   }
 }

@@ -18,6 +18,7 @@ const lost = require("lost");
 const stylelint = require("stylelint");
 const syntaxScss = require("postcss-scss");
 const reporter = require("postcss-reporter");
+const objectFitImages = require("postcss-object-fit-images");
 
 const errorHandler = notify.onError();
 
@@ -53,6 +54,7 @@ gulp.task("styles:build", () => {
   ];
 
   const postcssProcessors = [
+    objectFitImages,
     autoprefixer({browsers: ["last 2 versions"]}),
     lost
   ];

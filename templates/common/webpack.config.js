@@ -17,10 +17,6 @@ if (STENCIL.jsExternals.indexOf("jquery") >= 0) {
   externals.jquery = "jQuery";
 }
 
-if (STENCIL.jsExternals.indexOf("modernizr") >= 0) {
-  externals.modernizr = "Modernizr";
-}
-
 const loaders = [
   {
     test: /scripts\/vendor\/.+\.js$/,

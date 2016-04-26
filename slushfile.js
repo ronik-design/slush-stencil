@@ -97,7 +97,7 @@ gulp.task("default", function (done) {
       if (answers.platform === "webhook") {
         return defaults.slug + ".webhook.org";
       }
-      return defaults.slug + ".com";
+      return "www." + defaults.slug + ".com";
     }
   }, {
     name: "description",

@@ -34,13 +34,11 @@ class App {
 
     return () => {
 
-      let instance = this.pageInstances[name];
-
-      if (!instance) {
-        instance = new Ctor({ config: this.config, app: this });
+      if (!this.pageInstances[name]) {
+        this.pageInstances[name] = new Ctor({ config: this.config, app: this });
       }
 
-      return instance;
+      return this.pageInstances[name];
     };
   }
 
@@ -50,13 +48,11 @@ class App {
 
     return () => {
 
-      let instance = this.componentInstances[name];
-
-      if (!instance) {
-        instance = new Ctor({ config: this.config, app: this });
+      if (!this.componentInstances[name]) {
+        this.componentInstances[name] = new Ctor({ config: this.config, app: this });
       }
 
-      return instance;
+      return this.componentInstances[name];
     };
   }
 

@@ -1,3 +1,29 @@
-@lost gutter 50px;
+@lost gutter map-get(("gutter": $grid-gutter-width), "gutter");
 @lost flexbox flex;
 @lost cycle auto;
+
+.container {
+
+  @extend %basic-block;
+  @include cf();
+
+  padding-top: 0;
+  padding-bottom: 0;
+
+  @include below(screen-sm) {
+    lost-center: 100% $grid-gutter-width;
+  }
+
+  @include above(screen-sm) {
+    lost-center: $container-tablet $grid-gutter-width;
+  }
+
+  @include above(screen-md) {
+    lost-center: $container-desktop $grid-gutter-width;
+  }
+
+  @include above(screen-lg) {
+    lost-center: $container-hd $grid-gutter-width;
+  }
+
+}

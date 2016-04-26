@@ -18,10 +18,88 @@ h6 {
   text-rendering: optimizeLegibility;
 }
 
-html {
-  font-size: $font-size-base;
-}
+/* Copy */
 
-body {
-  font-size: $font-size;
+@mixin copy($options: ()) {
+
+  $config: map-merge((
+    color: -color(gray-xdark),
+    link_color: -color(science-blue),
+    link_weight: -weight(bold),
+    weight: -weight(normal),
+    line-height: $line-height,
+    font-size: $font-size,
+    font-family: $font-family-serif
+  ), $options);
+
+  $font-family: map-get($config, font-family);
+
+  color: map-get($config, color);
+  font-family: $font-family;
+  font-weight: map-get($config, weight);
+  font-size: map-get($config, font-size);
+  line-height: map-get($config, line-height);
+
+  p,
+  ul,
+  ol,
+  figure,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0 0 ($line-height-computed / 2);
+  }
+
+  strong {
+    font-weight: -weight(bold);
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  a {
+    @extend %strip-link-style;
+    color: map-get($config, link_color);
+    font-weight: map-get($config, link_weight);
+  }
+
+  a:hover {
+    @extend %strip-link-style;
+    color: map-get($config, link_color);
+    font-weight: map-get($config, link_weight);
+    text-decoration: underline;
+  }
+
+  ul,
+  ol {
+    li {
+      line-height: 1.56;
+      padding-left: 4.2rem;
+      text-indent: -0.7rem;
+    }
+    li:before {
+      color: black;
+      margin-right: 1.1rem;
+    }
+  }
+
+  ul {
+    li:before {
+      content: "• ";
+    }
+  }
+
+  ol {
+    counter-reset: section;
+    li:before {
+      counter-increment: section;
+      content: counters(section,".") "  ";
+      color: black;
+    }
+  }
+
 }

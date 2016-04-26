@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "wh serve",
-    "test": "mocha --timeout 5000"
+    "test": "mocha --timeout 8000"
   },
   "dependencies": {},
   "devDependencies": {

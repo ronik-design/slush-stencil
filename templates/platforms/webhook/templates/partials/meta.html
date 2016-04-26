@@ -9,6 +9,14 @@
   {% set image = favicon.url %}
 {% endif %}
 
+{% if !facebook_app_id && cms.sitesettings %}
+  {% set facebook_app_id = cms.sitesettings.facebook_app_id %}
+{% endif %}
+
+{% if !address && cms.sitesettings %}
+  {% set address = cms.sitesettings.address %}
+{% endif %}
+
 {% if !description %}
   {% set description = site_description %}
 {% endif %}
@@ -21,6 +29,37 @@
   {% set canonical = macros.absolute_url() %}
 {% endif %}
 
+{% if image %}
+  {% if not image | startsWith("http") %}
+    {% set image = macros.absolute_url(image) %}
+  {% endif %}
+{% endif %}
+
+{% if og_image %}
+  {% if not og_image | startsWith("http") %}
+    {% set og_image = macros.absolute_url(og_image) %}
+  {% endif %}
+{% endif %}
+
+{% if twitter_image %}
+  {% if not twitter_image | startsWith("http") %}
+    {% set twitter_image = macros.absolute_url(twitter_image) %}
+  {% endif %}
+{% endif %}
+
+{% if video %}
+  {% if not video | startsWith("http") %}
+    {% set video = macros.absolute_url(video) %}
+  {% endif %}
+{% endif %}
+
+{% if og_video %}
+  {% if not og_video | startsWith("http") %}
+    {% set og_video = macros.absolute_url(og_video) %}
+  {% endif %}
+{% endif %}
+
+
 {% if description %}<meta name="description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
 {% if keywords %}<meta name="keywords" content="{{ keywords | escape('html') }}">{% endif %}
 
@@ -30,6 +69,8 @@
 <meta property="og:site_name" content="{{ site_name | escape('html') }}">
 {% if description %}<meta property="og:description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
 {% if image || og_image %}<meta property="og:image" content="{{ og_image | default(image) }}">{% endif %}
+{% if video || og_video %}<meta property="og:video" content="{{ og_video | default(video) }}">{% endif %}
+{% if facebook_app_id %}<meta property="fb:app_id" content="{{ facebook_app_id }}">{% endif %}
 
 <meta name="twitter:card" content="{{ twitter_card | default('summary') | escape('html') }}">
 <meta name="twitter:url" content="{{ canonical }}">
@@ -37,8 +78,7 @@
 {% if description %}<meta name="twitter:description" content="{{ description | replace('\n', '') | escape('html') }}">{% endif %}
 {% if image || twitter_image %}<meta name="twitter:image" content="{{ twitter_image | default(image) }}">{% endif %}
 
-{% if type === 'business.business' %}
-{% if !address && cms.sitesettings %}{% set address = cms.sitesettings.address %}{% endif %}
+{% if type === 'business.business' && address %}
 <meta property="business:contact_data:street_address" content="{{ address.street1 }}" />
 <meta property="business:contact_data:locality" content="{{ address.city }}" />
 <meta property="business:contact_data:postal_code" content="{{ address.zip }}" />

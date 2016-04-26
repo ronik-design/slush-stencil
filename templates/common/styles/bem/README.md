@@ -5,7 +5,7 @@ For more detailed documentation on Sass/SCSS, check out: http://sass-lang.com/
 For more detailed documentation on Postcss, check out: https://github.com/postcss/postcss
 
 ## Plugins
-- Utilities - [Bourbon](http://bourbon.io)
+- Utilities - [Bourbon](http://bourbon.io/docs/)
 - Media Queries - [Breakpoint](http://breakpoint-sass.com)
 - Grid - [Lost Grid System](https://github.com/peterramsing/lost)
 - Browser prefixes - [Autoprefixer](https://github.com/postcss/autoprefixer)

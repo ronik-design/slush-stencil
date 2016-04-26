@@ -11,3 +11,11 @@ body {
   position: relative;
   height: 100%;
 }
+
+html {
+  font-size: $font-size-base;
+}
+
+body {
+  font-size: $font-size;
+}
