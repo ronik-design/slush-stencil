@@ -6,7 +6,7 @@
   bottom: 0;
   left: 0;
   z-index: -z(modal-background);
-  background-color: @modal-backdrop-bg;
+  background-color: $modal-backdrop-bg;
 
   .modal-is-open & {
     opacity: $modal-backdrop-opacity;
